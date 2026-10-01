@@ -1,0 +1,58 @@
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Global API Prefix
+  app.setGlobalPrefix('api');
+
+  // CORS Configuration
+  app.enableCors({
+    origin: [
+      'http://localhost:5173',   // Dev Vite
+      'http://localhost:3000',   // Dev alternatif
+      'http://localhost:80',     // Docker frontend
+      'http://localhost',        // Docker frontend sans port
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:80',
+      'http://127.0.0.1',
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+  });
+
+  // Validation
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: false,
+    }),
+  );
+
+  // Swagger Documentation Setup
+  const config = new DocumentBuilder()
+    .setTitle('Système de Gestion Scolaire - École Oumou Salamat')
+    .setDescription(
+      'API REST complète pour la gestion d\'une école primaire: Inscriptions, Élèves, Parents, Factures & Paiements, Bulletins scolaires, Présences & Absences, sécurisé avec Keycloak.',
+    )
+    .setVersion('1.0.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document, {
+    customSiteTitle: 'Documentation API - Oumou Salamat',
+  });
+
+  const port = process.env.PORT || 3001;
+  await app.listen(port);
+  console.log(`🚀 Serveur NestJS démarré avec succès sur: http://localhost:${port}/api`);
+  console.log(`📚 Documentation Swagger disponible sur: http://localhost:${port}/api/docs`);
+}
+
+bootstrap();

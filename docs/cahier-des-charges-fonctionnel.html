@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Cahier des charges fonctionnel — Oumou Salamat</title>
+<style>
+@page { size: A4; margin: 15mm 16mm 17mm 16mm; }
+* { box-sizing: border-box; }
+body { font-family: 'DejaVu Sans', Arial, sans-serif; color: #1d2b42; font-size: 9.3pt; line-height: 1.42; margin: 0; }
+.page { page-break-after: always; position: relative; min-height: 264mm; }
+.page:last-child { page-break-after: auto; }
+.cover { min-height: 264mm; background: #101b32; color: #fff; padding: 22mm 18mm; }
+.cover .mark { display: inline-block; border: 1px solid #25c99a; background: #073f3a; color: #51e2b0; border-radius: 12px; font-size: 17pt; font-weight: bold; padding: 12px 17px; }
+.kicker { color: #009c72; font-size: 8pt; font-weight: bold; letter-spacing: 1.25px; text-transform: uppercase; }
+.cover .kicker { color: #6ee7bd; margin-top: 31mm; }
+h1 { font-size: 31pt; line-height: 1.13; margin: 8mm 0 6mm; color: #fff; }
+.cover .subtitle { font-size: 14pt; color: #d4e5f3; max-width: 150mm; }
+.cover .rule { width: 33mm; border-top: 4px solid #00a878; margin: 12mm 0; }
+.cover .pitch { color: #eaf7f4; font-size: 11pt; max-width: 150mm; line-height: 1.55; }
+.cover .meta { margin-top: 23mm; border-top: 1px solid #31415c; padding-top: 6mm; color: #b8c8d8; font-size: 8.5pt; }
+h2 { color: #152744; font-size: 19pt; line-height: 1.2; margin: 2mm 0 2mm; }
+h3 { color: #087c5b; font-size: 11pt; margin: 4mm 0 1.5mm; }
+p { margin: 1.5mm 0 2.5mm; }
+.lead { color: #50627c; font-size: 10.5pt; margin: 2mm 0 5mm; }
+.topline { height: 2.5mm; background: #00a878; margin-bottom: 7mm; }
+.box { background: #f2f7fa; border: 1px solid #dfe8ef; border-radius: 8px; padding: 4mm; margin: 3mm 0; }
+.greenbox { background: #e9f8f2; border-left: 4px solid #00a878; padding: 4mm; margin: 3mm 0; }
+.bluebox { background: #eef4fb; border-left: 4px solid #3b82c4; padding: 4mm; margin: 3mm 0; }
+.tag { display: inline-block; border-radius: 20px; padding: 1mm 3mm; background: #d9f5e9; color: #087c5b; font-size: 7.5pt; font-weight: bold; }
+ul { margin: 1mm 0 2mm; padding-left: 5mm; }
+li { margin: 1.2mm 0; }
+table { width: 100%; border-collapse: collapse; margin: 3mm 0 4mm; font-size: 8.5pt; }
+th { text-align: left; background: #142642; color: white; padding: 2.5mm; }
+td { vertical-align: top; padding: 2.4mm; border-bottom: 1px solid #e0e8ef; }
+tr:nth-child(even) td { background: #f6f9fb; }
+.small { font-size: 8pt; color: #60718a; }
+.big { color: #087c5b; font-size: 22pt; font-weight: bold; }
+.grid { width: 100%; border-collapse: separate; border-spacing: 3mm; margin: 2mm -3mm 2mm; }
+.grid td { width: 50%; border: 1px solid #e0e8ef; background: #f7fafc; border-radius: 8px; padding: 4mm; }
+.num { color: #00a878; font-weight: bold; font-size: 16pt; }
+.footer { position: absolute; left: 0; right: 0; bottom: 0; border-top: 1px solid #dfe8ef; padding-top: 2mm; color: #71819a; font-size: 7.5pt; }
+.sign { height: 20mm; border-bottom: 1px solid #9cacbd; }
+.nowrap { white-space: nowrap; }
+</style>
+</head>
+<body>
+<section class="page cover">
+  <div class="mark">OS</div>
+  <div class="kicker">Présentation fonctionnelle · Édition du 30 septembre 2026</div>
+  <h1>Cahier des charges<br>fonctionnel</h1>
+  <div class="subtitle">Plateforme de gestion scolaire<br><strong>École As Sakina</strong></div>
+  <div class="rule"></div>
+  <p class="pitch">Une vue claire sur les élèves, les familles, les classes et la vie de l’école. Un outil conçu pour simplifier le suivi quotidien et aider chaque responsable à retrouver la bonne information.</p>
+  <div style="margin-top:15mm"><span class="tag">Élèves & familles</span> &nbsp; <span class="tag">Suivi pédagogique</span> &nbsp; <span class="tag">Finances</span> &nbsp; <span class="tag">Dossiers numériques</span></div>
+  <div class="meta"><strong>Document de présentation destiné à l’École As Sakina</strong><br>À l’attention de Madame Marietou, responsable de l’établissement.<br>Le présent document décrit le socle fonctionnel disponible et propose une feuille de route pour les évolutions futures. Les besoins définitifs, le calendrier et les conditions commerciales seront validés avec le client.</div>
+</section>
+
+<section class="page">
+  <div class="topline"></div><div class="kicker">01 · La solution en bref</div><h2>Une école mieux organisée, au même endroit</h2>
+  <p class="lead">La plateforme rassemble les informations utiles au fonctionnement de l’établissement dans une interface web accessible depuis un ordinateur, une tablette ou un téléphone.</p>
+  <div class="greenbox"><strong>La promesse :</strong> réduire les recherches dans plusieurs cahiers ou fichiers, faciliter le suivi des familles et donner à l’équipe une vision plus lisible de la scolarité et des paiements.</div>
+  <table class="grid"><tr>
+    <td><div class="num">01</div><strong>Connaître l’effectif</strong><br>Inscrire les élèves, les affecter à une classe et retrouver leur dossier rapidement.</td>
+    <td><div class="num">02</div><strong>Suivre la scolarité</strong><br>Noter les présences, saisir les évaluations et préparer les bulletins.</td>
+  </tr><tr>
+    <td><div class="num">03</div><strong>Suivre les règlements</strong><br>Émettre et consulter les factures, enregistrer les paiements et repérer les soldes.</td>
+    <td><div class="num">04</div><strong>Responsabiliser l’équipe</strong><br>Donner à chaque profil un accès adapté à sa mission.</td>
+  </tr></table>
+  <h3>Un parcours simple pour les tâches courantes</h3>
+  <table><tr><th>Besoin</th><th>Action dans l’application</th><th>Résultat attendu</th></tr>
+    <tr><td>Inscrire un enfant</td><td>Créer sa fiche, renseigner son parent et choisir sa classe.</td><td>Un dossier identifiable et un suivi prêt à commencer.</td></tr>
+    <tr><td>Faire le point financier</td><td>Consulter les factures, saisir un règlement, imprimer un reçu.</td><td>Un état des paiements plus facile à vérifier.</td></tr>
+    <tr><td>Préparer le trimestre</td><td>Saisir les notes et générer les bulletins.</td><td>Une synthèse des résultats par élève ou par classe.</td></tr>
+  </table>
+  <p class="small">Les fonctions décrites comme disponibles sont celles présentes dans le socle actuel de l’application. Leur mise en service chez le client nécessite la configuration de son établissement et de ses comptes.</p>
+  <div class="footer">École As Sakina · Cahier des charges fonctionnel <span style="float:right">2</span></div>
+</section>
+
+<section class="page">
+  <div class="topline"></div><div class="kicker">02 · Élèves, parents et classes</div><h2>De l’inscription au dossier de l’élève</h2>
+  <p class="lead">Chaque élève possède une fiche qui peut être retrouvée par son nom, son prénom ou son matricule, puis filtrée par classe.</p>
+  <h3>Inscription et suivi des élèves <span class="tag">Disponible</span></h3>
+  <ul>
+    <li>Renseigner l’identité de l’élève : nom, prénom, genre, date et lieu de naissance, adresse et groupe sanguin.</li>
+    <li>Créer la fiche du parent ou tuteur avec ses coordonnées, son lien avec l’enfant, sa profession et son adresse, ou associer un parent déjà enregistré.</li>
+    <li>Affecter l’élève à une classe et générer, si souhaité, la facture de frais d’inscription correspondante.</li>
+    <li>Consulter son dossier, modifier ses informations ou sa classe lorsque le profil autorisé le permet.</li>
+  </ul>
+  <h3>Pièces à classer dans le dossier <span class="tag">Disponible</span></h3>
+  <table><tr><th>Dossier de l’élève</th><th>Dossier du parent / tuteur</th></tr>
+    <tr><td>Extrait de naissance<br>Photo d’identité<br>Carnet de vaccination<br>Certificat médical<br>Bulletin précédent</td><td>Carte nationale d’identité<br>Passeport</td></tr>
+  </table>
+  <p>Les documents sont ajoutés depuis le dossier. Les formats acceptés comprennent PDF et images usuelles (JPEG, PNG, WEBP), avec une limite de 10 Mo par fichier.</p>
+  <h3>Organisation des classes <span class="tag">Disponible</span></h3>
+  <p>Le directeur ou l’administrateur peut créer les classes du cycle primaire (CI, CP, CE1, CE2, CM1, CM2), définir l’année scolaire, la capacité d’accueil et les frais d’inscription et de scolarité, puis affecter un enseignant. Les matières et leurs coefficients peuvent également être configurés.</p>
+  <div class="bluebox"><strong>Pour l’établissement :</strong> les informations de l’élève, de sa famille et de sa classe se consultent depuis une même fiche, ce qui facilite l’accueil, le suivi et la préparation des échanges avec les parents.</div>
+  <div class="footer">École As Sakina · Cahier des charges fonctionnel <span style="float:right">3</span></div>
+</section>
+
+<section class="page">
+  <div class="topline"></div><div class="kicker">03 · Présences et apprentissages</div><h2>Un suivi scolaire lisible au fil de l’année</h2>
+  <h3>Présences et absences <span class="tag">Disponible</span></h3>
+  <p>L’équipe pédagogique peut préparer une feuille de présence pour une classe et une date, puis renseigner pour chaque élève : présent, absent, en retard ou absence excusée. Un motif et une justification peuvent être indiqués. Des indicateurs résument ensuite les présences et absences.</p>
+  <table><tr><th>La feuille de présence permet de</th><th>Ce que l’équipe peut en tirer</th></tr>
+    <tr><td>Marquer rapidement le statut de chaque élève et ajouter une remarque.</td><td>Repérer les absences, les retards et les situations à suivre.</td></tr>
+    <tr><td>Consulter les statistiques de présence sur la période disponible.</td><td>Préparer un échange avec la famille à partir d’informations enregistrées.</td></tr>
+  </table>
+  <h3>Notes et bulletins <span class="tag">Disponible</span></h3>
+  <ul>
+    <li>Saisir les évaluations par élève ou en lot pour une classe, une matière et un trimestre.</li>
+    <li>Calculer les moyennes et consulter les résultats de la classe.</li>
+    <li>Ajouter une appréciation et établir le classement selon les résultats saisis.</li>
+    <li>Générer les bulletins d’un élève ou d’une classe, puis les consulter et les imprimer.</li>
+  </ul>
+  <div class="greenbox"><strong>Un suivi plus régulier :</strong> les enseignants travaillent sur les classes qui leur sont attribuées, tandis que la direction dispose d’une vue adaptée à la supervision pédagogique.</div>
+  <h3>Exemple d’utilisation pendant un trimestre</h3>
+  <table><tr><td style="width:25%"><strong>Au quotidien</strong></td><td>L’enseignant fait l’appel et signale les retards ou absences.</td></tr>
+    <tr><td><strong>Aux évaluations</strong></td><td>Les résultats sont saisis dans la classe et la matière concernées.</td></tr>
+    <tr><td><strong>En fin de période</strong></td><td>Les moyennes sont calculées et les bulletins préparés pour impression.</td></tr>
+  </table>
+  <p class="small">La qualité des indicateurs dépend des données effectivement saisies et de la configuration des matières, coefficients, périodes et classes.</p>
+  <div class="footer">École As Sakina · Cahier des charges fonctionnel <span style="float:right">4</span></div>
+</section>
+
+<section class="page">
+  <div class="topline"></div><div class="kicker">04 · Facturation et règlements</div><h2>Garder une vue claire sur les frais scolaires</h2>
+  <p class="lead">Le module financier aide à suivre les factures et les règlements liés aux élèves, depuis la création d’une facture jusqu’au reçu.</p>
+  <h3>Factures <span class="tag">Disponible</span></h3>
+  <ul>
+    <li>Créer des factures pour un élève et consulter leur montant, leur échéance et leur état.</li>
+    <li>Générer en série les factures mensuelles d’une classe.</li>
+    <li>Filtrer les factures selon la classe ou le statut : réglée, partiellement réglée ou impayée.</li>
+    <li>À l’inscription, proposer la création de la facture des frais d’inscription définis pour la classe.</li>
+  </ul>
+  <h3>Enregistrement des paiements <span class="tag">Disponible</span></h3>
+  <p>Le comptable ou un profil de direction enregistre un règlement et renseigne son moyen : espèces, Wave, Orange Money, virement bancaire ou chèque. Une référence de transaction ou une note peut être ajoutée. Le montant restant dû et le statut de la facture sont mis à jour. Un reçu de paiement peut être affiché et imprimé.</p>
+  <div class="bluebox"><strong>À savoir :</strong> Wave et Orange Money sont proposés comme moyens de paiement à enregistrer. Le socle actuel ne déclenche pas lui-même une transaction en ligne auprès de ces opérateurs ; le règlement est saisi après paiement.</div>
+  <h3>Indicateurs financiers <span class="tag">Disponible</span></h3>
+  <table><tr><th>Indicateur</th><th>Utilité pour l’établissement</th></tr>
+    <tr><td>Montants facturés et encaissés</td><td>Suivre l’activité financière sur la période.</td></tr>
+    <tr><td>Reste à recouvrer et statut des factures</td><td>Identifier les factures en attente ou partiellement payées.</td></tr>
+    <tr><td>Taux de recouvrement</td><td>Apprécier la part des montants encaissés par rapport aux montants facturés.</td></tr>
+  </table>
+  <div class="greenbox"><strong>Bénéfice attendu :</strong> les équipes retrouvent le détail d’une facture et de ses règlements au même endroit, avec un reçu pour justifier le paiement enregistré.</div>
+  <p class="small">La facturation ne remplace pas la comptabilité générale de l’établissement. Les règles de gestion (échéances, réductions, pénalités, exports) sont à confirmer pendant le cadrage client.</p>
+  <div class="footer">École As Sakina · Cahier des charges fonctionnel <span style="float:right">5</span></div>
+</section>
+
+<section class="page">
+  <div class="topline"></div><div class="kicker">05 · Accès et responsabilités</div><h2>Chaque personne voit les fonctions utiles à son rôle</h2>
+  <p class="lead">Les comptes sont gérés par l’administrateur. Les droits d’accès distinguent les responsabilités du personnel et des familles.</p>
+  <table><tr><th>Profil</th><th>Accès principal dans l’application</th></tr>
+    <tr><td><strong>Administrateur</strong></td><td>Gère les comptes utilisateurs et leurs rôles ; accède à la configuration et aux principales fonctions de l’application.</td></tr>
+    <tr><td><strong>Directeur</strong></td><td>Suit les élèves et les familles, organise les classes et les matières, supervise les notes, les présences et les finances. Peut modifier ou supprimer un dossier élève selon les droits configurés.</td></tr>
+    <tr><td><strong>Comptable</strong></td><td>Suit les factures et les règlements, consulte les informations financières et participe aux inscriptions et au suivi des parents.</td></tr>
+    <tr><td><strong>Enseignant</strong></td><td>Travaille sur les classes qui lui sont attribuées pour suivre les élèves, les présences et les résultats scolaires.</td></tr>
+    <tr><td><strong>Parent / tuteur</strong></td><td>Accède aux informations scolaires de son ou ses enfants associées à son compte.</td></tr>
+  </table>
+  <h3>Administration des comptes <span class="tag">Disponible</span></h3>
+  <p>L’administrateur peut créer un compte, lui attribuer un rôle, le désactiver ou le réactiver, et supprimer un compte. Les identifiants sont gérés via Keycloak. Les droits détaillés suivent le profil attribué.</p>
+  <h3>Accès maîtrisés</h3>
+  <ul>
+    <li>Connexion nominative avec identifiant et mot de passe.</li>
+    <li>Menus et opérations disponibles selon les autorisations du rôle.</li>
+    <li>Suppression d’un élève réservée au directeur ou à l’administrateur.</li>
+    <li>Gestion des documents de dossiers réservée aux profils autorisés.</li>
+  </ul>
+  <div class="bluebox"><strong>Point de configuration avant ouverture :</strong> le client fournit la liste des membres du personnel, leur rôle, les classes concernées et les coordonnées à rattacher aux comptes parents. Un compte parent doit correspondre à la famille concernée.</div>
+  <p class="small">La configuration des comptes, les responsabilités de validation et les règles internes de confidentialité seront à confirmer avec la direction avant le démarrage.</p>
+  <div class="footer">École As Sakina · Cahier des charges fonctionnel <span style="float:right">6</span></div>
+</section>
+
+<section class="page">
+  <div class="topline"></div><div class="kicker">06 · Évolutions envisageables</div><h2>Une base qui peut grandir avec l’école</h2>
+  <p class="lead">Le socle actuel répond aux besoins de gestion scolaire courants. Les évolutions ci-dessous sont des pistes à prioriser avec le client : elles ne sont pas annoncées comme déjà disponibles.</p>
+  <table><tr><th>Évolution proposée</th><th>Apport attendu</th><th>Statut</th></tr>
+    <tr><td>Notifications aux familles par SMS, e-mail ou WhatsApp</td><td>Informer les parents d’une absence, d’une échéance ou de la publication d’un bulletin.</td><td>À étudier</td></tr>
+    <tr><td>Paiement en ligne avec confirmation automatique</td><td>Permettre aux familles de régler à distance et rapprocher le paiement de la facture.</td><td>À intégrer et valider</td></tr>
+    <tr><td>Exports et rapports personnalisés</td><td>Préparer des listes, états financiers et synthèses adaptés aux besoins de la direction.</td><td>À préciser</td></tr>
+    <tr><td>Préinscription à distance</td><td>Recueillir une demande d’inscription avant son traitement par l’école.</td><td>À concevoir</td></tr>
+    <tr><td>Suivi des services scolaires (cantine, transport, fournitures)</td><td>Élargir la gestion aux services proposés par l’établissement.</td><td>À cadrer</td></tr>
+    <tr><td>Application mobile dédiée</td><td>Faciliter les échanges et la consultation depuis un téléphone.</td><td>À évaluer</td></tr>
+  </table>
+  <h3>Proposition de priorisation</h3>
+  <table><tr><td style="width:25%"><strong>Étape 1 · Démarrage</strong></td><td>Configurer l’établissement, les classes, les comptes et les données de départ ; accompagner la prise en main.</td></tr>
+    <tr><td><strong>Étape 2 · Communication</strong></td><td>Prioriser les notifications aux familles et les rapports de suivi après validation des besoins.</td></tr>
+    <tr><td><strong>Étape 3 · Services étendus</strong></td><td>Étudier le paiement en ligne, les services scolaires et les accès mobiles dédiés.</td></tr>
+  </table>
+  <div class="greenbox"><strong>Une feuille de route maîtrisée :</strong> chaque évolution sera définie, estimée et planifiée après validation de son utilité, de son coût et de ses prérequis.</div>
+  <div class="footer">École As Sakina · Cahier des charges fonctionnel <span style="float:right">7</span></div>
+</section>
+
+<section class="page">
+  <div class="topline"></div><div class="kicker">07 · Mise en service et validation</div><h2>Un démarrage adapté à votre établissement</h2>
+  <p class="lead">La mise en service se prépare avec les responsables de l’école afin que les classes, les comptes et les règles de suivi correspondent à son organisation.</p>
+  <h3>Étapes proposées</h3>
+  <table><tr><th>Étape</th><th>Contenu</th></tr>
+    <tr><td><strong>1. Cadrage</strong></td><td>Confirmer les classes, l’année scolaire, les tarifs, les matières, les profils utilisateurs et les documents attendus.</td></tr>
+    <tr><td><strong>2. Configuration</strong></td><td>Créer les classes et les comptes, définir les droits, et préparer les données de démarrage convenues.</td></tr>
+    <tr><td><strong>3. Prise en main</strong></td><td>Présenter les parcours correspondant aux missions de la direction, du comptable et des enseignants.</td></tr>
+    <tr><td><strong>4. Validation</strong></td><td>Faire vérifier les scénarios métiers ci-dessous par les représentants désignés de l’établissement.</td></tr>
+  </table>
+  <h3>Scénarios de validation fonctionnelle</h3>
+  <ul>
+    <li>La direction crée une classe et affecte un enseignant.</li>
+    <li>Un responsable inscrit un élève, rattache un parent, choisit la classe et retrouve son dossier.</li>
+    <li>Un agent autorisé ajoute une pièce au dossier de l’élève ou du parent.</li>
+    <li>Le comptable enregistre une facture et un paiement, puis consulte le reçu et le solde.</li>
+    <li>L’enseignant relève une présence et saisit des notes dans sa classe.</li>
+    <li>Un parent consulte les informations scolaires associées à son compte.</li>
+  </ul>
+  <h3>Éléments à convenir avant tout engagement</h3>
+  <p>Le calendrier de déploiement, l’hébergement et le nom de domaine, la reprise des données existantes, la formation, le support, les sauvegardes, les évolutions, les coûts et leurs conditions restent à préciser dans une proposition commerciale ou un contrat séparé.</p>
+  <div class="box"><strong>Validation du périmètre fonctionnel</strong><br><span class="small">Cette signature confirme la compréhension du périmètre décrit. Elle ne vaut pas devis ni engagement de calendrier, de coût ou de services complémentaires.</span>
+    <table style="margin-top:3mm"><tr><td style="width:50%">Pour l’établissement<br>Madame Marietou · Responsable<div class="sign"></div></td><td>Pour le prestataire<br>Nom et signature<div class="sign"></div></td></tr><tr><td>Date : ______________________________</td><td>Date : ______________________________</td></tr></table>
+  </div>
+  <div class="footer">École As Sakina · Cahier des charges fonctionnel <span style="float:right">8</span></div>
+</section>
+</body>
+</html>

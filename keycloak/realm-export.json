@@ -1,0 +1,128 @@
+{
+  "realm": "oumou-salamat",
+  "enabled": true,
+  "displayName": "Oumou Salamat Primary School",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "ADMIN",
+        "description": "Administrateur Système"
+      },
+      {
+        "name": "DIRECTEUR",
+        "description": "Directeur de l'école"
+      },
+      {
+        "name": "COMPTABLE",
+        "description": "Gestionnaire financier et comptable"
+      },
+      {
+        "name": "ENSEIGNANT",
+        "description": "Enseignant / Maître d'école"
+      },
+      {
+        "name": "PARENT",
+        "description": "Parent d'élève"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "oumou-salamat-app",
+      "name": "Oumou Salamat Fullstack Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://localhost:3000/*",
+        "http://localhost:3001/*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "email": "admin@oumou-salamat.sn",
+      "firstName": "Mamadou",
+      "lastName": "Diallo",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ADMIN",
+        "DIRECTEUR"
+      ]
+    },
+    {
+      "username": "comptable",
+      "enabled": true,
+      "email": "comptable@oumou-salamat.sn",
+      "firstName": "Fatou",
+      "lastName": "Ndiaye",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "comptable123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "COMPTABLE"
+      ]
+    },
+    {
+      "username": "enseignant",
+      "enabled": true,
+      "email": "enseignant@oumou-salamat.sn",
+      "firstName": "Ibrahima",
+      "lastName": "Sow",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "enseignant123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ENSEIGNANT"
+      ]
+    },
+    {
+      "username": "parent",
+      "enabled": true,
+      "email": "parent@oumou-salamat.sn",
+      "firstName": "Aissatou",
+      "lastName": "Ba",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "parent123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "PARENT"
+      ]
+    }
+  ]
+}

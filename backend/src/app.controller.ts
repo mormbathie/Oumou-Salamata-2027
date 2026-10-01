@@ -1,0 +1,27 @@
+import { Controller, Get } from '@nestjs/common';
+import { AppService } from './app.service';
+import { Public } from './auth/decorators/public.decorator';
+
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();
+  }
+
+  /**
+   * Endpoint de santé pour Docker healthcheck et monitoring.
+   * Accessible sans authentification.
+   */
+  @Public()
+  @Get('health')
+  health() {
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      service: 'oumou-salamat-backend',
+    };
+  }
+}

@@ -1,0 +1,65 @@
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { StudentsService } from './students.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+
+@ApiTags('Élèves & Inscriptions')
+@Controller('students')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth()
+export class StudentsController {
+  constructor(private readonly studentsService: StudentsService) {}
+
+  @Get()
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT')
+  @ApiOperation({ summary: 'Liste des élèves avec filtres (classe, statut, recherche)' })
+  @ApiQuery({ name: 'classId', required: false })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'status', required: false })
+  async findAll(
+    @Query('classId') classId?: string,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+    @CurrentUser() user?: any,
+  ) {
+    return this.studentsService.findAll({ classId, search, status }, user);
+  }
+
+  @Get(':id')
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT')
+  @ApiOperation({ summary: 'Dossier complet d\'un élève (inscriptions, notes, factures, présences)' })
+  async findOne(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.studentsService.findOne(id, user);
+  }
+
+  @Post()
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
+  @ApiOperation({ summary: 'Inscrire un nouvel élève (avec affectation de classe et génération de facture)' })
+  async create(@Body() body: any) {
+    return this.studentsService.create(body);
+  }
+
+  @Put(':id')
+  @Roles('ADMIN', 'DIRECTEUR')
+  @ApiOperation({ summary: 'Modifier les informations d\'un élève' })
+  async update(@Param('id') id: string, @Body() body: any) {
+    return this.studentsService.update(id, body);
+  }
+
+  @Post('enroll')
+  @Roles('ADMIN', 'DIRECTEUR')
+  @ApiOperation({ summary: 'Affecter ou réinscrire un élève dans une classe' })
+  async enroll(@Body() body: { studentId: string; classroomId: string; academicYearId: string }) {
+    return this.studentsService.enroll(body);
+  }
+
+  @Delete(':id')
+  @Roles('ADMIN', 'DIRECTEUR')
+  @ApiOperation({ summary: 'Supprimer un dossier élève (administrateur ou directeur)' })
+  async remove(@Param('id') id: string) {
+    return this.studentsService.remove(id);
+  }
+}
