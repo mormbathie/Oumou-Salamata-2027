@@ -14,7 +14,7 @@ export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 
   @Get()
-  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT')
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'CONTROLEUR_PRESENCE')
   @ApiOperation({ summary: 'Liste des classes avec effectifs' })
   async findAll(@CurrentUser() user: any) {
     return this.classesService.findAll(user);

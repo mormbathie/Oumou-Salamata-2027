@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, StreamableFile } from '@nestjs/common';
+import { Readable } from 'node:stream';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { StudentsService } from './students.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -26,6 +27,17 @@ export class StudentsController {
     @CurrentUser() user?: any,
   ) {
     return this.studentsService.findAll({ classId, search, status }, user);
+  }
+
+  @Get(':id/photo')
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT', 'CONTROLEUR_PRESENCE')
+  @ApiOperation({ summary: 'Afficher la photo d’identité de l’élève autorisé' })
+  async getPhoto(@Param('id') id: string, @CurrentUser() user: any) {
+    const photo = await this.studentsService.getPhoto(id, user);
+    return new StreamableFile(Readable.from([photo.buffer]), {
+      type: photo.mimeType,
+      disposition: 'inline',
+    });
   }
 
   @Get(':id')

@@ -106,6 +106,15 @@ export class DocumentsService {
     }
   }
 
+  async studentPhoto(studentId: string) {
+    const document = await this.prisma.studentDocument.findFirst({
+      where: { studentId, category: 'STUDENT_PHOTO' },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (!document) throw new NotFoundException('Aucune photo d’identité n’est enregistrée pour cet élève.');
+    return { ...this.publicDocument(document), buffer: await this.readStored(document.storageKey) };
+  }
+
   async studentFile(studentId: string, documentId: string) {
     const document = await this.prisma.studentDocument.findFirst({ where: { id: documentId, studentId } });
     if (!document) throw new NotFoundException('Document élève introuvable.');

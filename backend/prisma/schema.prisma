@@ -13,6 +13,7 @@ enum Role {
   COMPTABLE
   ENSEIGNANT
   PARENT
+  CONTROLEUR_PRESENCE
 }
 
 enum Gender {
@@ -270,6 +271,7 @@ model Attendance {
   status      AttendanceStatus @default(PRESENT)
   reason      String?
   justified   Boolean          @default(false)
+  checkInAt   DateTime?
   remarks     String?
   createdAt   DateTime         @default(now())
 

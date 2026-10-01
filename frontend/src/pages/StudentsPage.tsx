@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import QRCode from 'qrcode';
 import {
   AlertTriangle, CheckCircle2, Download, Eye, FilePlus2, FileText, Pencil, Phone,
-  Search, ShieldCheck, Trash2, UserPlus, Users, X, Save,
+  Search, ShieldCheck, Trash2, UserPlus, Users, X, Save, QrCode,
 } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 import { classesApi, parentsApi, studentsApi } from '../services/api';
@@ -41,6 +42,7 @@ export const StudentsPage: React.FC = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const attendanceSummary = selectedStudent?.attendanceSummary || { total: 0, present: 0, absent: 0, late: 0, excused: 0 };
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [detailsTab, setDetailsTab] = useState<'overview' | 'documents'>('overview');
   const [editingDetails, setEditingDetails] = useState(false);
@@ -48,6 +50,9 @@ export const StudentsPage: React.FC = () => {
   const [savingDetails, setSavingDetails] = useState(false);
   const [uploadingCategory, setUploadingCategory] = useState('');
   const [documentError, setDocumentError] = useState('');
+  const [studentPhoto, setStudentPhoto] = useState('');
+  const [photoReloadKey, setPhotoReloadKey] = useState(0);
+  const [studentQrCode, setStudentQrCode] = useState('');
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', gender: 'MALE', dateOfBirth: '2019-01-01',
     placeOfBirth: '', bloodGroup: '', address: '', classroomId: '',
@@ -78,6 +83,37 @@ export const StudentsPage: React.FC = () => {
   };
 
   useEffect(() => { void loadData(); }, [selectedClass]);
+
+  useEffect(() => {
+    let active = true;
+    let objectUrl = '';
+    if (showDetailsModal && selectedStudent?.id) {
+      studentsApi.getPhoto(selectedStudent.id)
+        .then((blob) => {
+          if (!active) return;
+          objectUrl = URL.createObjectURL(blob);
+          setStudentPhoto(objectUrl);
+        })
+        .catch(() => { if (active) setStudentPhoto(''); });
+    } else setStudentPhoto('');
+    return () => {
+      active = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [showDetailsModal, selectedStudent?.id, photoReloadKey]);
+
+  useEffect(() => {
+    let active = true;
+    setStudentQrCode('');
+    if (showDetailsModal && selectedStudent?.id) {
+      QRCode.toDataURL('OSATT1:' + selectedStudent.id, {
+        errorCorrectionLevel: 'M',
+        margin: 2,
+        width: 240,
+      }).then((dataUrl) => { if (active) setStudentQrCode(dataUrl); });
+    }
+    return () => { active = false; };
+  }, [showDetailsModal, selectedStudent?.id]);
 
   const handleSearchSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -187,8 +223,10 @@ export const StudentsPage: React.FC = () => {
     setUploadingCategory(`${owner}-${category}`);
     setDocumentError('');
     try {
-      if (owner === 'student') await studentsApi.uploadDocument(ownerId, category, file);
-      else await parentsApi.uploadDocument(ownerId, category, file);
+      if (owner === 'student') {
+        await studentsApi.uploadDocument(ownerId, category, file);
+        if (category === 'STUDENT_PHOTO') setPhotoReloadKey((current) => current + 1);
+      } else await parentsApi.uploadDocument(ownerId, category, file);
       await handleOpenDetails(selectedStudent.id, 'documents');
     } catch (error) {
       setDocumentError(formatError(error));
@@ -377,6 +415,45 @@ export const StudentsPage: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-4 text-xs sm:grid-cols-4"><div><span className="block text-slate-400">Naissance</span><b className="text-slate-800">{new Date(selectedStudent.dateOfBirth).toLocaleDateString('fr-FR')}</b></div><div><span className="block text-slate-400">Lieu</span><b className="text-slate-800">{selectedStudent.placeOfBirth || 'Non renseigné'}</b></div><div><span className="block text-slate-400">Classe</span><b className="text-emerald-700">{selectedStudent.enrollments?.[0]?.classroom?.name || 'Non affecté'}</b></div><div><span className="block text-slate-400">Groupe sanguin</span><b className="text-slate-800">{selectedStudent.bloodGroup || 'Non renseigné'}</b></div></div>
                 {selectedStudent.parent && <div className="rounded-xl border border-slate-200 p-4"><h4 className="mb-2 text-xs font-bold uppercase text-slate-500">Parent / responsable légal</h4><div className="flex flex-col gap-2 text-xs sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold text-slate-800">{selectedStudent.parent.firstName} {selectedStudent.parent.lastName} · {selectedStudent.parent.relation || 'Parent'}</p><p className="text-slate-500">{selectedStudent.parent.profession || 'Profession non renseignée'}</p><p className="text-slate-500">{selectedStudent.parent.email || ''}</p></div><span className="inline-flex items-center gap-1 text-slate-600"><Phone className="h-3.5 w-3.5 text-emerald-600" />{selectedStudent.parent.phone}</span></div></div>}
               </>}
+              <section className="grid gap-4 rounded-xl border border-slate-200 p-4 sm:grid-cols-[minmax(0,1fr)_190px]">
+                <div className="flex min-w-0 items-center gap-4">
+                  {studentPhoto ? <img src={studentPhoto} alt={"Photo de " + selectedStudent.firstName + ' ' + selectedStudent.lastName} className="h-28 w-24 shrink-0 rounded-xl border border-slate-200 object-cover" /> : <div className="grid h-28 w-24 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-400"><Users className="h-9 w-9" /></div>}
+                  <div className="min-w-0">
+                    <h4 className="text-sm font-bold text-slate-800">Carte de l’élève</h4>
+                    <p className="mt-1 text-xs text-slate-500">{selectedStudent.firstName} {selectedStudent.lastName}</p>
+                    <p className="font-mono text-xs text-emerald-700">{selectedStudent.matricule}</p>
+                    <p className="mt-2 text-[11px] text-slate-500">{selectedStudent.enrollments?.[0]?.classroom?.name || 'Classe non affectée'}</p>
+                    {!studentPhoto && manager && <button type="button" onClick={() => setDetailsTab('documents')} className="mt-2 text-xs font-semibold text-emerald-700 hover:underline">Ajouter sa photo d’identité</button>}
+                  </div>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-lg bg-slate-50 p-3 text-center">
+                  {studentQrCode ? <img src={studentQrCode} alt={"QR code de " + selectedStudent.matricule} className="h-32 w-32 mix-blend-multiply" /> : <div className="grid h-32 w-32 place-items-center text-slate-300"><QrCode className="h-14 w-14" /></div>}
+                  <p className="mt-1 text-[10px] font-semibold text-slate-600">QR de présence</p>
+                  {studentQrCode && <a href={studentQrCode} download={"QR-" + selectedStudent.matricule + '.png'} className="mt-1 text-[11px] font-semibold text-emerald-700 hover:underline">Télécharger le QR</a>}
+                </div>
+              </section>
+
+              <section>
+                <h4 className="mb-2 text-xs font-bold uppercase text-slate-500">Bilan de présence — {attendanceSummary.total} jour(s)</h4>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <div className="rounded-lg bg-emerald-50 p-3 text-center"><span className="block text-[10px] font-bold uppercase text-emerald-700">Présences</span><b className="text-lg text-emerald-800">{attendanceSummary.present}</b></div>
+                  <div className="rounded-lg bg-rose-50 p-3 text-center"><span className="block text-[10px] font-bold uppercase text-rose-700">Absences</span><b className="text-lg text-rose-800">{attendanceSummary.absent}</b></div>
+                  <div className="rounded-lg bg-amber-50 p-3 text-center"><span className="block text-[10px] font-bold uppercase text-amber-700">Retards</span><b className="text-lg text-amber-800">{attendanceSummary.late}</b></div>
+                  <div className="rounded-lg bg-sky-50 p-3 text-center"><span className="block text-[10px] font-bold uppercase text-sky-700">Excusé</span><b className="text-lg text-sky-800">{attendanceSummary.excused}</b></div>
+                </div>
+              </section>
+
+              <section>
+                <h4 className="mb-2 text-xs font-bold uppercase text-slate-500">Notes & bulletins</h4>
+                {selectedStudent.reportCards?.length > 0 && <div className="mb-2 flex flex-wrap gap-2">{selectedStudent.reportCards.map((card: any) => <span key={card.id} className="rounded-lg bg-indigo-50 px-3 py-2 text-xs text-indigo-800">{card.term.replace('_', ' ')} · moyenne <b>{Number(card.overallAverage).toFixed(2)}/20</b>{card.rank ? ' · rang ' + card.rank : ''}</span>)}</div>}
+                {!selectedStudent.grades?.length ? <p className="text-xs text-slate-400">Aucune note enregistrée</p> : <div className="max-h-56 space-y-2 overflow-auto">{selectedStudent.grades.map((grade: any) => <div key={grade.id} className="flex flex-col gap-1 rounded-lg border border-slate-100 bg-slate-50 p-3 text-xs sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold text-slate-800">{grade.subject?.name || 'Matière'}</p><p className="text-[11px] text-slate-500">{grade.term.replace('_', ' ')} · {grade.examType} · {new Date(grade.date).toLocaleDateString('fr-FR')}</p></div><b className="text-emerald-700">{Number(grade.score).toFixed(2)} / {Number(grade.maxScore).toFixed(2)}</b></div>)}</div>}
+              </section>
+
+              <section>
+                <h4 className="mb-2 text-xs font-bold uppercase text-slate-500">Historique des présences & absences</h4>
+                {!selectedStudent.attendances?.length ? <p className="text-xs text-slate-400">Aucun pointage enregistré</p> : <div className="max-h-56 space-y-2 overflow-auto">{selectedStudent.attendances.map((attendance: any) => <div key={attendance.id} className="flex flex-col gap-1 rounded-lg border border-slate-100 p-3 text-xs sm:flex-row sm:items-center sm:justify-between"><div><b className="text-slate-800">{new Date(attendance.date).toLocaleDateString('fr-FR')}</b><span className="ml-2 text-slate-500">{attendance.classroom?.name || ''}</span>{attendance.reason && <p className="text-[11px] text-slate-500">{attendance.reason}{attendance.justified ? ' · justifiée' : ''}</p>}</div><span className="font-semibold text-slate-700">{attendance.status === 'PRESENT' ? 'Présent' : attendance.status === 'ABSENT' ? 'Absent' : attendance.status === 'LATE' ? 'En retard' : 'Excusé'}{attendance.checkInAt ? ' · arrivée à ' + new Date(attendance.checkInAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''}</span></div>)}</div>}
+              </section>
+
               {canSeeFinances && <section><h4 className="mb-2 text-xs font-bold uppercase text-slate-500">Historique financier & factures</h4><div className="space-y-2">{!selectedStudent.invoices?.length ? <p className="text-xs text-slate-400">Aucune facture enregistrée</p> : selectedStudent.invoices.map((invoice: any) => <div key={invoice.id} className="flex flex-col gap-2 rounded-lg border border-slate-100 bg-slate-50 p-3 text-xs sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold text-slate-800">{invoice.title}</p><p className="text-[11px] text-slate-400">{invoice.invoiceNumber} · Échéance : {new Date(invoice.dueDate).toLocaleDateString('fr-FR')}</p></div><div className="sm:text-right"><p className="font-bold text-slate-800">{invoice.amount.toLocaleString()} FCFA</p><span className="inline-block rounded bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-800">{invoice.status === 'PAID' ? 'Payée' : invoice.status === 'PARTIAL' ? `Reste : ${invoice.balance.toLocaleString()} F` : 'Impayée'}</span></div></div>)}</div></section>}
             </div>}
 

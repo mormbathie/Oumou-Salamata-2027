@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, UserCheck, CreditCard, FileSpreadsheet, CalendarCheck,
+  LayoutDashboard, Users, UserCheck, CreditCard, FileSpreadsheet, CalendarCheck, ScanLine,
   Settings, LogOut, Shield, School, UserCog, Menu, X,
 } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 
-const roleNames = ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT'];
+const roleNames = ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT', 'CONTROLEUR_PRESENCE'];
 
 export const Layout: React.FC = () => {
   const { user, logout, hasRole } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const visibleRole = user?.roles?.find((role) => roleNames.includes(role.toUpperCase())) || 'Utilisateur';
+  const activeRole = user?.roles?.find((role) => roleNames.includes(role.toUpperCase()))?.toUpperCase();
+  const visibleRole = activeRole === 'CONTROLEUR_PRESENCE'
+    ? 'Contrôle des présences'
+    : activeRole || 'Utilisateur';
   const navItems = [
     { to: '/', label: 'Tableau de bord', icon: LayoutDashboard, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/students', label: 'Inscriptions & Élèves', icon: Users, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT'] },
@@ -20,6 +23,7 @@ export const Layout: React.FC = () => {
     { to: '/finances', label: 'Factures & Paiements', icon: CreditCard, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/grades', label: 'Notes & Bulletins', icon: FileSpreadsheet, roles: ['ADMIN', 'DIRECTEUR', 'ENSEIGNANT'] },
     { to: '/attendance', label: 'Présences & Absences', icon: CalendarCheck, roles: ['ADMIN', 'DIRECTEUR', 'ENSEIGNANT'] },
+    { to: '/attendance/scan', label: 'Scanner les QR codes', icon: ScanLine, roles: ['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE'] },
     { to: '/classes', label: 'Classes & Matières', icon: Settings, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT'] },
     { to: '/users', label: 'Gestion des utilisateurs', icon: UserCog, roles: ['ADMIN'] },
   ].filter((item) => hasRole(item.roles));

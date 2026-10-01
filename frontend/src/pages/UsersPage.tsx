@@ -20,6 +20,7 @@ const roleOptions = [
   { value: 'COMPTABLE', label: 'Comptable' },
   { value: 'ENSEIGNANT', label: 'Enseignant' },
   { value: 'PARENT', label: 'Parent' },
+  { value: 'CONTROLEUR_PRESENCE', label: 'Contrôleur de présence' },
 ];
 
 function errorMessage(error: any) {

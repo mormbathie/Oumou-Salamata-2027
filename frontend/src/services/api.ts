@@ -39,6 +39,7 @@ export const studentsApi = {
   getAll: (params?: { classId?: string; search?: string; status?: string }) =>
     api.get('/students', { params }).then((r) => r.data),
   getOne: (id: string) => api.get(`/students/${id}`).then((r) => r.data),
+  getPhoto: (id: string) => api.get(`/students/${id}/photo`, { responseType: 'blob' }).then((r) => r.data),
   create: (data: any) => api.post('/students', data).then((r) => r.data),
   update: (id: string, data: any) => api.put(`/students/${id}`, data).then((r) => r.data),
   delete: (id: string) => api.delete(`/students/${id}`).then((r) => r.data),
@@ -112,6 +113,12 @@ export const attendanceApi = {
     api.get(`/attendance/sheet/${classroomId}`, { params: { date } }).then((r) => r.data),
   saveSheet: (data: any) => api.post('/attendance/sheet', data).then((r) => r.data),
   getStats: (params?: any) => api.get('/attendance/stats', { params }).then((r) => r.data),
+  getScanRoster: (classroomId: string, date?: string) =>
+    api.get(`/attendance/scan/roster/${classroomId}`, { params: { date } }).then((r) => r.data),
+  scanStudent: (data: { qrCode: string; classroomId: string }) =>
+    api.post('/attendance/scan', data).then((r) => r.data),
+  finalizeScan: (data: { classroomId: string; date?: string }) =>
+    api.post('/attendance/scan/finalize', data).then((r) => r.data),
 };
 
 export default api;

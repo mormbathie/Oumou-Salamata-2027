@@ -96,6 +96,7 @@ export class StudentsService {
           orderBy: { term: 'asc' },
         },
         attendances: {
+          include: { classroom: { select: { name: true } } },
           orderBy: { date: 'desc' },
           take: 30,
         },
@@ -118,7 +119,49 @@ export class StudentsService {
       if (student.parent) delete (student.parent as any).documents;
     }
 
-    return student;
+    const attendanceGroups = await this.prisma.attendance.groupBy({
+      by: ['status'],
+      where: { studentId: id },
+      _count: { _all: true },
+    });
+    const attendanceSummary = {
+      total: attendanceGroups.reduce((sum, group) => sum + group._count._all, 0),
+      present: attendanceGroups.find((group) => group.status === 'PRESENT')?._count._all || 0,
+      absent: attendanceGroups.find((group) => group.status === 'ABSENT')?._count._all || 0,
+      late: attendanceGroups.find((group) => group.status === 'LATE')?._count._all || 0,
+      excused: attendanceGroups.find((group) => group.status === 'EXCUSED')?._count._all || 0,
+    };
+    return { ...student, attendanceSummary };
+  }
+
+  async getPhoto(id: string, requester: any) {
+    const roles: string[] = requester?.roles || [];
+    const isManager = roles.includes('ADMIN') || roles.includes('DIRECTEUR');
+    const isTeacher = roles.includes('ENSEIGNANT') && !isManager;
+    const scannerOnly = roles.includes('CONTROLEUR_PRESENCE') &&
+      !roles.some((role) => ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT'].includes(role));
+
+    const student = await this.prisma.student.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        parent: { select: { email: true } },
+        enrollments: {
+          select: { classroom: { select: { teacher: { select: { email: true } } } } },
+        },
+      },
+    });
+    if (!student) throw new NotFoundException('Élève introuvable.');
+
+    if (!scannerOnly && !isManager && roles.includes('PARENT') && !isTeacher &&
+        String(student.parent?.email || '').toLowerCase() !== String(requester.email || '').toLowerCase()) {
+      throw new NotFoundException('Élève introuvable.');
+    }
+    if (!scannerOnly && isTeacher &&
+        !student.enrollments.some((item) => item.classroom.teacher?.email === requester.email)) {
+      throw new NotFoundException('Élève introuvable.');
+    }
+    return this.documents.studentPhoto(id);
   }
 
   async create(data: {

@@ -14,8 +14,18 @@ Système de gestion scolaire complet pour une école primaire, construit avec **
 | 🏫 **Classes** | Gestion des salles de CI à CM2, matières |
 | 💰 **Finances** | Factures, paiements, reçus imprimables |
 | 📝 **Notes** | Saisie des notes, génération des bulletins |
-| 📅 **Présences** | Appel quotidien, gestion absences/retards |
+| 📅 **Présences** | Appel quotidien, gestion absences/retards, scan QR avec heure d’arrivée |
 | 📊 **Tableau de bord** | KPIs en temps réel |
+
+---
+
+### Scanner QR et contrôle des présences
+
+Chaque dossier élève affiche sa photo, ses informations et un QR téléchargeable. Le QR contient un identifiant interne, sans données personnelles. Depuis **Scanner les QR codes**, le contrôleur choisit la classe, scanne les cartes avec la caméra ou saisit le matricule. Le premier scan inscrit l’élève présent et enregistre son heure d’arrivée; les scans suivants ne modifient pas cette heure.
+
+Les élèves non pointés apparaissent dans la liste de la classe. À la fin de l’appel, **Clôturer l’appel** enregistre leurs absences. Un scan tardif corrige l’absence en présence et conserve l’heure d’arrivée. La caméra du navigateur nécessite localhost ou une connexion HTTPS; la saisie du matricule reste disponible comme solution de secours.
+
+L’administrateur peut créer un compte avec le rôle **Contrôleur de présence** depuis la gestion des utilisateurs. Les nouveaux déploiements importent ce rôle depuis le realm Keycloak; sur un realm existant, sa création est automatique au premier ajout d’un utilisateur ayant ce rôle.
 
 ---
 
@@ -188,7 +198,10 @@ Tous les endpoints sont préfixés par `/api` :
 | `GET/POST` | `/api/finances/invoices` | Factures |
 | `GET/POST` | `/api/finances/payments` | Paiements |
 | `GET/POST` | `/api/grades` | Notes |
-| `GET/POST` | `/api/attendance` | Présences |
+| `GET/POST` | `/api/attendance` | Appel manuel, statistiques et historique |
+| `GET` | `/api/attendance/scan/roster/:classroomId` | Liste de pointage QR d’une classe |
+| `POST` | `/api/attendance/scan` | Présence et heure du premier scan |
+| `POST` | `/api/attendance/scan/finalize` | Clôture de l’appel et enregistrement des absences |
 
 📖 Documentation complète : **http://localhost:3001/api/docs**
 
@@ -203,6 +216,7 @@ Tous les endpoints sont préfixés par `/api` :
 | `COMPTABLE` | Finances, tableau de bord |
 | `ENSEIGNANT` | Notes, présences, classes |
 | `PARENT` | Consultation dossier enfant uniquement |
+| `CONTROLEUR_PRESENCE` | Scanner QR, pointer les arrivées et clôturer les absences |
 
 Les rôles sont vérifiés à partir du jeton Keycloak. Aucun mode de connexion sans jeton n'est activé.
 

@@ -9,6 +9,18 @@ export class ClassesService {
   async findAll(requester?: any) {
     const roles: string[] = requester?.roles || [];
     const managesAll = roles.includes('ADMIN') || roles.includes('DIRECTEUR');
+    if (roles.includes('CONTROLEUR_PRESENCE') && !managesAll && !roles.includes('ENSEIGNANT')) {
+      return this.prisma.classroom.findMany({
+        select: {
+          id: true,
+          name: true,
+          level: true,
+          academicYear: { select: { id: true, name: true } },
+          _count: { select: { enrollments: true } },
+        },
+        orderBy: { level: 'asc' },
+      });
+    }
     if (roles.includes('ENSEIGNANT') && !managesAll) {
       if (!requester.email) return [];
       return this.prisma.classroom.findMany({

@@ -29,6 +29,10 @@
       {
         "name": "PARENT",
         "description": "Parent d'élève"
+      },
+      {
+        "name": "CONTROLEUR_PRESENCE",
+        "description": "Contrôle des présences par scan des QR codes"
       }
     ]
   },

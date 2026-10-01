@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { Role as LocalRole } from '@prisma/client';
 
-const APP_ROLES = ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT'];
+const APP_ROLES = ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT', 'CONTROLEUR_PRESENCE'];
 
 @Injectable()
 export class UsersService {
@@ -167,7 +167,7 @@ export class UsersService {
         method: 'PUT',
         body: JSON.stringify({ type: 'password', value: input.password, temporary: false }),
       });
-      const role = await this.request(`/roles/${encodeURIComponent(roleName)}`);
+      const role = await this.ensureRealmRole(roleName);
       await this.request(`/users/${encodeURIComponent(user.id)}/role-mappings/realm`, {
         method: 'POST',
         body: JSON.stringify([role]),
@@ -183,6 +183,30 @@ export class UsersService {
       }
       throw error;
     }
+  }
+
+  private async ensureRealmRole(roleName: string) {
+    const path = `/roles/${encodeURIComponent(roleName)}`;
+    try {
+      return await this.request(path);
+    } catch (error) {
+      if (!(error instanceof NotFoundException)) throw error;
+    }
+
+    try {
+      await this.request('/roles', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: roleName,
+          description: roleName === 'CONTROLEUR_PRESENCE'
+            ? 'Contrôle des présences par scan des QR codes'
+            : roleName,
+        }),
+      });
+    } catch (error) {
+      if (!(error instanceof ConflictException)) throw error;
+    }
+    return this.request(path);
   }
 
   async setEnabled(id: string, enabled: boolean, actorId: string) {
@@ -214,7 +238,7 @@ export class UsersService {
 
   async syncLocalUser(user: { id: string; username: string; email: string; firstName: string; lastName: string; roles: string[] }) {
     if (!user.id || !user.email || !user.username) return;
-    const roleName = ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT']
+    const roleName = ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT', 'CONTROLEUR_PRESENCE']
       .find((candidate) => user.roles.includes(candidate)) || 'ENSEIGNANT';
     const data = {
       keycloakId: user.id,

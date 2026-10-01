@@ -25,6 +25,30 @@ export class AttendanceController {
     return this.attendanceService.getClassAttendanceSheet(classroomId, date, user);
   }
 
+  @Get('scan/roster/:classroomId')
+  @Roles('ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE')
+  @ApiOperation({ summary: 'Liste de pointage du scanner QR pour une classe et une date' })
+  async getScanRoster(
+    @Param('classroomId') classroomId: string,
+    @Query('date') date?: string,
+  ) {
+    return this.attendanceService.getScanRoster(classroomId, date);
+  }
+
+  @Post('scan')
+  @Roles('ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE')
+  @ApiOperation({ summary: 'Scanner le QR d’un élève et enregistrer son heure d’arrivée' })
+  async scanStudent(@Body() body: { qrCode: string; classroomId: string }) {
+    return this.attendanceService.scanStudent(body?.qrCode, body?.classroomId);
+  }
+
+  @Post('scan/finalize')
+  @Roles('ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE')
+  @ApiOperation({ summary: 'Clôturer l’appel et enregistrer absents les élèves non pointés' })
+  async finalizeScan(@Body() body: { classroomId: string; date?: string }) {
+    return this.attendanceService.finalizeScan(body?.classroomId, body?.date);
+  }
+
   @Post('sheet')
   @Roles('ADMIN', 'DIRECTEUR', 'ENSEIGNANT')
   @ApiOperation({ summary: 'Enregistrer le pointage de présence de la classe' })
