@@ -78,6 +78,38 @@ Le compte applicatif est `admin`. Son mot de passe est distinct de celui de
 l'administration Keycloak, et les comptes de test du README local ne sont pas
 importés. Les données scolaires de l'environnement local ne sont pas transférées.
 
+## Images de production et mises à jour
+
+Les tests sur `main` précèdent la publication des seules images applicatives
+`mormbathie/oumou-salamat-backend` et `mormbathie/oumou-salamat-frontend` sur
+Docker Hub. Chaque image porte le SHA complet du commit source ; le frontend est
+construit avec `/api` et l'URL HTTPS publique de Keycloak. Le workflow requiert
+les secrets GitHub `DOCKERHUB_USERNAME` et `DOCKERHUB_TOKEN`. Les PR et `develop`
+ne publient aucune image. Le VPS ne construit plus les images applicatives.
+
+`deploy/production.env` contient la version désirée, sous la forme
+`APP_VERSION=<SHA complet>`. Ce fichier suivi par Git est mis à jour uniquement
+après vérification des deux images sur Docker Hub. Il ne contient aucun secret.
+Le script `deploy/deploy-vps.sh` est lancé sur le VPS après avoir récupéré le
+commit du manifeste. Il vérifie Compose et les fichiers privés existants, exige
+une nouvelle sauvegarde complète, tire les deux images, puis recrée uniquement
+le backend et le frontend. Il attend les six healthchecks, vérifie les IDs des
+images réellement exécutées, `/api/health` et la page HTML servie publiquement.
+Une erreur arrête la procédure ; elle ne supprime aucun volume.
+
+```bash
+cd /opt/oumou-salamat
+sudo bash deploy/deploy-vps.sh
+```
+
+Pour revenir à une image précédente, changer `APP_VERSION` dans
+`deploy/production.env` vers le SHA précédent dont les deux images existent
+encore sur Docker Hub, committer ce changement sur `main`, récupérer ce commit
+sur le VPS puis relancer `sudo bash deploy/deploy-vps.sh`. Cette opération
+effectue une nouvelle sauvegarde. Si le schéma de base a changé, examiner sa
+compatibilité avec l'ancien backend avant le retour arrière : le démarrage du
+backend applique `prisma db push`.
+
 ## Commandes d'exploitation
 
 Toutes les commandes suivantes s'exécutent dans le terminal SSH du VPS :
@@ -86,13 +118,6 @@ Toutes les commandes suivantes s'exécutent dans le terminal SSH du VPS :
 cd /opt/oumou-salamat
 sudo docker compose -f docker-compose.yml -f docker-compose.vps.yml ps
 sudo docker compose -f docker-compose.yml -f docker-compose.vps.yml logs --tail=50 backend keycloak caddy
-```
-
-Après mise à jour des sources sur le VPS :
-
-```bash
-cd /opt/oumou-salamat
-sudo docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d --build --wait --wait-timeout 300
 ```
 
 Les données des deux bases et les documents utilisent des volumes persistants.
@@ -119,14 +144,16 @@ est nécessaire pour conserver les données en cas de perte du VPS.
 
 ## Reproduire un premier déploiement
 
-Une fois les sources transférées dans un dossier neuf sur le serveur :
+Une fois les sources et le manifeste de version transférés dans un dossier neuf
+sur le serveur, et après disponibilité des deux images Docker Hub :
 
 ```bash
 cd /opt/oumou-salamat
 sudo python3 deploy/bootstrap.py --app-host oumou-salamat.57.131.160.254.sslip.io --auth-host auth.57.131.160.254.sslip.io
 sudo docker volume create oumou_salamat_vps_postgres_data
-sudo docker compose -f docker-compose.yml -f docker-compose.vps.yml config --quiet
-sudo docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d --build --wait --wait-timeout 300
+set -a; . deploy/production.env; set +a
+sudo --preserve-env=APP_VERSION docker compose -f docker-compose.yml -f docker-compose.vps.yml config --quiet
+sudo --preserve-env=APP_VERSION docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d --no-build --wait --wait-timeout 300
 ```
 
 Pour installer aussi les sauvegardes sur un nouveau serveur :
@@ -140,8 +167,8 @@ sudo systemctl enable --now oumou-salamat-backup.timer
 sudo systemctl start oumou-salamat-backup.service
 ```
 
-Cette première publication transfère un instantané des sources locales. Le
-workflow Vercel existant ne publie pas automatiquement ces services sur le VPS.
+La publication des images est automatique après les tests sur `main` ; la mise
+à jour sur le VPS reste une étape explicite et contrôlée.
 
 ## Ajouter un domaine ensuite
 

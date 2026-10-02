@@ -27,6 +27,8 @@ RUN npm run build
 # Stage 2 : Serveur Nginx
 # ─────────────────────────────────────────────
 FROM nginx:1.27-alpine AS production
+ARG APP_REVISION=unknown
+LABEL org.opencontainers.image.revision=$APP_REVISION
 
 # Copie des fichiers buildés
 COPY --from=builder /app/dist /usr/share/nginx/html

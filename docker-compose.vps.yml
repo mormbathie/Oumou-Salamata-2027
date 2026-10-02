@@ -1,4 +1,4 @@
-# Usage: docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d --build
+# Production images are built in CI and selected by deploy/production.env.
 # The protected .env and realm are generated on the VPS by deploy/bootstrap.py.
 volumes:
   caddy_data:
@@ -19,11 +19,13 @@ services:
     volumes:
       - ./deploy/realm.production.json:/opt/keycloak/data/import/realm-export.json:ro
 
+  backend:
+    build: !reset null
+    image: mormbathie/oumou-salamat-backend:${APP_VERSION:?Set APP_VERSION from deploy/production.env}
+
   frontend:
-    build:
-      args:
-        VITE_API_URL: /api
-        VITE_KEYCLOAK_URL: ${KEYCLOAK_PUBLIC_URL:?Set KEYCLOAK_PUBLIC_URL in the server .env}
+    build: !reset null
+    image: mormbathie/oumou-salamat-frontend:${APP_VERSION:?Set APP_VERSION from deploy/production.env}
 
   caddy:
     image: caddy:2-alpine

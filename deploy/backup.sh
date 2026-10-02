@@ -16,6 +16,18 @@ script_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 project_root=${1:-$script_root}
 cd -- "$project_root"
 project_root=$PWD
+version_file="$project_root/deploy/production.env"
+if [[ -f "$version_file" ]]; then
+  version_line=$(cat -- "$version_file")
+  if [[ ! "$version_line" =~ ^APP_VERSION=([0-9a-f]{40})$ ]]; then
+    printf 'Invalid production version file.\n' >&2
+    exit 1
+  fi
+  export APP_VERSION="${BASH_REMATCH[1]}"
+else
+  # Existing installations can still run backups before their first image promotion.
+  export APP_VERSION="${APP_VERSION:-0000000000000000000000000000000000000000}"
+fi
 backup_root=/var/backups/oumou-salamat/daily
 install -d -m 0700 -- "$backup_root"
 

@@ -26,6 +26,8 @@ RUN npm run build
 # Stage 2 : Production
 # ─────────────────────────────────────────────
 FROM node:22-alpine AS production
+ARG APP_REVISION=unknown
+LABEL org.opencontainers.image.revision=$APP_REVISION
 
 RUN apk add --no-cache openssl
 
