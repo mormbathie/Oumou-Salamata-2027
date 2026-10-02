@@ -97,6 +97,18 @@ le backend et le frontend. Il attend les six healthchecks, vérifie les IDs des
 images réellement exécutées, `/api/health` et la page HTML servie publiquement.
 Une erreur arrête la procédure ; elle ne supprime aucun volume.
 
+Le dossier actuel du VPS est un instantané sans répertoire `.git`. Depuis une
+copie locale propre du dépôt, transférer le commit choisi sans supprimer les
+fichiers privés du serveur :
+
+```bash
+git archive --format=tar HEAD | ssh ubuntu@57.131.160.254 'sudo tar -xf - -C /opt/oumou-salamat'
+```
+
+Le transfert ne supprime pas les fichiers du VPS absents de Git. Vérifier avant
+chaque transfert que `deploy/production.env` pointe vers deux images déjà
+publiées sur Docker Hub. Ensuite, dans une session SSH :
+
 ```bash
 cd /opt/oumou-salamat
 sudo bash deploy/deploy-vps.sh
@@ -104,8 +116,9 @@ sudo bash deploy/deploy-vps.sh
 
 Pour revenir à une image précédente, changer `APP_VERSION` dans
 `deploy/production.env` vers le SHA précédent dont les deux images existent
-encore sur Docker Hub, committer ce changement sur `main`, récupérer ce commit
-sur le VPS puis relancer `sudo bash deploy/deploy-vps.sh`. Cette opération
+encore sur Docker Hub, committer ce changement sur `main`, transférer le nouveau
+commit avec la commande `git archive` ci-dessus puis relancer
+`sudo bash deploy/deploy-vps.sh`. Cette opération
 effectue une nouvelle sauvegarde. Si le schéma de base a changé, examiner sa
 compatibilité avec l'ancien backend avant le retour arrière : le démarrage du
 backend applique `prisma db push`.
