@@ -116,8 +116,9 @@ Toutes les commandes suivantes s'exécutent dans le terminal SSH du VPS :
 
 ```bash
 cd /opt/oumou-salamat
-sudo docker compose -f docker-compose.yml -f docker-compose.vps.yml ps
-sudo docker compose -f docker-compose.yml -f docker-compose.vps.yml logs --tail=50 backend keycloak caddy
+set -a; . deploy/production.env; set +a
+sudo --preserve-env=APP_VERSION docker compose -f docker-compose.yml -f docker-compose.vps.yml ps
+sudo --preserve-env=APP_VERSION docker compose -f docker-compose.yml -f docker-compose.vps.yml logs --tail=50 backend keycloak caddy
 ```
 
 Les données des deux bases et les documents utilisent des volumes persistants.
