@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { clearSession, refreshAccessToken, tokenExpiresSoon } from './session';
 
 export interface AuthUser {
   userId?: string;
@@ -18,6 +19,8 @@ interface AuthContextType {
   logout: () => void;
   hasRole: (roles: string | string[]) => boolean;
 }
+
+const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -43,60 +46,70 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const clearExpiredSession = () => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('dev_role');
       setToken(null);
       setUser(null);
       setAuthenticated(false);
     };
+    const updateToken = (event: Event) => setToken((event as CustomEvent<string>).detail);
     window.addEventListener('auth:unauthorized', clearExpiredSession);
-    return () => window.removeEventListener('auth:unauthorized', clearExpiredSession);
+    window.addEventListener('auth:token', updateToken);
+    return () => {
+      window.removeEventListener('auth:unauthorized', clearExpiredSession);
+      window.removeEventListener('auth:token', updateToken);
+    };
   }, []);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    if (!savedToken) {
-      setInitializing(false);
-      setAuthenticated(false);
-      setUser(null);
-      return;
-    }
-
     let cancelled = false;
-    fetch('/api/auth/me', { headers: { Authorization: `Bearer ${savedToken}` } })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Session Keycloak expirée');
-        return response.json();
-      })
-      .then((profile) => {
+    const restore = async () => {
+      try {
+        let accessToken = localStorage.getItem('token');
+        if (!accessToken || tokenExpiresSoon(accessToken)) accessToken = await refreshAccessToken();
+        let response = await fetch(`${apiBaseUrl}/auth/me`, { headers: { Authorization: `Bearer ${accessToken}` }, credentials: 'include' });
+        if (response.status === 401) {
+          accessToken = await refreshAccessToken();
+          response = await fetch(`${apiBaseUrl}/auth/me`, { headers: { Authorization: `Bearer ${accessToken}` }, credentials: 'include' });
+        }
+        if (response.status === 401) { clearSession(); return; }
+        if (!response.ok) throw new Error('Profil momentanément indisponible.');
+        const profile = await response.json();
         if (cancelled) return;
         setUser(profile);
+        setToken(accessToken);
         setAuthenticated(true);
         localStorage.setItem('user', JSON.stringify(profile));
-      })
-      .catch(() => {
-        if (cancelled) return;
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('dev_role');
-        setToken(null);
-        setUser(null);
-        setAuthenticated(false);
-      })
-      .finally(() => {
+      } catch {
+        // A network interruption must not destroy a valid local session.
+        if (!cancelled && !localStorage.getItem('token')) {
+          setUser(null);
+          setAuthenticated(false);
+        }
+      } finally {
         if (!cancelled) setInitializing(false);
-      });
+      }
+    };
+    void restore();
 
     return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    const renew = () => {
+      const current = localStorage.getItem('token');
+      if (current && tokenExpiresSoon(current)) void refreshAccessToken().catch(() => {});
+    };
+    const interval = window.setInterval(renew, 60_000);
+    window.addEventListener('focus', renew);
+    return () => { window.clearInterval(interval); window.removeEventListener('focus', renew); };
   }, []);
 
   const directLogin = async (username: string, password: string) => {
     let response: Response;
     try {
-      response = await fetch('/api/auth/login', {
+      response = await fetch(`${apiBaseUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ username: username.trim(), password }),
       });
     } catch {
@@ -104,15 +117,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     if (!response.ok) {
-      const message = await responseMessage(response);
+      const body = await response.json().catch(() => ({}));
+      if (body.code === 'PASSWORD_UPDATE_REQUIRED') {
+        throw Object.assign(new Error(body.message), { code: body.code });
+      }
+      const message = Array.isArray(body.message) ? body.message.join(', ') : body.message;
       throw new Error(message || 'Identifiant ou mot de passe incorrect.');
     }
 
     const data = await response.json();
     if (!data.access_token) throw new Error('Keycloak n’a pas renvoyé de jeton de connexion.');
 
-    const profileResponse = await fetch('/api/auth/me', {
+    const profileResponse = await fetch(`${apiBaseUrl}/auth/me`, {
       headers: { Authorization: `Bearer ${data.access_token}` },
+      credentials: 'include',
     });
     if (!profileResponse.ok) {
       const message = await responseMessage(profileResponse);
@@ -129,12 +147,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('dev_role');
-    setToken(null);
-    setUser(null);
-    setAuthenticated(false);
+    void fetch(`${apiBaseUrl}/auth/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
+    clearSession();
   };
 
   const hasRole = (roles: string | string[]) => {

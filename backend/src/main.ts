@@ -11,7 +11,9 @@ async function bootstrap() {
 
   // CORS Configuration
   app.enableCors({
-    origin: [
+    origin: process.env.CORS_ORIGINS
+      ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
+      : [
       'http://localhost:5173',   // Dev Vite
       'http://localhost:3000',   // Dev alternatif
       'http://localhost:80',     // Docker frontend

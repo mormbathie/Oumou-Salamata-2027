@@ -1,7 +1,10 @@
 # ─────────────────────────────────────────────
 # Stage 1 : Build
 # ─────────────────────────────────────────────
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
+
+# Prisma utilise OpenSSL pour sélectionner et exécuter son moteur natif.
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
@@ -13,7 +16,7 @@ COPY prisma ./prisma/
 RUN npm ci
 
 # Génération du client Prisma
-RUN npx prisma generate
+RUN npx --no-install prisma generate
 
 # Copie du code source et compilation TypeScript
 COPY . .
@@ -22,13 +25,18 @@ RUN npm run build
 # ─────────────────────────────────────────────
 # Stage 2 : Production
 # ─────────────────────────────────────────────
-FROM node:20-alpine AS production
+FROM node:22-alpine AS production
+
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
 # Dépendances de production uniquement
 COPY package*.json ./
-RUN npm ci --omit=dev
+COPY prisma ./prisma/
+# Le CLI Prisma est conservé comme peer optionnel du client dans le lockfile.
+# Vérifier sa présence pour ne jamais télécharger une autre version au démarrage.
+RUN npm ci --omit=dev && npx --no-install prisma --version
 
 # Copie du client Prisma généré depuis le stage builder
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
@@ -36,7 +44,6 @@ COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/clie
 
 # Copie du code compilé et du schéma Prisma
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
 
 # Script de démarrage
 COPY entrypoint.sh ./

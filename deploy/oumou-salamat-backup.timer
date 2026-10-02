@@ -1,0 +1,10 @@
+[Unit]
+Description=Sauvegarde quotidienne Oumou Salamat
+
+[Timer]
+OnCalendar=*-*-* 02:00:00 Africa/Tunis
+RandomizedDelaySec=10m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 
@@ -151,9 +151,36 @@ export class ClassesService {
   }
 
   async update(id: string, data: any) {
+    const classroom = await this.prisma.classroom.findUnique({ where: { id }, select: { id: true } });
+    if (!classroom) throw new NotFoundException('Classe introuvable.');
+    const update: any = {};
+    if (data.name !== undefined) {
+      if (typeof data.name !== 'string' || !data.name.trim()) throw new BadRequestException('Le nom de la classe est obligatoire.');
+      update.name = data.name.trim();
+    }
+    if (data.level !== undefined) {
+      if (!['CI', 'CP', 'CE1', 'CE2', 'CM1', 'CM2'].includes(data.level)) throw new BadRequestException('Niveau invalide.');
+      update.level = data.level;
+    }
+    for (const field of ['capacity', 'monthlyTuition', 'registrationFee'] as const) {
+      if (data[field] !== undefined) {
+        const value = Number(data[field]);
+        if (!Number.isFinite(value) || value < (field === 'capacity' ? 1 : 0) || (field === 'capacity' && !Number.isInteger(value))) {
+          throw new BadRequestException(`${field} est invalide.`);
+        }
+        update[field] = value;
+      }
+    }
+    if (data.teacherId !== undefined) {
+      if (data.teacherId) {
+        const teacher = await this.prisma.user.findFirst({ where: { id: data.teacherId, role: 'ENSEIGNANT' }, select: { id: true } });
+        if (!teacher) throw new BadRequestException('Enseignant introuvable.');
+      }
+      update.teacherId = data.teacherId || null;
+    }
     return this.prisma.classroom.update({
       where: { id },
-      data,
+      data: update,
     });
   }
 
@@ -170,13 +197,37 @@ export class ClassesService {
   }
 
   async createSubject(data: { name: string; code: string; coefficient?: number; level?: string }) {
+    if (!data.name?.trim() || !data.code?.trim()) throw new BadRequestException('Le nom et le code de la matière sont obligatoires.');
+    const coefficient = Number(data.coefficient ?? 1);
+    if (!Number.isFinite(coefficient) || coefficient <= 0) throw new BadRequestException('Coefficient invalide.');
     return this.prisma.subject.create({
       data: {
-        name: data.name,
-        code: data.code.toUpperCase(),
-        coefficient: data.coefficient || 1.0,
+        name: data.name.trim(),
+        code: data.code.trim().toUpperCase(),
+        coefficient,
         level: data.level,
       },
     });
+  }
+
+  async updateSubject(id: string, data: { name?: string; code?: string; coefficient?: number; level?: string | null }) {
+    const subject = await this.prisma.subject.findUnique({ where: { id }, select: { id: true } });
+    if (!subject) throw new NotFoundException('Matière introuvable.');
+    const update: any = {};
+    if (data.name !== undefined) {
+      if (!data.name?.trim()) throw new BadRequestException('Le nom de la matière est obligatoire.');
+      update.name = data.name.trim();
+    }
+    if (data.code !== undefined) {
+      if (!data.code?.trim()) throw new BadRequestException('Le code de la matière est obligatoire.');
+      update.code = data.code.trim().toUpperCase();
+    }
+    if (data.coefficient !== undefined) {
+      const coefficient = Number(data.coefficient);
+      if (!Number.isFinite(coefficient) || coefficient <= 0) throw new BadRequestException('Coefficient invalide.');
+      update.coefficient = coefficient;
+    }
+    if (data.level !== undefined) update.level = data.level || null;
+    return this.prisma.subject.update({ where: { id }, data: update });
   }
 }

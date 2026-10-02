@@ -25,3 +25,14 @@ uploads/
 .DS_Store
 .idea/
 .vscode/
+
+# Vercel project links and pulled environment secrets
+.vercel/
+
+# VPS credentials and generated realm (contains the initial admin password).
+/deployment-access.txt
+/deploy/realm.production.json
+
+# Python bytecode generated during local deployment checks.
+__pycache__/
+*.py[cod]

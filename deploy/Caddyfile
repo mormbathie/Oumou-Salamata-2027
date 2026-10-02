@@ -1,0 +1,31 @@
+{
+    acme_ca https://acme-v02.api.letsencrypt.org/directory
+}
+
+{$APP_HOST} {
+    encode zstd gzip
+
+    request_body {
+        max_size 12MB
+    }
+
+    @api path /api /api/*
+    handle @api {
+        reverse_proxy backend:3001
+    }
+
+    handle {
+        reverse_proxy frontend:80
+    }
+}
+
+{$AUTH_HOST} {
+    # Administration is available only on the private Docker network.
+    @private path /admin /admin/* /realms/master /realms/master/* /health /health/* /metrics
+    respond @private 404
+    reverse_proxy keycloak:8080
+}
+
+http://57.131.160.254 {
+    redir https://{$APP_HOST}{uri} permanent
+}

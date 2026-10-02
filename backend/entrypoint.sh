@@ -14,7 +14,7 @@ done
 echo "✅ Base de données accessible."
 
 echo "🔄 Application du schéma Prisma..."
-npx prisma db push --skip-generate
+npx --no-install prisma db push --skip-generate
 
 echo "ℹ️  Les données de démonstration ne sont jamais rejouées au démarrage."
 echo "   Pour une base locale vide, lancez le seed manuellement depuis backend/."

@@ -21,9 +21,9 @@ Système de gestion scolaire complet pour une école primaire, construit avec **
 
 ### Scanner QR et contrôle des présences
 
-Chaque dossier élève affiche sa photo, ses informations et un QR téléchargeable. Le QR contient un identifiant interne, sans données personnelles. Depuis **Scanner les QR codes**, le contrôleur choisit la classe, scanne les cartes avec la caméra ou saisit le matricule. Le premier scan inscrit l’élève présent et enregistre son heure d’arrivée; les scans suivants ne modifient pas cette heure.
+Chaque dossier élève affiche sa photo, ses informations et un QR téléchargeable. Le QR contient un identifiant interne, sans données personnelles. Depuis **Scanner les QR codes**, la caméra démarre directement : le contrôleur scanne la carte ou saisit le matricule, et la classe est retrouvée automatiquement. Le premier scan inscrit l’élève présent et enregistre son heure d’arrivée ; les scans suivants ne modifient pas cette heure.
 
-Les élèves non pointés apparaissent dans la liste de la classe. À la fin de l’appel, **Clôturer l’appel** enregistre leurs absences. Un scan tardif corrige l’absence en présence et conserve l’heure d’arrivée. La caméra du navigateur nécessite localhost ou une connexion HTTPS; la saisie du matricule reste disponible comme solution de secours.
+Les élèves non pointés apparaissent dans la liste de la classe. À la fin de l’appel, **Clôturer toutes les classes** enregistre leurs absences pour l’année en cours ; il est aussi possible de clôturer une seule classe. Un scan tardif corrige l’absence en présence et conserve l’heure d’arrivée. La caméra du navigateur nécessite localhost ou une connexion HTTPS ; la saisie du matricule reste disponible comme solution de secours.
 
 L’administrateur peut créer un compte avec le rôle **Contrôleur de présence** depuis la gestion des utilisateurs. Les nouveaux déploiements importent ce rôle depuis le realm Keycloak; sur un realm existant, sa création est automatique au premier ajout d’un utilisateur ayant ce rôle.
 
@@ -190,6 +190,7 @@ Tous les endpoints sont préfixés par `/api` :
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
 | `POST` | `/api/auth/login` | Connexion via Keycloak |
+| `POST` | `/api/auth/refresh` | Renouvellement de session par cookie sécurisé |
 | `GET` | `/api/auth/me` | Profil utilisateur connecté |
 | `GET` | `/api/dashboard/summary` | Statistiques globales |
 | `GET/POST` | `/api/students` | Liste / création d'élèves |
@@ -202,6 +203,7 @@ Tous les endpoints sont préfixés par `/api` :
 | `GET` | `/api/attendance/scan/roster/:classroomId` | Liste de pointage QR d’une classe |
 | `POST` | `/api/attendance/scan` | Présence et heure du premier scan |
 | `POST` | `/api/attendance/scan/finalize` | Clôture de l’appel et enregistrement des absences |
+| `POST` | `/api/attendance/scan/finalize-all` | Clôture des classes de l’année en cours |
 
 📖 Documentation complète : **http://localhost:3001/api/docs**
 
@@ -261,3 +263,18 @@ npx prisma db seed
 ```
 
 Le seed de démonstration réinitialise ses tables. Ne l'exécutez pas sur une base contenant des données.
+
+## Déploiement et CI/CD
+
+Le [premier déploiement sur le VPS OVH](docs/deploiement-vps.md) héberge le
+frontend et les services persistants avec HTTPS sur une adresse temporaire,
+sans achat de nom de domaine.
+
+Le workflow GitHub Actions vérifie le frontend et le backend, puis publie le
+frontend sur Vercel après réussite des contrôles : `main` pour la production,
+`develop` pour une preview. L'activation nécessite les secrets Vercel et la
+variable GitHub `VERCEL_DEPLOY_ENABLED=true`.
+
+Suivre le [guide de déploiement](docs/deploiement-vercel.md) pour configurer
+Vercel, les variables publiques, CORS et l'hébergement persistant de l'API,
+de PostgreSQL, de Keycloak et des documents.

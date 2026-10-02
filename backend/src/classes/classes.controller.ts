@@ -41,6 +41,13 @@ export class ClassesController {
     return this.classesService.createSubject(body);
   }
 
+  @Put('subjects/:id')
+  @Roles('ADMIN', 'DIRECTEUR')
+  @ApiOperation({ summary: 'Modifier une matière' })
+  async updateSubject(@Param('id') id: string, @Body() body: { name?: string; code?: string; coefficient?: number; level?: string | null }) {
+    return this.classesService.updateSubject(id, body);
+  }
+
   @Get('teachers')
   @Roles('ADMIN', 'DIRECTEUR')
   async getTeachers() {

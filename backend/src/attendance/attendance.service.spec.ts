@@ -28,7 +28,7 @@ describe('AttendanceService QR check-in', () => {
         createMany: jest.fn().mockResolvedValue({ count: 0 }),
         updateMany: jest.fn().mockResolvedValue({ count: 1 }),
       },
-      classroom: { findUnique: jest.fn() },
+      classroom: { findUnique: jest.fn(), findMany: jest.fn() },
       enrollment: { findMany: jest.fn() },
     };
     return { prisma, service: new AttendanceService(prisma) };
@@ -37,7 +37,7 @@ describe('AttendanceService QR check-in', () => {
   it('records the first scan as present with an arrival timestamp', async () => {
     const { prisma, service } = setup();
 
-    const result = await service.scanStudent('OSATT1:' + studentId, classroomId);
+    const result = await service.scanStudent('OSATT1:' + studentId);
 
     expect(prisma.attendance.create).toHaveBeenCalledWith(expect.objectContaining({
       data: expect.objectContaining({
@@ -48,6 +48,7 @@ describe('AttendanceService QR check-in', () => {
       }),
     }));
     expect(result.duplicate).toBe(false);
+    expect(result.classroom).toEqual(enrollment.classroom);
     expect(result.attendance.checkInAt).toBeInstanceOf(Date);
   });
 
@@ -60,7 +61,7 @@ describe('AttendanceService QR check-in', () => {
       checkInAt: firstArrival,
     });
 
-    const result = await service.scanStudent(studentId, classroomId);
+    const result = await service.scanStudent(studentId);
 
     expect(result.duplicate).toBe(true);
     expect(result.attendance.checkInAt).toEqual(firstArrival);
@@ -95,5 +96,16 @@ describe('AttendanceService QR check-in', () => {
 
     await expect(service.scanStudent('not-a-student', classroomId)).rejects.toThrow('QR code invalide');
     expect(prisma.student.findUnique).not.toHaveBeenCalled();
+  });
+
+  it('closes every current-year class without requiring a class selection', async () => {
+    const { prisma, service } = setup();
+    prisma.classroom.findMany.mockResolvedValue([{ id: 'class-a' }, { id: 'class-b' }]);
+    const finalize = jest.spyOn(service, 'finalizeScan').mockResolvedValueOnce({ absencesRecorded: 2 } as any).mockResolvedValueOnce({ absencesRecorded: 1 } as any);
+
+    await expect(service.finalizeAllScans('2026-10-02')).resolves.toEqual({ classroomsFinalized: 2, absencesRecorded: 3 });
+    expect(prisma.classroom.findMany).toHaveBeenCalledWith({ where: { academicYear: { isCurrent: true } }, select: { id: true } });
+    expect(finalize).toHaveBeenNthCalledWith(1, 'class-a', '2026-10-02');
+    expect(finalize).toHaveBeenNthCalledWith(2, 'class-b', '2026-10-02');
   });
 });

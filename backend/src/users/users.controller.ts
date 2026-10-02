@@ -24,6 +24,22 @@ export class UsersController {
     return this.usersService.create(body);
   }
 
+  @Post('me/password')
+  @Roles()
+  changeOwnPassword(@CurrentUser() actor: any, @Body() body: { currentPassword: string; newPassword: string }) {
+    return this.usersService.changeOwnPassword(actor, body?.currentPassword, body?.newPassword);
+  }
+
+  @Post(':id/reset-password')
+  resetPassword(@Param('id') id: string, @Body() body: { password: string }) {
+    return this.usersService.resetPassword(id, body?.password);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: { email: string; firstName: string; lastName: string; role: string }, @CurrentUser() actor: any) {
+    return this.usersService.update(id, body, actor.userId);
+  }
+
   @Patch(':id/status')
   setEnabled(
     @Param('id') id: string,

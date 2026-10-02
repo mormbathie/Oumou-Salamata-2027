@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { refreshAccessToken } from '../auth/session';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -14,9 +16,16 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401 && window.location.pathname !== '/login') {
-      window.dispatchEvent(new Event('auth:unauthorized'));
+  async (error) => {
+    const original = error.config as typeof error.config & { _retried?: boolean };
+    if (error.response?.status === 401 && original && !original._retried) {
+      original._retried = true;
+      try {
+        original.headers.Authorization = `Bearer ${await refreshAccessToken()}`;
+        return api(original);
+      } catch {
+        // Keep the original API error; refreshAccessToken clears only an expired session.
+      }
     }
     return Promise.reject(error);
   },
@@ -29,6 +38,9 @@ export const usersApi = {
   setEnabled: (id: string, enabled: boolean) =>
     api.patch(`/users/${id}/status`, { enabled }).then((r) => r.data),
   delete: (id: string) => api.delete(`/users/${id}`).then((r) => r.data),
+  resetPassword: (id: string, password: string) => api.post(`/users/${id}/reset-password`, { password }).then((r) => r.data),
+  changeOwnPassword: (currentPassword: string, newPassword: string) => api.post('/users/me/password', { currentPassword, newPassword }).then((r) => r.data),
+  update: (id: string, data: { email: string; firstName: string; lastName: string; role: string }) => api.patch(`/users/${id}`, data).then((r) => r.data),
 };
 
 export const dashboardApi = {
@@ -82,6 +94,7 @@ export const classesApi = {
   getSubjects: () => api.get('/classes/subjects').then((r) => r.data),
   getTeachers: () => api.get('/classes/teachers').then((r) => r.data),
   createSubject: (data: any) => api.post('/classes/subjects', data).then((r) => r.data),
+  updateSubject: (id: string, data: any) => api.put(`/classes/subjects/${id}`, data).then((r) => r.data),
 };
 
 export const financesApi = {
@@ -115,10 +128,11 @@ export const attendanceApi = {
   getStats: (params?: any) => api.get('/attendance/stats', { params }).then((r) => r.data),
   getScanRoster: (classroomId: string, date?: string) =>
     api.get(`/attendance/scan/roster/${classroomId}`, { params: { date } }).then((r) => r.data),
-  scanStudent: (data: { qrCode: string; classroomId: string }) =>
+  scanStudent: (data: { qrCode: string }) =>
     api.post('/attendance/scan', data).then((r) => r.data),
   finalizeScan: (data: { classroomId: string; date?: string }) =>
     api.post('/attendance/scan/finalize', data).then((r) => r.data),
+  finalizeAllScans: (date?: string) => api.post('/attendance/scan/finalize-all', { date }).then((r) => r.data),
 };
 
 export default api;

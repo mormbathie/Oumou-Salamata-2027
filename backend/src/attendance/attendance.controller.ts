@@ -38,8 +38,8 @@ export class AttendanceController {
   @Post('scan')
   @Roles('ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE')
   @ApiOperation({ summary: 'Scanner le QR d’un élève et enregistrer son heure d’arrivée' })
-  async scanStudent(@Body() body: { qrCode: string; classroomId: string }) {
-    return this.attendanceService.scanStudent(body?.qrCode, body?.classroomId);
+  async scanStudent(@Body() body: { qrCode: string }) {
+    return this.attendanceService.scanStudent(body?.qrCode);
   }
 
   @Post('scan/finalize')
@@ -47,6 +47,13 @@ export class AttendanceController {
   @ApiOperation({ summary: 'Clôturer l’appel et enregistrer absents les élèves non pointés' })
   async finalizeScan(@Body() body: { classroomId: string; date?: string }) {
     return this.attendanceService.finalizeScan(body?.classroomId, body?.date);
+  }
+
+  @Post('scan/finalize-all')
+  @Roles('ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE')
+  @ApiOperation({ summary: 'Clôturer les appels de toutes les classes de l’année en cours' })
+  async finalizeAllScans(@Body() body: { date?: string }) {
+    return this.attendanceService.finalizeAllScans(body?.date);
   }
 
   @Post('sheet')

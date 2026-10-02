@@ -10,6 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { Role as LocalRole } from '@prisma/client';
+import { AuthService } from '../auth/auth.service';
 
 const APP_ROLES = ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT', 'CONTROLEUR_PRESENCE'];
 
@@ -18,7 +19,7 @@ export class UsersService {
   private cachedToken: string | null = null;
   private tokenExpiresAt = 0;
 
-  constructor(private readonly config: ConfigService, private readonly prisma: PrismaService) {}
+  constructor(private readonly config: ConfigService, private readonly prisma: PrismaService, private readonly auth: AuthService) {}
 
   private get keycloakUrl() {
     return (
@@ -154,7 +155,7 @@ export class UsersService {
         lastName: input.lastName.trim(),
         enabled: true,
         emailVerified: true,
-        requiredActions: [],
+        requiredActions: ['UPDATE_PASSWORD'],
       }),
     });
     const user = created || (await this.request(`/users?username=${encodeURIComponent(username)}&exact=true`))?.[0];
@@ -165,7 +166,7 @@ export class UsersService {
     try {
       await this.request(`/users/${encodeURIComponent(user.id)}/reset-password`, {
         method: 'PUT',
-        body: JSON.stringify({ type: 'password', value: input.password, temporary: false }),
+        body: JSON.stringify({ type: 'password', value: input.password, temporary: true }),
       });
       const role = await this.ensureRealmRole(roleName);
       await this.request(`/users/${encodeURIComponent(user.id)}/role-mappings/realm`, {
@@ -183,6 +184,69 @@ export class UsersService {
       }
       throw error;
     }
+  }
+
+  async resetPassword(id: string, password: string) {
+    if (!password || password.length < 8) {
+      throw new BadRequestException('Le mot de passe doit contenir au moins 8 caractères.');
+    }
+    await this.request(`/users/${encodeURIComponent(id)}/reset-password`, {
+      method: 'PUT',
+      body: JSON.stringify({ type: 'password', value: password, temporary: true }),
+    });
+    return { updated: true, temporary: true };
+  }
+
+  async changeOwnPassword(actor: { userId: string; username: string }, currentPassword: string, newPassword: string) {
+    if (!actor?.userId || !actor?.username) throw new BadRequestException('Utilisateur invalide.');
+    if (!currentPassword || !newPassword || newPassword.length < 8) {
+      throw new BadRequestException('Le mot de passe actuel et un nouveau mot de passe de 8 caractères minimum sont obligatoires.');
+    }
+    if (currentPassword === newPassword) throw new BadRequestException('Choisissez un nouveau mot de passe différent.');
+    await this.auth.directLogin(actor.username, currentPassword);
+    await this.request(`/users/${encodeURIComponent(actor.userId)}/reset-password`, {
+      method: 'PUT',
+      body: JSON.stringify({ type: 'password', value: newPassword, temporary: false }),
+    });
+    return { updated: true };
+  }
+
+  async update(id: string, input: { email: string; firstName: string; lastName: string; role: string }, actorId: string) {
+    const email = input.email?.trim().toLowerCase();
+    const firstName = input.firstName?.trim();
+    const lastName = input.lastName?.trim();
+    const roleName = input.role?.toUpperCase();
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || !firstName || !lastName) {
+      throw new BadRequestException('Adresse e-mail, prénom et nom valides sont obligatoires.');
+    }
+    if (!APP_ROLES.includes(roleName)) throw new BadRequestException('Rôle invalide.');
+    if (id === actorId && roleName !== 'ADMIN') {
+      throw new ConflictException('Vous ne pouvez pas retirer votre propre rôle administrateur.');
+    }
+
+    const user = await this.request(`/users/${encodeURIComponent(id)}`);
+    await this.request(`/users/${encodeURIComponent(id)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ id, email, firstName, lastName }),
+    });
+    const mappings: any[] = await this.request(`/users/${encodeURIComponent(id)}/role-mappings/realm`);
+    const oldAppRoles = mappings.filter((role) => APP_ROLES.includes(role.name) && role.name !== roleName);
+    if (oldAppRoles.length) {
+      await this.request(`/users/${encodeURIComponent(id)}/role-mappings/realm`, {
+        method: 'DELETE',
+        body: JSON.stringify(oldAppRoles),
+      });
+    }
+    if (!mappings.some((role) => role.name === roleName)) {
+      const role = await this.ensureRealmRole(roleName);
+      await this.request(`/users/${encodeURIComponent(id)}/role-mappings/realm`, {
+        method: 'POST',
+        body: JSON.stringify([role]),
+      });
+    }
+    const safeUser = this.publicUser({ ...user, email, firstName, lastName }, [{ name: roleName }]);
+    await this.syncLocalUser(safeUser);
+    return safeUser;
   }
 
   private async ensureRealmRole(roleName: string) {

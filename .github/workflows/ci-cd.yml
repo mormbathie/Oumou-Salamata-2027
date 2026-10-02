@@ -1,0 +1,98 @@
+name: CI and Vercel deployment
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  backend:
+    name: Backend build and tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ci?schema=public
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npx --no-install prisma generate
+      - run: npx --no-install prisma validate
+      - run: npm run build
+      - run: npm test -- --runInBand
+
+  deploy:
+    name: Deploy frontend to Vercel
+    needs: [frontend, backend]
+    if: >-
+      vars.VERCEL_DEPLOY_ENABLED == 'true' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify deployment credentials
+        run: |
+          for key in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!key}" ]; then
+              echo "::error::Missing GitHub secret: $key"
+              exit 1
+            fi
+          done
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Build and deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          target=preview
+          flags=()
+          if [ "$GITHUB_REF" = 'refs/heads/main' ]; then
+            target=production
+            flags=(--prod)
+          fi
+          vercel pull --yes --environment="$target" --token="$VERCEL_TOKEN"
+          vercel build "${flags[@]}" --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt "${flags[@]}" --token="$VERCEL_TOKEN" > /tmp/vercel-url.txt
+          printf 'Deployment: %s\n' "$(cat /tmp/vercel-url.txt)" >> "$GITHUB_STEP_SUMMARY"

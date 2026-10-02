@@ -10,6 +10,21 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [passwordUpdateRequired, setPasswordUpdateRequired] = useState(false);
+
+  const openFirstLogin = () => {
+    const url = (import.meta.env.VITE_KEYCLOAK_URL || 'http://localhost:8080').replace(/\/$/, '');
+    const realm = import.meta.env.VITE_KEYCLOAK_REALM || 'oumou-salamat';
+    const clientId = import.meta.env.VITE_KEYCLOAK_CLIENT_ID || 'oumou-salamat-app';
+    const target = new URL(`${url}/realms/${encodeURIComponent(realm)}/protocol/openid-connect/auth`);
+    target.searchParams.set('client_id', clientId);
+    target.searchParams.set('redirect_uri', `${window.location.origin}/login?password-updated=1`);
+    target.searchParams.set('response_type', 'code');
+    target.searchParams.set('scope', 'openid');
+    target.searchParams.set('kc_action', 'UPDATE_PASSWORD');
+    if (username.trim()) target.searchParams.set('login_hint', username.trim());
+    window.location.assign(target.toString());
+  };
 
   useEffect(() => {
     if (authenticated && !initializing) navigate(user?.roles?.includes('PARENT') ? '/students' : '/', { replace: true });
@@ -23,6 +38,7 @@ export const LoginPage: React.FC = () => {
       await directLogin(username, password);
       navigate(user?.roles?.includes('PARENT') ? '/students' : '/', { replace: true });
     } catch (err: any) {
+      setPasswordUpdateRequired(err.code === 'PASSWORD_UPDATE_REQUIRED');
       setError(err.message || 'La connexion a échoué.');
     } finally {
       setLoading(false);
@@ -50,6 +66,7 @@ export const LoginPage: React.FC = () => {
               {error}
             </div>
           )}
+          {new URLSearchParams(window.location.search).has('password-updated') && <p role="status" className="mb-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">Si le changement de mot de passe a réussi dans Keycloak, connectez-vous avec le nouveau mot de passe.</p>}
           <form onSubmit={handleSubmit} className="space-y-4 text-sm">
             <div>
               <label htmlFor="username" className="font-semibold text-slate-700 block mb-1">Identifiant</label>
@@ -69,6 +86,9 @@ export const LoginPage: React.FC = () => {
               <span>{loading ? 'Connexion en cours…' : 'Se connecter'}</span>
             </button>
           </form>
+          <button type="button" onClick={openFirstLogin} className={'mt-4 w-full rounded-xl border px-4 py-3 text-sm font-semibold ' + (passwordUpdateRequired ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-slate-200 text-slate-600 hover:bg-slate-50')}>
+            Première connexion : changer mon mot de passe provisoire
+          </button>
         </div>
       </div>
     </div>

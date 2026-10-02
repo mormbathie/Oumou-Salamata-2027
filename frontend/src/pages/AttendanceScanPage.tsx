@@ -38,7 +38,7 @@ export const AttendanceScanPage: React.FC = () => {
   const [roster, setRoster] = useState<any>(null);
   const [loadingClasses, setLoadingClasses] = useState(true);
   const [loadingRoster, setLoadingRoster] = useState(false);
-  const [cameraActive, setCameraActive] = useState(false);
+  const [cameraActive, setCameraActive] = useState(true);
   const [cameraError, setCameraError] = useState('');
   const [scanError, setScanError] = useState('');
   const [manualCode, setManualCode] = useState('');
@@ -50,6 +50,7 @@ export const AttendanceScanPage: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlsRef = useRef<any>(null);
   const inFlightRef = useRef(false);
+  const lastCodeRef = useRef({ code: '', at: 0 });
   const today = schoolDate();
 
   useEffect(() => {
@@ -58,7 +59,6 @@ export const AttendanceScanPage: React.FC = () => {
       .then((items) => {
         if (!active) return;
         setClasses(items);
-        if (items.length) setClassroomId(items[0].id);
       })
       .catch((error) => setScanError(messageFrom(error)))
       .finally(() => { if (active) setLoadingClasses(false); });
@@ -83,32 +83,34 @@ export const AttendanceScanPage: React.FC = () => {
   useEffect(() => { void loadRoster(); }, [loadRoster]);
 
   const processScan = useCallback(async (code: string) => {
-    if (!classroomId || !code.trim() || inFlightRef.current) return;
+    if (!code.trim() || inFlightRef.current) return;
+    if (lastCodeRef.current.code === code.trim() && Date.now() - lastCodeRef.current.at < 5000) return;
+    lastCodeRef.current = { code: code.trim(), at: Date.now() };
     inFlightRef.current = true;
     setScanBusy(true);
     setScanError('');
-    setCameraActive(false);
-    controlsRef.current?.stop();
+    setLastScan(null);
     setFinalizeMessage('');
     try {
-      const result = await attendanceApi.scanStudent({ qrCode: code.trim(), classroomId });
+      const result = await attendanceApi.scanStudent({ qrCode: code.trim() });
       setLastScan(result);
       setManualCode('');
-      await loadRoster();
+      setClassroomId(result.classroom.id);
+      setRoster(await attendanceApi.getScanRoster(result.classroom.id, today));
     } catch (error) {
       setScanError(messageFrom(error));
     } finally {
       setScanBusy(false);
       inFlightRef.current = false;
     }
-  }, [classroomId, loadRoster]);
+  }, [today]);
 
   useEffect(() => {
-    if (!cameraActive || !classroomId || !videoRef.current) return;
+    if (!cameraActive || !videoRef.current) return;
     let disposed = false;
     const reader = new BrowserMultiFormatReader();
     setCameraError('');
-    reader.decodeFromVideoDevice(undefined, videoRef.current, (result) => {
+    reader.decodeFromConstraints({ audio: false, video: { facingMode: { ideal: 'environment' } } }, videoRef.current, (result) => {
       if (result && !inFlightRef.current) void processScan(result.getText());
     }).then((controls) => {
       if (disposed) controls.stop();
@@ -125,7 +127,7 @@ export const AttendanceScanPage: React.FC = () => {
       controlsRef.current?.stop();
       controlsRef.current = null;
     };
-  }, [cameraActive, classroomId, processScan]);
+  }, [cameraActive, processScan]);
 
   useEffect(() => {
     let active = true;
@@ -161,6 +163,22 @@ export const AttendanceScanPage: React.FC = () => {
     }
   };
 
+  const finalizeAllAttendance = async () => {
+    if (!window.confirm('Clôturer l’appel de toutes les classes de l’année en cours ? Les élèves sans pointage seront marqués absents.')) return;
+    setFinalizing(true);
+    setScanError('');
+    setFinalizeMessage('');
+    try {
+      const result = await attendanceApi.finalizeAllScans(today);
+      setFinalizeMessage(`${result.classroomsFinalized} classe(s) clôturée(s), ${result.absencesRecorded} absence(s) enregistrée(s).`);
+      await loadRoster();
+    } catch (error) {
+      setScanError(messageFrom(error));
+    } finally {
+      setFinalizing(false);
+    }
+  };
+
   const summary = roster?.summary || { total: 0, present: 0, absent: 0, late: 0, excused: 0 };
 
   return (
@@ -172,7 +190,7 @@ export const AttendanceScanPage: React.FC = () => {
             <span className="text-xs font-bold uppercase tracking-wider">Contrôle de présence</span>
           </div>
           <h2 className="mt-1 text-2xl font-bold text-slate-900">Scanner les élèves</h2>
-          <p className="mt-1 text-sm text-slate-500">Chaque scan enregistre l’arrivée une seule fois. Clôturez l’appel pour enregistrer les absences.</p>
+          <p className="mt-1 text-sm text-slate-500">Présentez la carte devant la caméra : l’élève et sa classe sont reconnus automatiquement.</p>
         </div>
         <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
           <Clock3 className="h-4 w-4 text-emerald-600" />
@@ -185,49 +203,54 @@ export const AttendanceScanPage: React.FC = () => {
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
         <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-            <label className="min-w-0 flex-1 text-xs font-semibold text-slate-600">
-              Classe
-              <select value={classroomId} onChange={(event) => { setClassroomId(event.target.value); setLastScan(null); setScanError(''); }} disabled={loadingClasses || !classes.length} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm">
-                {classes.map((classroom) => <option key={classroom.id} value={classroom.id}>{classroom.name} · {classroom._count?.enrollments ?? 0} élèves</option>)}
-              </select>
-            </label>
-            <button type="button" onClick={() => { setCameraError(''); setCameraActive((active) => !active); }} disabled={!classroomId || scanBusy} className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs text-slate-600">{cameraActive ? 'Caméra active · scan prêt' : 'Caméra arrêtée'}</p>
+            <button type="button" onClick={() => { setCameraError(''); setCameraActive((active) => !active); }} disabled={scanBusy} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50 sm:w-auto">
               {cameraActive ? <CameraOff className="h-4 w-4" /> : <Camera className="h-4 w-4" />}
               {cameraActive ? 'Arrêter la caméra' : 'Démarrer le scan'}
             </button>
           </div>
 
           <div className="relative overflow-hidden rounded-xl bg-slate-950">
-            <video ref={videoRef} className={'aspect-video w-full object-cover ' + (cameraActive ? '' : 'hidden')} muted playsInline />
-            {!cameraActive && <div className="grid aspect-video place-items-center p-6 text-center text-slate-400"><div><Camera className="mx-auto mb-3 h-10 w-10 text-slate-600" /><p className="text-sm">La caméra est arrêtée</p><p className="mt-1 text-xs">Démarrez le scan ou saisissez un matricule.</p></div></div>}
+            <video ref={videoRef} className={'h-[min(42dvh,360px)] min-h-52 w-full object-contain ' + (cameraActive ? 'block' : 'hidden')} muted playsInline />
+            {!cameraActive && <div className="grid min-h-52 place-items-center p-6 text-center text-slate-400"><div><Camera className="mx-auto mb-3 h-10 w-10 text-slate-600" /><p className="text-sm">La caméra est arrêtée</p><p className="mt-1 text-xs">Démarrez le scan ou saisissez un matricule.</p></div></div>}
+            {lastScan && <div role="status" className="absolute inset-x-2 bottom-2 flex items-center gap-2 rounded-lg bg-emerald-950/95 p-2 text-white shadow-lg">
+              {lastScanPhoto ? <img src={lastScanPhoto} alt="" className="h-11 w-11 shrink-0 rounded-md bg-white object-contain" /> : <UserRound className="h-8 w-8 shrink-0 text-emerald-200" />}
+              <div className="min-w-0"><p className="truncate text-sm font-bold">{lastScan.student.firstName} {lastScan.student.lastName}</p><p className="text-xs text-emerald-100">{lastScan.classroom.name} · {lastScan.duplicate ? 'Déjà pointé' : 'Présence enregistrée'}</p></div>
+            </div>}
             {scanBusy && <div className="absolute inset-0 grid place-items-center bg-slate-950/70 text-sm font-semibold text-white">Enregistrement du pointage…</div>}
           </div>
           {cameraError && <p role="alert" className="text-xs text-amber-700">{cameraError}</p>}
 
           <form onSubmit={(event) => { event.preventDefault(); void processScan(manualCode); }} className="flex flex-col gap-2 sm:flex-row">
             <input value={manualCode} onChange={(event) => setManualCode(event.target.value)} placeholder="QR code ou matricule (ex. OS-2026-0001)" className="min-w-0 flex-1 rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-            <button type="submit" disabled={!manualCode.trim() || scanBusy || !classroomId} className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-100 disabled:opacity-50"><Check className="h-4 w-4" />Pointer</button>
+            <button type="submit" disabled={!manualCode.trim() || scanBusy} className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100 disabled:opacity-50"><Check className="h-4 w-4" />Pointer</button>
           </form>
 
           {lastScan && (
             <div role="status" className="flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center">
-              {lastScanPhoto ? <img src={lastScanPhoto} alt="" className="h-16 w-16 rounded-lg object-cover" /> : <div className="grid h-16 w-16 place-items-center rounded-lg bg-emerald-100 text-emerald-700"><UserRound className="h-7 w-7" /></div>}
+              {lastScanPhoto ? <img src={lastScanPhoto} alt="" className="h-16 w-16 rounded-lg object-contain" /> : <div className="grid h-16 w-16 place-items-center rounded-lg bg-emerald-100 text-emerald-700"><UserRound className="h-7 w-7" /></div>}
               <div className="min-w-0 flex-1">
                 <p className="font-semibold text-emerald-950">{lastScan.student.firstName} {lastScan.student.lastName}</p>
                 <p className="font-mono text-xs text-emerald-800">{lastScan.student.matricule} · {lastScan.classroom.name}</p>
                 <p className="mt-1 text-xs text-emerald-800">{lastScan.duplicate ? 'Déjà pointé' : 'Présence enregistrée'} à {formatTime(lastScan.attendance.checkInAt)}</p>
               </div>
-              <button type="button" onClick={() => { setLastScan(null); setCameraActive(true); }} className="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-800">Scanner le suivant</button>
+              <span className="text-xs font-semibold text-emerald-800">Prêt pour le prochain scan</span>
             </div>
           )}
         </section>
 
         <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center justify-between gap-3">
-            <div><h3 className="font-bold text-slate-900">Pointage du jour</h3><p className="text-xs text-slate-500">{roster?.classroom?.name || 'Choisissez une classe'}</p></div>
+            <div><h3 className="font-bold text-slate-900">Pointage du jour</h3><p className="text-xs text-slate-500">{roster?.classroom?.name || 'Scannez une carte pour afficher sa classe'}</p></div>
             <button type="button" onClick={() => void loadRoster()} disabled={loadingRoster || !classroomId} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50">{loadingRoster ? 'Actualisation…' : 'Actualiser'}</button>
           </div>
+          <label className="block text-xs font-semibold text-slate-600">Consulter ou clôturer une classe
+            <select value={classroomId} onChange={(event) => setClassroomId(event.target.value)} disabled={loadingClasses || !classes.length} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm">
+              <option value="">Sélectionner pour consulter</option>
+              {classes.map((classroom) => <option key={classroom.id} value={classroom.id}>{classroom.name} · {classroom._count?.enrollments ?? 0} élèves</option>)}
+            </select>
+          </label>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <div className="rounded-lg bg-slate-50 p-3"><span className="flex items-center gap-1 text-[10px] font-bold uppercase text-slate-500"><Users className="h-3 w-3" />Total</span><b className="mt-1 block text-xl">{summary.total}</b></div>
@@ -237,11 +260,11 @@ export const AttendanceScanPage: React.FC = () => {
           </div>
 
           <div className="max-h-[460px] overflow-auto rounded-lg border border-slate-100">
-            <table className="w-full min-w-[480px] text-left text-xs">
+            <table className="w-full text-left text-xs">
               <thead className="sticky top-0 bg-slate-50 text-[10px] uppercase text-slate-500"><tr><th className="px-3 py-2">Élève</th><th className="px-3 py-2">État</th><th className="px-3 py-2">Arrivée</th></tr></thead>
               <tbody className="divide-y divide-slate-100">
                 {(roster?.students || []).map((student: any) => <tr key={student.id} className="hover:bg-slate-50">
-                  <td className="px-3 py-2.5"><span className="font-semibold text-slate-800">{student.firstName} {student.lastName}</span><span className="ml-2 font-mono text-[10px] text-slate-400">{student.matricule}</span></td>
+                  <td className="px-3 py-2.5"><span className="font-semibold text-slate-800">{student.firstName} {student.lastName}</span><span className="hidden ml-2 font-mono text-[10px] text-slate-400 sm:inline">{student.matricule}</span></td>
                   <td className="px-3 py-2.5"><span className={'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-semibold ' + (student.status === 'PRESENT' ? 'bg-emerald-100 text-emerald-800' : student.status === 'LATE' ? 'bg-amber-100 text-amber-800' : student.status === 'EXCUSED' ? 'bg-sky-100 text-sky-800' : 'bg-rose-100 text-rose-800')}>{student.status === 'PRESENT' ? <CheckCircle2 className="h-3 w-3" /> : student.status === 'ABSENT' ? <XCircle className="h-3 w-3" /> : null}{statusLabels[student.status] || student.status}{student.status === 'ABSENT' && !student.scanned ? ' · non scanné' : ''}</span></td>
                   <td className="px-3 py-2.5 text-slate-600">{formatTime(student.checkInAt)}</td>
                 </tr>)}
@@ -250,9 +273,12 @@ export const AttendanceScanPage: React.FC = () => {
               </tbody>
             </table>
           </div>
-          <div className="flex flex-col gap-2 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 border-t border-slate-100 pt-3">
             <p className="flex items-start gap-1.5 text-[11px] text-slate-500"><ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />Les élèves non scannés deviennent absents à la clôture de l’appel.</p>
-            <button type="button" onClick={() => void finalizeAttendance()} disabled={finalizing || loadingRoster || !classroomId} className="rounded-lg bg-rose-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-rose-700 disabled:opacity-50">{finalizing ? 'Clôture…' : 'Clôturer l’appel'}</button>
+            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+              {classroomId && <button type="button" onClick={() => void finalizeAttendance()} disabled={finalizing || loadingRoster} className="rounded-lg border border-rose-200 px-4 py-2.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50">Clôturer cette classe</button>}
+              <button type="button" onClick={() => void finalizeAllAttendance()} disabled={finalizing || !classes.length} className="rounded-lg bg-rose-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-rose-700 disabled:opacity-50">{finalizing ? 'Clôture…' : 'Clôturer toutes les classes'}</button>
+            </div>
           </div>
         </section>
       </div>

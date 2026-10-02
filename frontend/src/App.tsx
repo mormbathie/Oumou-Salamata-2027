@@ -11,6 +11,7 @@ import { AttendancePage } from './pages/AttendancePage';
 import { ClassesPage } from './pages/ClassesPage';
 import { LoginPage } from './pages/LoginPage';
 import { UsersPage } from './pages/UsersPage';
+import { PasswordPage } from './pages/PasswordPage';
 
 const AttendanceScanPage = lazy(() => import('./pages/AttendanceScanPage').then((module) => ({ default: module.AttendanceScanPage })));
 
@@ -47,6 +48,7 @@ export const App: React.FC = () => (
           <Route path="attendance/scan" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE']}><Suspense fallback={<div className="p-8 text-sm text-slate-500">Chargement du scanner…</div>}><AttendanceScanPage /></Suspense></RequireRoles>} />
           <Route path="classes" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT']}><ClassesPage /></RequireRoles>} />
           <Route path="users" element={<RequireRoles roles={['ADMIN']}><UsersPage /></RequireRoles>} />
+          <Route path="password" element={<PasswordPage />} />
         </Route>
         <Route path="*" element={<HomeByRole />} />
       </Routes>

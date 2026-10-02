@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserCheck, CreditCard, FileSpreadsheet, CalendarCheck, ScanLine,
-  Settings, LogOut, Shield, School, UserCog, Menu, X,
+  Settings, LogOut, Shield, School, UserCog, Menu, X, KeyRound,
 } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 
@@ -26,6 +26,7 @@ export const Layout: React.FC = () => {
     { to: '/attendance/scan', label: 'Scanner les QR codes', icon: ScanLine, roles: ['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE'] },
     { to: '/classes', label: 'Classes & Matières', icon: Settings, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT'] },
     { to: '/users', label: 'Gestion des utilisateurs', icon: UserCog, roles: ['ADMIN'] },
+    { to: '/password', label: 'Mon mot de passe', icon: KeyRound, roles: roleNames },
   ].filter((item) => hasRole(item.roles));
 
   const handleLogout = () => {

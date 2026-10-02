@@ -1,0 +1,56 @@
+# Usage: docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d --build
+# The protected .env and realm are generated on the VPS by deploy/bootstrap.py.
+volumes:
+  caddy_data:
+  caddy_config:
+
+services:
+  keycloak:
+    group_add:
+      - "1000"
+    environment:
+      KC_HOSTNAME: !reset null
+      KC_HOSTNAME_PORT: !reset null
+      KC_HOSTNAME_URL: ${KEYCLOAK_PUBLIC_URL:?Set KEYCLOAK_PUBLIC_URL in the server .env}
+      KC_HOSTNAME_STRICT: "true"
+      KC_HOSTNAME_STRICT_HTTPS: "true"
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
+      KC_PROXY_HEADERS: xforwarded
+    volumes:
+      - ./deploy/realm.production.json:/opt/keycloak/data/import/realm-export.json:ro
+
+  frontend:
+    build:
+      args:
+        VITE_API_URL: /api
+        VITE_KEYCLOAK_URL: ${KEYCLOAK_PUBLIC_URL:?Set KEYCLOAK_PUBLIC_URL in the server .env}
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: oumou_salamat_caddy
+    restart: unless-stopped
+    networks:
+      - oumou_net
+    environment:
+      APP_HOST: ${APP_HOST:?Set APP_HOST in the server .env}
+      AUTH_HOST: ${AUTH_HOST:?Set AUTH_HOST in the server .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:2019/config/ > /dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s

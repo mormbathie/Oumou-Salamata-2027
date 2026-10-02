@@ -122,6 +122,7 @@ services:
       DOCUMENTS_STORAGE_PATH: /app/uploads
       NODE_ENV: production
       PORT: 3001
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost,http://127.0.0.1:5173}
 
       # Base de données — utilise le nom du service Docker (postgres:5432)
       DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgrespassword}@postgres:5432/${POSTGRES_DB:-oumou_salamat_db}?schema=public}

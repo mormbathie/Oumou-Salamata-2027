@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { KeyRound, Plus, RefreshCw, ShieldCheck, ShieldOff, Trash2, UserCog, X } from 'lucide-react';
+import { KeyRound, Pencil, Plus, RefreshCw, ShieldCheck, ShieldOff, Trash2, UserCog, X } from 'lucide-react';
 import { usersApi } from '../services/api';
 import { useAuth } from '../auth/AuthContext';
 
@@ -37,6 +37,10 @@ export const UsersPage: React.FC = () => {
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [resetUser, setResetUser] = useState<ManagedUser | null>(null);
+  const [resetPassword, setResetPassword] = useState('');
+  const [editingUser, setEditingUser] = useState<ManagedUser | null>(null);
+  const [editForm, setEditForm] = useState({ email: '', firstName: '', lastName: '', role: 'ENSEIGNANT' });
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
@@ -61,7 +65,7 @@ export const UsersPage: React.FC = () => {
       await usersApi.create(form);
       setModalOpen(false);
       setForm(emptyForm);
-      setSuccess('Le compte Keycloak a été créé.');
+      setSuccess('Le compte a été créé. Son mot de passe provisoire devra être changé à la première connexion.');
       await loadUsers();
     } catch (err) {
       setError(errorMessage(err));
@@ -93,6 +97,41 @@ export const UsersPage: React.FC = () => {
     } catch (err) {
       setError(errorMessage(err));
     }
+  };
+
+  const submitReset = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!resetUser) return;
+    setSaving(true);
+    setError('');
+    try {
+      await usersApi.resetPassword(resetUser.id, resetPassword);
+      setSuccess(`Mot de passe provisoire défini pour ${resetUser.username}. Il devra être changé à la prochaine connexion.`);
+      setResetUser(null);
+      setResetPassword('');
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally { setSaving(false); }
+  };
+
+  const openEdit = (managedUser: ManagedUser) => {
+    setEditingUser(managedUser);
+    setEditForm({ email: managedUser.email, firstName: managedUser.firstName, lastName: managedUser.lastName, role: managedUser.roles.find((role) => roleOptions.some((option) => option.value === role)) || 'ENSEIGNANT' });
+    setError('');
+  };
+
+  const submitEdit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!editingUser) return;
+    setSaving(true);
+    setError('');
+    try {
+      await usersApi.update(editingUser.id, editForm);
+      setEditingUser(null);
+      setSuccess(`Le compte ${editingUser.username} a été modifié.`);
+      await loadUsers();
+    } catch (err) { setError(errorMessage(err)); }
+    finally { setSaving(false); }
   };
 
   return (
@@ -150,6 +189,8 @@ export const UsersPage: React.FC = () => {
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex justify-end gap-2">
+                        <button onClick={() => openEdit(managedUser)} title="Modifier le compte" aria-label={`Modifier ${managedUser.username}`} className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100"><Pencil className="h-4 w-4" /></button>
+                        <button onClick={() => { setResetUser(managedUser); setResetPassword(''); }} title="Définir un mot de passe provisoire" aria-label={`Réinitialiser le mot de passe de ${managedUser.username}`} className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100"><KeyRound className="h-4 w-4" /></button>
                         <button onClick={() => void toggleUser(managedUser)} disabled={isCurrentUser && managedUser.enabled}
                           title={managedUser.enabled ? 'Désactiver' : 'Activer'}
                           className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 disabled:opacity-40" aria-label={`${managedUser.enabled ? 'Désactiver' : 'Activer'} ${managedUser.username}`}>
@@ -168,6 +209,28 @@ export const UsersPage: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {resetUser && <div className="fixed inset-0 z-50 grid place-items-center bg-slate-900/50 p-4">
+        <form onSubmit={submitReset} className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
+          <h3 className="font-bold text-slate-900">Mot de passe de {resetUser.username}</h3>
+          <p className="mt-1 text-sm text-slate-500">Un nouveau mot de passe provisoire sera exigé à la prochaine connexion.</p>
+          <label className="mt-4 block text-sm font-medium text-slate-700">Mot de passe provisoire<input required minLength={8} type="password" autoComplete="new-password" value={resetPassword} onChange={(event) => setResetPassword(event.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 p-3" /></label>
+          {error && <p role="alert" className="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
+          <div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setResetUser(null)} className="rounded-lg border px-4 py-2 text-sm">Annuler</button><button disabled={saving} className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Enregistrement…' : 'Enregistrer'}</button></div>
+        </form>
+      </div>}
+
+      {editingUser && <div className="fixed inset-0 z-50 grid place-items-center bg-slate-900/50 p-4">
+        <form onSubmit={submitEdit} className="w-full max-w-md space-y-4 rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
+          <div className="flex items-center justify-between"><h3 className="font-bold text-slate-900">Modifier {editingUser.username}</h3><button type="button" onClick={() => setEditingUser(null)} aria-label="Fermer" className="rounded-lg p-2 hover:bg-slate-100"><X className="h-4 w-4" /></button></div>
+          <label className="block text-sm font-medium text-slate-700">Prénom<input required value={editForm.firstName} onChange={(event) => setEditForm({ ...editForm, firstName: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-200 p-3" /></label>
+          <label className="block text-sm font-medium text-slate-700">Nom<input required value={editForm.lastName} onChange={(event) => setEditForm({ ...editForm, lastName: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-200 p-3" /></label>
+          <label className="block text-sm font-medium text-slate-700">E-mail<input required type="email" value={editForm.email} onChange={(event) => setEditForm({ ...editForm, email: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-200 p-3" /></label>
+          <label className="block text-sm font-medium text-slate-700">Rôle<select value={editForm.role} onChange={(event) => setEditForm({ ...editForm, role: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-3">{roleOptions.filter((option) => editingUser.id !== currentUser?.userId || option.value === 'ADMIN').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+          {error && <p role="alert" className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
+          <div className="flex justify-end gap-2"><button type="button" onClick={() => setEditingUser(null)} className="rounded-lg border px-4 py-2 text-sm">Annuler</button><button disabled={saving} className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Enregistrement…' : 'Enregistrer'}</button></div>
+        </form>
+      </div>}
 
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">

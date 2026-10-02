@@ -175,9 +175,9 @@ export class AttendanceService {
     };
   }
 
-  async scanStudent(qrCode: string, classroomId: string) {
-    if (!classroomId || typeof qrCode !== 'string' || !qrCode.trim()) {
-      throw new BadRequestException('Le QR code et la classe à pointer sont obligatoires.');
+  async scanStudent(qrCode: string, classroomId?: string) {
+    if (typeof qrCode !== 'string' || !qrCode.trim()) {
+      throw new BadRequestException('Le QR code est obligatoire.');
     }
 
     let code = qrCode.trim();
@@ -218,7 +218,7 @@ export class AttendanceService {
 
     const enrollment = student.enrollments.find((item) => item.academicYear.isCurrent) || student.enrollments[0];
     if (!enrollment) throw new BadRequestException('Cet élève n’est inscrit dans aucune classe active.');
-    if (classroomId !== enrollment.classroomId) {
+    if (classroomId && classroomId !== enrollment.classroomId) {
       throw new BadRequestException('Cet élève n’est pas inscrit dans la classe sélectionnée.');
     }
 
@@ -316,6 +316,19 @@ export class AttendanceService {
       ...await this.getScanRoster(classroomId, dateStr),
       absencesRecorded: result.count,
     };
+  }
+
+  async finalizeAllScans(dateStr?: string) {
+    const classes = await this.prisma.classroom.findMany({
+      where: { academicYear: { isCurrent: true } },
+      select: { id: true },
+    });
+    let absencesRecorded = 0;
+    for (const classroom of classes) {
+      const result = await this.finalizeScan(classroom.id, dateStr);
+      absencesRecorded += result.absencesRecorded;
+    }
+    return { classroomsFinalized: classes.length, absencesRecorded };
   }
 
   async getAttendanceStats(params: { classroomId?: string; startDate?: string; endDate?: string }, requester?: any) {

@@ -8,6 +8,10 @@
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": true,
   "editUsernameAllowed": false,
+  "ssoSessionIdleTimeout": 93600,
+  "ssoSessionMaxLifespan": 604800,
+  "clientSessionIdleTimeout": 93600,
+  "clientSessionMaxLifespan": 604800,
   "roles": {
     "realm": [
       {
