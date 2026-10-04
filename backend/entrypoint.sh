@@ -20,4 +20,4 @@ echo "ℹ️  Les données de démonstration ne sont jamais rejouées au démarr
 echo "   Pour une base locale vide, lancez le seed manuellement depuis backend/."
 
 echo "🚀 Démarrage NestJS sur le port ${PORT:-3001}..."
-exec node dist/src/main.js
+exec node --require ./dist/src/telemetry.js dist/src/main.js

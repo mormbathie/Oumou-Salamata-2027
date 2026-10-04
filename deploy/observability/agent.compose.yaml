@@ -1,0 +1,25 @@
+name: assakina-telemetry-agent
+services:
+  agent:
+    image: otel/opentelemetry-collector-contrib:0.147.0
+    container_name: assakina-telemetry-agent
+    user: "0:0"
+    restart: unless-stopped
+    mem_limit: 200m
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./agent.yaml:/etc/otelcol/config.yaml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /:/hostfs:ro
+      - agent_positions:/var/lib/otelcol
+    networks:
+      - monitoring
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+networks:
+  monitoring:
+    external: true
+    name: assakina-monitoring-network
+volumes:
+  agent_positions:

@@ -23,6 +23,11 @@ services:
     build: !reset null
     image: mormbathie/oumou-salamat-backend:${APP_VERSION:?Set APP_VERSION from deploy/production.env}
 
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://assakina-telemetry:4318
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0.25"
+
   frontend:
     build: !reset null
     image: mormbathie/oumou-salamat-frontend:${APP_VERSION:?Set APP_VERSION from deploy/production.env}

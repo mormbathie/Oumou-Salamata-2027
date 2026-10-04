@@ -102,3 +102,8 @@ if ! docker exec "$frontend_id" cat /usr/share/nginx/html/index.html | cmp -s - 
 fi
 "${compose[@]}" logs --tail=50 backend frontend keycloak caddy
 printf 'Production application is healthy at Git SHA %s.\n' "$APP_VERSION"
+
+# Observability is optional and independent from school data. Refresh replaced log paths.
+if [[ -f /opt/assakina-observability/agent.compose.yaml ]]; then
+  python3 "$PWD/deploy/observability/refresh-agent.py"
+fi

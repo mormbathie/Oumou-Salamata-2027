@@ -1,0 +1,124 @@
+apiVersion: v1alpha1
+kind: Installation
+metadata:
+  name: assakina-monitoring
+spec:
+  deployment:
+    flavor: compose
+    mode: docker
+  patches:
+  - target: deployment/compose.yaml
+    operations:
+    - op: add
+      path: /services/assakina-monitoring-metastore-postgres-0/mem_limit
+      value: 256m
+    - op: add
+      path: /services/assakina-monitoring-metastore-postgres-0/logging
+      value:
+        driver: json-file
+        options:
+          max-size: 10m
+          max-file: '3'
+    - op: add
+      path: /services/assakina-monitoring-signoz-0/mem_limit
+      value: 600m
+    - op: add
+      path: /services/assakina-monitoring-signoz-0/logging
+      value:
+        driver: json-file
+        options:
+          max-size: 10m
+          max-file: '3'
+    - op: replace
+      path: /services/assakina-monitoring-signoz-0/ports
+      value:
+      - 127.0.0.1:3301:8080
+    - op: replace
+      path: /services/assakina-monitoring-signoz-0/image
+      value: signoz/signoz:v0.144.0
+    - op: add
+      path: /services/assakina-monitoring-telemetrykeeper-clickhousekeeper-0/mem_limit
+      value: 256m
+    - op: add
+      path: /services/assakina-monitoring-telemetrykeeper-clickhousekeeper-0/logging
+      value:
+        driver: json-file
+        options:
+          max-size: 10m
+          max-file: '3'
+    - op: add
+      path: /services/assakina-monitoring-telemetrystore-clickhouse-0-0/mem_limit
+      value: 2500m
+    - op: add
+      path: /services/assakina-monitoring-telemetrystore-clickhouse-0-0/logging
+      value:
+        driver: json-file
+        options:
+          max-size: 10m
+          max-file: '3'
+    - op: add
+      path: /services/assakina-monitoring-telemetrystore-clickhouse-user-scripts/mem_limit
+      value: 256m
+    - op: add
+      path: /services/assakina-monitoring-telemetrystore-clickhouse-user-scripts/logging
+      value:
+        driver: json-file
+        options:
+          max-size: 10m
+          max-file: '3'
+    - op: add
+      path: /services/assakina-monitoring-telemetrystore-migrator/mem_limit
+      value: 400m
+    - op: add
+      path: /services/assakina-monitoring-telemetrystore-migrator/logging
+      value:
+        driver: json-file
+        options:
+          max-size: 10m
+          max-file: '3'
+    - op: replace
+      path: /services/assakina-monitoring-telemetrystore-migrator/image
+      value: signoz/signoz-otel-collector:v0.144.12
+    - op: add
+      path: /services/ingester/mem_limit
+      value: 400m
+    - op: add
+      path: /services/ingester/logging
+      value:
+        driver: json-file
+        options:
+          max-size: 10m
+          max-file: '3'
+    - op: replace
+      path: /services/ingester/ports
+      value: []
+    - op: replace
+      path: /services/ingester/image
+      value: signoz/signoz-otel-collector:v0.144.12
+    - op: add
+      path: /networks/school
+      value:
+        external: true
+        name: oumou-salamat_oumou_net
+    - op: add
+      path: /services/ingester/networks/school
+      value:
+        aliases:
+        - assakina-telemetry
+  - target: deployment/telemetrystore/clickhouse/config-0-0.yaml
+    operations:
+    - op: add
+      path: /max_server_memory_usage
+      value: 1900000000
+    - op: add
+      path: /profiles/default/max_memory_usage
+      value: 500000000
+    - op: add
+      path: /profiles/default/max_threads
+      value: 2
+    - op: replace
+      path: /logger/level
+      value: warning
+    - op: replace
+      path: /logger/size
+      value: 10M
