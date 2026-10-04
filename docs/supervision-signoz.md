@@ -12,10 +12,25 @@ Depuis ton ordinateur, laisser ce terminal ouvert :
 ssh -N -L 3301:127.0.0.1:3301 ubuntu@57.131.160.254
 ```
 
-Ouvrir ensuite http://localhost:3301. Lors du premier accès, créer le compte
-administrateur SigNoz avec une adresse e-mail et un mot de passe propres à cet outil.
+Ouvrir ensuite http://localhost:3301. Le compte administrateur est `contact@assakina-school.com`. Afficher son mot de
+passe initial dans ton terminal SSH :
+
+```bash
+sudo cat /opt/assakina-observability/signoz-access.json
+```
+
+Changer ensuite ce mot de passe dans SigNoz.
 Le compte de l’application scolaire ne sert pas à ouvrir cette interface.
 L’interface et les ports de collecte ne sont pas publiés sur Internet.
+
+## Tableau de bord du serveur
+
+Le tableau **As Sakina — Serveur VPS** est déjà installé dans **Dashboards**.
+Pour le réimporter sur une autre installation, choisir **New dashboard → Import JSON**
+et importer le fichier
+`deploy/observability/dashboard-vps.json` depuis le dépôt. Il fournit les graphiques
+CPU, mémoire, disque et réseau ; sélectionner l’hôte `as-sakina-vps`.
+Ce modèle vient du dépôt officiel SigNoz/dashboards (hostmetrics, schéma v6).
 
 ## Assurer le support
 
@@ -37,10 +52,23 @@ Le VPS dispose de 8 Go de mémoire et de 4 processeurs. La pile est plafonnée p
 conteneur : ClickHouse 2 500 Mo, interface 600 Mo, collecte 400 Mo, agent 200 Mo,
 PostgreSQL et Keeper 256 Mo chacun. Les migrations ont un plafond de 400 Mo.
 Les fichiers journaux Docker de la supervision tournent sur trois fichiers de 10 Mo.
-Dans **Settings → General**, régler la conservation selon les besoins ; les
-valeurs initiales de SigNoz sont 7 jours pour les traces/journaux et 30 jours pour
-les métriques. Sur ce VPS partagé, privilégier 7 jours pour les trois types.
+La conservation est réglée sur **7 jours** pour les trois types de données.
+Elle peut être modifiée dans **Settings → General**.
 Surveiller le disque avant d’augmenter ces durées.
+
+## Installer ou remettre en route
+
+Depuis les sources présentes sur le VPS :
+
+```bash
+cd /opt/oumou-salamat
+sudo bash deploy/observability/install.sh
+```
+
+Ce script conserve les volumes de supervision et les données scolaires.
+Sur une installation neuve, le premier compte administrateur se crée dans
+l’interface privée, puis importer le tableau de bord JSON et régler la conservation.
+Le serveur actuel possède déjà son compte, son tableau de bord et ses réglages.
 
 ## Exploitation
 

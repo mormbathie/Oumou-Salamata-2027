@@ -466,6 +466,11 @@ spec:
       value:
         aliases:
         - assakina-telemetry
+    - op: replace
+      path: /services/ingester/command
+      value:
+      - -c
+      - /signoz-otel-collector migrate sync check && /signoz-otel-collector --config=/etc/otel-collector-config.yaml
     target: deployment/compose.yaml
   - operations:
     - op: add
