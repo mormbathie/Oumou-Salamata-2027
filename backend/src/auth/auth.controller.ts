@@ -42,6 +42,7 @@ export class AuthController {
   })
   async login(@Body() body: { username: string; password: string; totp?: string }, @Req() request: Request, @Res({ passthrough: true }) response: Response) {
     const tokens = await this.authService.directLogin(body.username, body.password, body.totp);
+    (request as Request & { user?: unknown }).user = tokens.user;
     this.sessionCookie(request, response, tokens.refresh_token);
     const { refresh_token: _refreshToken, ...publicTokens } = tokens;
     return publicTokens;

@@ -1,3 +1,5 @@
+import { requestLog } from './observability/request-log';
+import { RequestErrorFilter } from './observability/request-error.filter';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -8,6 +10,8 @@ async function bootstrap() {
 
   // Production requests reach the API through the single trusted reverse proxy.
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
+  app.use(requestLog);
+  app.useGlobalFilters(new RequestErrorFilter(app.getHttpAdapter()));
 
   // Global API Prefix
   app.setGlobalPrefix('api');
@@ -28,6 +32,7 @@ async function bootstrap() {
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization',
+    exposedHeaders: ['X-Correlation-ID'],
   });
 
   // Validation

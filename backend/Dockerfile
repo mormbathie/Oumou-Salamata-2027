@@ -14,6 +14,7 @@ COPY prisma ./prisma/
 
 # Installation de toutes les dépendances (dev inclus pour le build)
 RUN npm ci
+RUN ILA_IP_LOCATION_DB=iptoasn-country ILA_AUTO_UPDATE=false ILA_SILENT=true node node_modules/ip-location-api/script/updatedb.cjs
 
 # Génération du client Prisma
 RUN npx --no-install prisma generate
@@ -45,6 +46,8 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
 # Copie du code compilé et du schéma Prisma
+ENV ILA_IP_LOCATION_DB=iptoasn-country ILA_AUTO_UPDATE=false ILA_SILENT=true
+COPY --from=builder /app/node_modules/ip-location-api/data ./node_modules/ip-location-api/data
 COPY --from=builder /app/dist ./dist
 
 # Script de démarrage

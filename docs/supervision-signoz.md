@@ -49,7 +49,34 @@ Ce modèle vient du dépôt officiel SigNoz/dashboards (hostmetrics, schéma v6)
 - **Metrics / Dashboards** : utiliser les séries `system.cpu.*`, `system.memory.*`,
   `system.filesystem.*`, `system.network.*` et l’hôte `as-sakina-vps`.
 
-Les corps des requêtes et les en-têtes d’authentification ne sont pas collectés.
+Chaque requête API génère un journal JSON `event = http.request`, y compris
+les succès, refus d’accès, erreurs de validation et connexions interrompues.
+Les champs `status_code`, `outcome`, `duration_ms`, `method`, `route`,
+`correlation_id`, `account_id`, `account_username`, `account_roles`, `device_type`
+et `location_country` peuvent être filtrés dans SigNoz.
+L’en-tête de réponse **X-Correlation-ID** fournit la référence à communiquer au support.
+Les champs natifs `trace_id` et `span_id` permettent de rejoindre une trace conservée.
+Tous les journaux sont collectés, mais seules 25 % des traces sont conservées ;
+`trace_sampled` indique si la trace correspondante est disponible.
+
+Les erreurs comprennent `error_message`, leur type et les champs métier autorisés
+sous `input`. Les mots de passe, jetons, codes QR/OTP, e-mails, téléphones,
+informations médicales, fichiers et autres champs non autorisés sont masqués.
+Les corps des requêtes d’authentification ne sont jamais enregistrés.
+Les réponses complètes et les en-têtes d’authentification ne sont pas collectés.
+Le contenu de diagnostic d’une saisie est limité à 4 Ko.
+Les erreurs internes renvoient un message générique ; leur type et les lignes de
+pile utiles sont journalisés sans le message interne susceptible de contenir du SQL.
+
+L’appareil, le navigateur et le système sont déduits du User-Agent et restent des
+informations déclaratives. Le pays est estimé localement à partir de l’IP avec
+les données IPtoASN/PDDL ; aucune IP utilisateur n’est envoyée à un service tiers.
+Un VPN ou un réseau mobile peut fausser cette estimation. Aucune position GPS
+ni ville précise n’est collectée. Une IP privée ou inconnue peut rester sans pays.
+La base de pays est téléchargée lors de la construction de l’image Docker et
+renouvelée aux prochaines constructions. Le fournisseur est documenté sur
+https://github.com/sapics/ip-location-db et la bibliothèque sur
+https://github.com/sapics/ip-location-api.
 Les URL complètes et paramètres sont masqués dans les traces HTTP.
 Un quart des traces est conservé pour réduire la charge du serveur.
 Les journaux peuvent contenir les messages produits par les services : leur accès
