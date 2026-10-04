@@ -70,7 +70,13 @@ for name in backend frontend; do
 done
 
 # Only application containers are eligible for recreation; databases, auth and Caddy stay in place.
-"${compose[@]}" up -d --no-build --no-deps --wait --wait-timeout 300 backend frontend
+if ! "${compose[@]}" up -d --no-build --no-deps --wait --wait-timeout 300 backend frontend; then
+  # Capture startup diagnostics from the new containers even when healthchecks fail.
+  if [[ -f /opt/assakina-observability/agent.compose.yaml ]]; then
+    python3 "$PWD/deploy/observability/refresh-agent.py" || true
+  fi
+  exit 1
+fi
 "${compose[@]}" ps
 for service in postgres keycloak-postgres keycloak backend frontend caddy; do
   container_id=$("${compose[@]}" ps -q "$service")
