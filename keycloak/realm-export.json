@@ -132,5 +132,12 @@
         "PARENT"
       ]
     }
-  ]
+  ],
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "fr",
+    "en",
+    "ar"
+  ],
+  "defaultLocale": "fr"
 }
