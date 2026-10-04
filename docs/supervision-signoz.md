@@ -6,6 +6,10 @@ Il collecte les journaux des six services scolaires, les mesures du serveur
 
 ## Ouvrir l’interface
 
+Accès web : https://monitoring.57.131.160.254.sslip.io
+
+L’accès SSH ci-dessous reste disponible :
+
 Depuis ton ordinateur, laisser ce terminal ouvert :
 
 ```bash
@@ -21,7 +25,12 @@ sudo cat /opt/assakina-observability/signoz-access.json
 
 Changer ensuite ce mot de passe dans SigNoz.
 Le compte de l’application scolaire ne sert pas à ouvrir cette interface.
-L’interface et les ports de collecte ne sont pas publiés sur Internet.
+L’interface est aussi accessible en HTTPS sur
+https://monitoring.57.131.160.254.sslip.io avec le compte SigNoz.
+https://monitoring.assakina-school.com est configuré et devient utilisable après
+l’ajout d’un enregistrement DNS A `monitoring` vers `57.131.160.254` chez OVH.
+La création initiale de comptes est bloquée sur ces accès publics.
+Les ports de collecte restent privés.
 
 ## Tableau de bord du serveur
 

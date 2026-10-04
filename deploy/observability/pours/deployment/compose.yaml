@@ -59,6 +59,7 @@ services:
     mem_limit: 600m
     networks:
     - assakina-monitoring-network
+    - school
     ports:
     - 127.0.0.1:3301:8080
     restart: unless-stopped

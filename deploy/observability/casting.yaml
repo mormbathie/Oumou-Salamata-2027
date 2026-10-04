@@ -110,6 +110,9 @@ spec:
       value:
       - -c
       - /signoz-otel-collector migrate sync check && /signoz-otel-collector --config=/etc/otel-collector-config.yaml
+    - op: add
+      path: /services/assakina-monitoring-signoz-0/networks/-
+      value: school
   - target: deployment/telemetrystore/clickhouse/config-0-0.yaml
     operations:
     - op: add
