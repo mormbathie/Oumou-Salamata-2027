@@ -11,6 +11,8 @@ import { AttendanceModule } from './attendance/attendance.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { UsersModule } from './users/users.module';
 import { DocumentsModule } from './documents/documents.module';
+import { StaffAttendanceModule } from './staff-attendance/staff-attendance.module';
+import { DataTransferModule } from './data-transfer/data-transfer.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -31,6 +33,8 @@ import { AppService } from './app.service';
     DashboardModule,
     UsersModule,
     DocumentsModule,
+    StaffAttendanceModule,
+    DataTransferModule,
   ],
   controllers: [AppController],
   providers: [AppService],

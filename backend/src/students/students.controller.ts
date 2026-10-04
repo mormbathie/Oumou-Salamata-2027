@@ -50,22 +50,22 @@ export class StudentsController {
   @Post()
   @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
   @ApiOperation({ summary: 'Inscrire un nouvel élève (avec affectation de classe et génération de facture)' })
-  async create(@Body() body: any) {
-    return this.studentsService.create(body);
+  async create(@Body() body: any, @CurrentUser() actor: any) {
+    return this.studentsService.create(body, actor);
   }
 
   @Put(':id')
   @Roles('ADMIN', 'DIRECTEUR')
   @ApiOperation({ summary: 'Modifier les informations d\'un élève' })
-  async update(@Param('id') id: string, @Body() body: any) {
-    return this.studentsService.update(id, body);
+  async update(@Param('id') id: string, @Body() body: any, @CurrentUser() actor: any) {
+    return this.studentsService.update(id, body, actor);
   }
 
   @Post('enroll')
   @Roles('ADMIN', 'DIRECTEUR')
   @ApiOperation({ summary: 'Affecter ou réinscrire un élève dans une classe' })
-  async enroll(@Body() body: { studentId: string; classroomId: string; academicYearId: string }) {
-    return this.studentsService.enroll(body);
+  async enroll(@Body() body: { studentId: string; classroomId: string; academicYearId: string }, @CurrentUser() actor: any) {
+    return this.studentsService.enroll(body, actor);
   }
 
   @Delete(':id')

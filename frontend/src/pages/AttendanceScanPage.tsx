@@ -233,7 +233,7 @@ export const AttendanceScanPage: React.FC = () => {
               <div className="min-w-0 flex-1">
                 <p className="font-semibold text-emerald-950">{lastScan.student.firstName} {lastScan.student.lastName}</p>
                 <p className="font-mono text-xs text-emerald-800">{lastScan.student.matricule} · {lastScan.classroom.name}</p>
-                <p className="mt-1 text-xs text-emerald-800">{lastScan.duplicate ? 'Déjà pointé' : 'Présence enregistrée'} à {formatTime(lastScan.attendance.checkInAt)}</p>
+                <p className="mt-1 text-xs text-emerald-800">{lastScan.duplicate ? 'Déjà pointé' : 'Présence enregistrée'} à {formatTime(lastScan.attendance.checkInAt)}{lastScan.attendance.checkInByName ? ` · par ${lastScan.attendance.checkInByName}` : ''}</p>
               </div>
               <span className="text-xs font-semibold text-emerald-800">Prêt pour le prochain scan</span>
             </div>

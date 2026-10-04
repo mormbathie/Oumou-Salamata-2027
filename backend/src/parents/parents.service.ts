@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DocumentsService } from '../documents/documents.service';
+import { normalizeEmail } from '../common/email';
 
 @Injectable()
 export class ParentsService {
@@ -71,14 +72,14 @@ export class ParentsService {
     relation?: string;
   }) {
     return this.prisma.parent.create({
-      data,
+      data: { ...data, email: normalizeEmail(data.email) },
     });
   }
 
   async update(id: string, data: any) {
     return this.prisma.parent.update({
       where: { id },
-      data,
+      data: { ...data, ...(data.email !== undefined ? { email: normalizeEmail(data.email) } : {}) },
     });
   }
 

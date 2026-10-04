@@ -5,6 +5,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { InvoiceType, PaymentMethod } from '@prisma/client';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @ApiTags('Finances & Facturation')
 @Controller('finances')
@@ -65,8 +66,9 @@ export class FinancesController {
       amount: number;
       dueDate: string;
     },
+    @CurrentUser() actor: any,
   ) {
-    return this.financesService.createInvoice(body);
+    return this.financesService.createInvoice(body, actor);
   }
 
   @Post('invoices/generate-batch')
@@ -80,8 +82,9 @@ export class FinancesController {
       dueDate: string;
       academicYearId?: string;
     },
+    @CurrentUser() actor: any,
   ) {
-    return this.financesService.generateTuitionInvoicesForClass(body);
+    return this.financesService.generateTuitionInvoicesForClass(body, actor);
   }
 
   @Post('payments')
@@ -94,11 +97,11 @@ export class FinancesController {
       amount: number;
       paymentMethod: PaymentMethod;
       reference?: string;
-      receivedBy?: string;
       notes?: string;
       paymentDate?: string;
     },
+    @CurrentUser() actor: any,
   ) {
-    return this.financesService.recordPayment(body);
+    return this.financesService.recordPayment(body, actor);
   }
 }

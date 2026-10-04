@@ -453,7 +453,7 @@ export const GradesPage: React.FC = () => {
                   </div>
                   <div className="text-center">
                     <h2 className="text-base font-black uppercase text-slate-900 tracking-wider">
-                      ÉCOLE PRIMAIRE OUMOU SALAMAT
+                      ÉCOLE AS SAKINA
                     </h2>
                     <p className="text-[10px] text-slate-500">Discipline • Travail • Réussite</p>
                   </div>

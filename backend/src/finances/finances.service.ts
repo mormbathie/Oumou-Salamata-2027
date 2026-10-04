@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { InvoiceStatus, InvoiceType, PaymentMethod } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
+import { ActingUser, actorStamp } from '../audit/actor';
 
 @Injectable()
 export class FinancesService {
@@ -84,7 +85,8 @@ export class FinancesService {
     type: InvoiceType;
     amount: number;
     dueDate: string | Date;
-  }) {
+  }, actor: ActingUser) {
+    const author = actorStamp(actor);
     let academicYearId = data.academicYearId;
     if (!academicYearId) {
       const currentYear = await this.prisma.academicYear.findFirst({
@@ -113,6 +115,9 @@ export class FinancesService {
         balance: data.amount,
         dueDate: new Date(data.dueDate),
         status: InvoiceStatus.UNPAID,
+        createdById: author.id,
+        createdByName: author.name,
+        createdByRole: author.role,
       },
       include: { student: true },
     });
@@ -123,10 +128,10 @@ export class FinancesService {
     amount: number;
     paymentMethod: PaymentMethod;
     reference?: string;
-    receivedBy?: string;
     notes?: string;
     paymentDate?: string | Date;
-  }) {
+  }, actor: ActingUser) {
+    const author = actorStamp(actor);
     const invoice = await this.prisma.invoice.findUnique({
       where: { id: data.invoiceId },
     });
@@ -169,7 +174,9 @@ export class FinancesService {
           paymentDate: data.paymentDate ? new Date(data.paymentDate) : new Date(),
           paymentMethod: data.paymentMethod,
           reference: data.reference,
-          receivedBy: data.receivedBy || 'Comptabilité',
+          receivedBy: author.name,
+          receivedById: author.id,
+          receivedByRole: author.role,
           notes: data.notes,
         },
       });
@@ -207,7 +214,8 @@ export class FinancesService {
     monthName: string;
     dueDate: string | Date;
     academicYearId?: string;
-  }) {
+  }, actor: ActingUser) {
+    const author = actorStamp(actor);
     const classroom = await this.prisma.classroom.findUnique({
       where: { id: data.classroomId },
       include: {
@@ -253,6 +261,9 @@ export class FinancesService {
             balance: classroom.monthlyTuition,
             dueDate: new Date(data.dueDate),
             status: InvoiceStatus.UNPAID,
+            createdById: author.id,
+            createdByName: author.name,
+            createdByRole: author.role,
           },
         });
         createdCount++;

@@ -5,6 +5,8 @@ type ReceiptRecord = {
     amount: number;
     paymentMethod: string;
     reference?: string | null;
+    receivedBy?: string | null;
+    receivedByRole?: string | null;
   };
   invoice: {
     invoiceNumber: string;
@@ -93,9 +95,9 @@ export const printPaymentReceipt = (receipt: ReceiptRecord) => {
     'footer{margin-top:26px;color:#64748b;text-align:center;font-size:10px}',
     '@media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}',
     '</style></head><body><main>',
-    '<header><div class="mark">OS</div><h1>École Primaire Oumou Salamat</h1>',
+    '<header><div class="mark">AS</div><h1>École As Sakina</h1>',
     '<p>Enseignement élémentaire · Dakar, Sénégal</p>',
-    '<p>Tél. +221 33 800 00 00 · contact@oumou-salamat.sn</p>',
+    '<p>Tél. +221 33 800 00 00</p>',
     '<div class="badge">REÇU DE CAISSE SCOLAIRE</div></header>',
     '<section class="meta"><div><span class="label">Numéro du reçu</span><span class="value mono">',
     escapeHtml(payment.paymentNumber), '</span></div><div style="text-align:right">',
@@ -111,6 +113,8 @@ export const printPaymentReceipt = (receipt: ReceiptRecord) => {
     '<div class="row"><span>Mode de paiement</span><span>',
     escapeHtml(paymentMethods[payment.paymentMethod] || payment.paymentMethod),
     payment.reference ? ' · Réf. ' + escapeHtml(payment.reference) : '', '</span></div></section>',
+    '<p><span class="label">Paiement enregistré par</span><strong>', escapeHtml(payment.receivedBy || 'Non renseigné'),
+    payment.receivedByRole ? ' · ' + escapeHtml(payment.receivedByRole) : '', '</strong></p>',
     '<section class="amount"><span>Montant encaissé</span><strong>', money(payment.amount), '</strong></section>',
     '<section class="totals"><div class="total"><span class="label">Montant facture</span><strong>',
     money(invoice.amount), '</strong></div><div class="total"><span class="label">Total payé</span><strong>',

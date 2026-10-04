@@ -42,11 +42,7 @@ export class AuthService {
       const tokenData = await this.exchangeToken({ grant_type: 'password', username, password });
 
       // Find or sync local user in db
-      const localUser = await this.prisma.user.findFirst({
-        where: {
-          OR: [{ username }, { email: `${username}@oumou-salamat.sn` }],
-        },
-      });
+      const localUser = await this.prisma.user.findFirst({ where: { username } });
 
       return {
         ...tokenData,
@@ -105,7 +101,7 @@ export class AuthService {
         where: { OR: [{ keycloakId: user.userId }, { email: localData.email }, { username: user.username }] },
       });
       syncedUser = existing
-        ? await this.prisma.user.update({ where: { id: existing.id }, data: localData })
+        ? await this.prisma.user.update({ where: { id: existing.id }, data: existing.keycloakId === user.userId ? { keycloakId: user.userId, username: user.username, role } : localData })
         : await this.prisma.user.create({ data: localData });
     }
 

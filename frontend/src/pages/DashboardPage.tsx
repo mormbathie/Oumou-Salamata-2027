@@ -54,7 +54,7 @@ export const DashboardPage: React.FC = () => {
             <span>Gestion Scolaire Intégrée & Sécurisée</span>
           </div>
           <h2 className="text-2xl font-bold tracking-tight">
-            Bienvenue sur le portail de l'École Primaire Oumou Salamat
+            Bienvenue sur le portail de l'École As Sakina
           </h2>
           <p className="text-emerald-100 text-sm mt-1">
             Année scolaire active : <span className="font-semibold text-white">{data?.academicYear}</span>. Suivi des inscriptions, de la facturation, des notes et du registre des présences en temps réel.

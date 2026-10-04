@@ -2,6 +2,8 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { DocumentsService } from '../documents/documents.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Gender, StudentStatus, InvoiceType, InvoiceStatus } from '@prisma/client';
+import { ActingUser, actorStamp } from '../audit/actor';
+import { normalizeEmail } from '../common/email';
 
 @Injectable()
 export class StudentsService {
@@ -186,7 +188,8 @@ export class StudentsService {
       profession?: string;
     };
     generateInvoice?: boolean;
-  }) {
+  }, actor: ActingUser) {
+    const author = actorStamp(actor);
     // Generate matricule
     const count = await this.prisma.student.count();
     const currentYear = new Date().getFullYear();
@@ -197,7 +200,7 @@ export class StudentsService {
     // Create parent if new parent data provided
     if (!parentId && data.parentData && data.parentData.firstName && data.parentData.phone) {
       const parent = await this.prisma.parent.create({
-        data: { ...data.parentData, email: data.parentData.email?.trim().toLowerCase() || undefined },
+        data: { ...data.parentData, email: normalizeEmail(data.parentData.email) },
       });
       parentId = parent.id;
     }
@@ -215,6 +218,9 @@ export class StudentsService {
         bloodGroup: data.bloodGroup,
         photoUrl: data.photoUrl,
         parentId,
+        createdById: author.id,
+        createdByName: author.name,
+        createdByRole: author.role,
       },
       include: { parent: true },
     });
@@ -236,6 +242,9 @@ export class StudentsService {
             classroomId: data.classroomId,
             academicYearId,
             status: 'REGISTERED',
+            registeredById: author.id,
+            registeredByName: author.name,
+            registeredByRole: author.role,
           },
         });
 
@@ -259,6 +268,9 @@ export class StudentsService {
                 balance: classroom.registrationFee,
                 dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // in 15 days
                 status: InvoiceStatus.UNPAID,
+                createdById: author.id,
+                createdByName: author.name,
+                createdByRole: author.role,
               },
             });
           }
@@ -269,11 +281,14 @@ export class StudentsService {
     return this.findOne(student.id, { roles: ['ADMIN', 'DIRECTEUR'] });
   }
 
-  async update(id: string, data: any) {
+  async update(id: string, data: any, actor: ActingUser) {
+    const author = actorStamp(actor);
     const existing = await this.prisma.student.findUnique({ where: { id }, select: { id: true, parentId: true } });
     if (!existing) throw new NotFoundException(`Élève avec l'ID ${id} non trouvé`);
 
     const studentData: any = {};
+    studentData.updatedById = author.id;
+    studentData.updatedByName = author.name;
     for (const field of ['firstName', 'lastName', 'gender', 'placeOfBirth', 'address', 'bloodGroup', 'status', 'photoUrl']) {
       if (data[field] !== undefined) studentData[field] = data[field];
     }
@@ -289,8 +304,10 @@ export class StudentsService {
         }
       }
       if (existing.parentId) {
+        if (parentData.email !== undefined) parentData.email = normalizeEmail(parentData.email);
         await this.prisma.parent.update({ where: { id: existing.parentId }, data: parentData });
       } else if (parentData.firstName && parentData.phone) {
+        if (parentData.email !== undefined) parentData.email = normalizeEmail(parentData.email);
         const parent = await this.prisma.parent.create({ data: parentData });
         studentData.parentId = parent.id;
       }
@@ -306,13 +323,14 @@ export class StudentsService {
         select: { id: true, academicYearId: true },
       });
       if (!classroom) throw new BadRequestException('Classe sélectionnée introuvable.');
-      await this.enroll({ studentId: id, classroomId: classroom.id, academicYearId: classroom.academicYearId });
+      await this.enroll({ studentId: id, classroomId: classroom.id, academicYearId: classroom.academicYearId }, actor);
     }
 
     return this.findOne(id, { roles: ['ADMIN', 'DIRECTEUR'] });
   }
 
-  async enroll(data: { studentId: string; classroomId: string; academicYearId: string }) {
+  async enroll(data: { studentId: string; classroomId: string; academicYearId: string }, actor: ActingUser) {
+    const author = actorStamp(actor);
     const existing = await this.prisma.enrollment.findUnique({
       where: {
         studentId_academicYearId: {
@@ -325,7 +343,7 @@ export class StudentsService {
     if (existing) {
       return this.prisma.enrollment.update({
         where: { id: existing.id },
-        data: { classroomId: data.classroomId, status: 'REGISTERED' },
+        data: { classroomId: data.classroomId, status: 'REGISTERED', registeredById: author.id, registeredByName: author.name, registeredByRole: author.role },
       });
     }
 
@@ -335,6 +353,9 @@ export class StudentsService {
         classroomId: data.classroomId,
         academicYearId: data.academicYearId,
         status: 'REGISTERED',
+        registeredById: author.id,
+        registeredByName: author.name,
+        registeredByRole: author.role,
       },
     });
   }

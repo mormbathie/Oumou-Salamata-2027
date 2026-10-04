@@ -41,6 +41,34 @@ export const usersApi = {
   resetPassword: (id: string, password: string) => api.post(`/users/${id}/reset-password`, { password }).then((r) => r.data),
   changeOwnPassword: (currentPassword: string, newPassword: string) => api.post('/users/me/password', { currentPassword, newPassword }).then((r) => r.data),
   update: (id: string, data: { email: string; firstName: string; lastName: string; role: string }) => api.patch(`/users/${id}`, data).then((r) => r.data),
+  getOwnProfile: () => api.get('/users/me').then((r) => r.data),
+  updateOwnProfile: (data: { firstName: string; lastName: string; email: string; phone: string }) => api.patch('/users/me', data).then((r) => r.data),
+  requestEmailVerification: () => api.post('/users/me/verify-email').then((r) => r.data),
+};
+
+export const staffAttendanceApi = {
+  myCard: () => api.get('/staff-attendance/me/card').then((r) => r.data),
+  myHistory: () => api.get('/staff-attendance/me').then((r) => r.data),
+  scan: (code: string) => api.post('/staff-attendance/scan', { code }).then((r) => r.data),
+  list: (date: string) => api.get('/staff-attendance', { params: { date } }).then((r) => r.data),
+  finalize: (date: string) => api.post('/staff-attendance/finalize', { date }).then((r) => r.data),
+  getCalendar: () => api.get('/staff-attendance/calendar').then((r) => r.data),
+  updateCalendar: (data: { restDays: number[]; startTime: string; timeZone: string }) => api.patch('/staff-attendance/calendar', data).then((r) => r.data),
+  addHoliday: (date: string, name: string) => api.post('/staff-attendance/calendar/holidays', { date, name }).then((r) => r.data),
+  removeHoliday: (id: string) => api.delete(`/staff-attendance/calendar/holidays/${id}`).then((r) => r.data),
+};
+
+export const dataTransferApi = {
+  models: () => api.get<string[]>('/data-transfer/models').then((r) => r.data),
+  export: (format: 'xlsx' | 'csv', model?: string) => api.get('/data-transfer/export', { params: { format, model }, responseType: 'blob' }).then((r) => r.data as Blob),
+  preview: (file: File, model?: string) => {
+    const form = new FormData(); form.append('file', file);
+    return api.post('/data-transfer/preview', form, { params: { model } }).then((r) => r.data);
+  },
+  import: (file: File, model?: string) => {
+    const form = new FormData(); form.append('file', file);
+    return api.post('/data-transfer/import', form, { params: { model } }).then((r) => r.data);
+  },
 };
 
 export const dashboardApi = {

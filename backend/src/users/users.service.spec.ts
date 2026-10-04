@@ -66,4 +66,33 @@ describe('UsersService password changes', () => {
       method: 'POST', body: JSON.stringify([{ name: 'ENSEIGNANT' }]),
     });
   });
+
+  it('does not claim a newly created address was verified', async () => {
+    const service = new UsersService(config, prisma, auth);
+    const request = jest.spyOn(service as any, 'request').mockImplementation(async (path: string) => {
+      if (path === '/users?username=awa&exact=true') return [{ id: 'new-id', username: 'awa', email: 'awa@example.test' }];
+      if (path === '/roles/ENSEIGNANT') return { name: 'ENSEIGNANT' };
+      return null;
+    });
+    jest.spyOn(service, 'syncLocalUser').mockResolvedValue(undefined as any);
+    await service.create({ username: 'awa', email: 'awa@example.test', firstName: 'Awa', lastName: 'Test', password: 'temporary-password', role: 'ENSEIGNANT' });
+    expect(request).toHaveBeenCalledWith('/users', expect.objectContaining({
+      method: 'POST', body: expect.stringContaining('"emailVerified":false'),
+    }));
+  });
+
+  it('invalidates verification when a user changes their email', async () => {
+    const local: any = { user: { updateMany: jest.fn().mockResolvedValue({ count: 1 }), findUnique: jest.fn().mockResolvedValue({ phone: null }), findFirst: jest.fn().mockResolvedValue(null) } };
+    const service = new UsersService(config, local, auth);
+    let reads = 0;
+    const request = jest.spyOn(service as any, 'request').mockImplementation(async (path: string, init?: RequestInit) => {
+      if (path === '/users/my-id') return init?.method === 'PUT'
+        ? null : { id: 'my-id', username: 'awa', email: reads++ ? 'new@example.test' : 'old@example.test', emailVerified: reads === 1, firstName: 'Awa', lastName: 'Test' };
+      return null;
+    });
+    await service.updateOwnProfile({ userId: 'my-id' }, { firstName: 'Awa', lastName: 'Test', email: 'new@example.test', phone: '' });
+    expect(request).toHaveBeenCalledWith('/users/my-id', expect.objectContaining({
+      method: 'PUT', body: expect.stringContaining('"emailVerified":false'),
+    }));
+  });
 });

@@ -59,7 +59,7 @@ def production_realm(template, app_host, auth_host, password):
     realm = {
         "realm": REALM_NAME,
         "enabled": True,
-        "displayName": template.get("displayName", "Oumou Salamat"),
+        "displayName": template.get("displayName", "École As Sakina"),
         "sslRequired": "external",
         "registrationAllowed": False,
         "loginWithEmailAllowed": True,
@@ -78,7 +78,7 @@ def production_realm(template, app_host, auth_host, password):
     realm["clients"] = [
         {
             "clientId": CLIENT_ID,
-            "name": client_template.get("name", "Oumou Salamat"),
+            "name": client_template.get("name", "As Sakina"),
             "enabled": True,
             "clientAuthenticatorType": "client-secret",
             "publicClient": True,
@@ -99,10 +99,10 @@ def production_realm(template, app_host, auth_host, password):
         {
             "username": APP_ADMIN,
             "enabled": True,
-            "email": "admin@oumou-salamat.sn",
-            "emailVerified": True,
+            "email": "admin@localhost.invalid",
+            "emailVerified": False,
             "firstName": "Administrateur",
-            "lastName": "Oumou Salamat",
+            "lastName": "As Sakina",
             "requiredActions": [],
             "credentials": [
                 {"type": "password", "value": password, "temporary": False}

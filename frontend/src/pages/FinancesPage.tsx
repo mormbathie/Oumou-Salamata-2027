@@ -286,6 +286,7 @@ export const FinancesPage: React.FC = () => {
                         <p className="text-[10px] text-slate-400">
                           {new Date(inv.createdAt).toLocaleDateString('fr-FR')}
                         </p>
+                        {inv.createdByName && <p className="text-[10px] text-slate-500">Créée par {inv.createdByName} · {inv.createdByRole}</p>}
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="font-semibold text-slate-800">
@@ -414,10 +415,10 @@ export const FinancesPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Observations / Reçu par</label>
+                <label className="font-medium text-slate-700 block mb-1">Observations</label>
                 <input
                   type="text"
-                  placeholder="Ex: Reçu par Mme Ndiaye (Comptable)"
+                  placeholder="Ex: Versement du mois d'octobre"
                   value={paymentNotes}
                   onChange={(e) => setPaymentNotes(e.target.value)}
                   className="w-full p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
@@ -530,10 +531,10 @@ export const FinancesPage: React.FC = () => {
                   <School className="w-6 h-6" />
                 </div>
                 <h2 className="text-lg font-black tracking-wide uppercase text-slate-800">
-                  École Primaire Oumou Salamat
+                  École As Sakina
                 </h2>
                 <p className="text-xs text-slate-500">Enseignement Élémentaire - Dakar, Sénégal</p>
-                <p className="text-[11px] text-slate-400">Tél: +221 33 800 00 00 • contact@oumou-salamat.sn</p>
+                <p className="text-[11px] text-slate-400">Tél: +221 33 800 00 00</p>
 
                 <div className="mt-4 bg-emerald-50 border border-emerald-200 py-1.5 px-4 rounded-lg inline-block">
                   <span className="text-xs font-black text-emerald-800 tracking-wider uppercase">
@@ -605,7 +606,7 @@ export const FinancesPage: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-400 mb-10">Cachet & Signature Caisse</p>
-                  <p className="text-xs font-semibold text-emerald-700">Service Comptable</p>
+                  <p className="text-xs font-semibold text-emerald-700">{currentReceiptPayment.payment.receivedBy || 'Service comptable'}{currentReceiptPayment.payment.receivedByRole ? ` · ${currentReceiptPayment.payment.receivedByRole}` : ''}</p>
                 </div>
               </div>
             </div>

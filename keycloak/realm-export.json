@@ -1,7 +1,7 @@
 {
   "realm": "oumou-salamat",
   "enabled": true,
-  "displayName": "Oumou Salamat Primary School",
+  "displayName": "École As Sakina",
   "sslRequired": "external",
   "registrationAllowed": false,
   "loginWithEmailAllowed": true,
@@ -43,7 +43,7 @@
   "clients": [
     {
       "clientId": "oumou-salamat-app",
-      "name": "Oumou Salamat Fullstack Client",
+      "name": "As Sakina School Client",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [

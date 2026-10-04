@@ -1,4 +1,4 @@
-# 🏫 École Primaire Oumou Salamat 2027
+# 🏫 École As Sakina
 
 Système de gestion scolaire complet pour une école primaire, construit avec **NestJS**, **React**, **PostgreSQL** et **Keycloak**.
 

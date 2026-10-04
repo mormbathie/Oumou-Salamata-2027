@@ -1,6 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AttendanceStatus } from '@prisma/client';
+import { ActingUser, actorStamp } from '../audit/actor';
 
 @Injectable()
 export class AttendanceService {
@@ -147,7 +148,7 @@ export class AttendanceService {
 
     const records = await this.prisma.attendance.findMany({
       where: { classroomId, date: day },
-      select: { studentId: true, status: true, checkInAt: true },
+      select: { studentId: true, status: true, checkInAt: true, checkInByName: true },
     });
     const attendanceByStudent = new Map(records.map((record) => [record.studentId, record]));
     const students = classroom.enrollments.map(({ student }) => {
@@ -156,6 +157,7 @@ export class AttendanceService {
         ...student,
         status: attendance?.status || AttendanceStatus.ABSENT,
         checkInAt: attendance?.checkInAt || null,
+        checkInByName: attendance?.checkInByName || null,
         scanned: Boolean(attendance?.checkInAt),
       };
     });
@@ -175,7 +177,8 @@ export class AttendanceService {
     };
   }
 
-  async scanStudent(qrCode: string, classroomId?: string) {
+  async scanStudent(qrCode: string, classroomId?: string, actor?: ActingUser) {
+    const operator = actor ? actorStamp(actor) : null;
     if (typeof qrCode !== 'string' || !qrCode.trim()) {
       throw new BadRequestException('Le QR code est obligatoire.');
     }
@@ -239,7 +242,7 @@ export class AttendanceService {
     } else if (saved) {
       const updated = await this.prisma.attendance.updateMany({
         where: { id: saved.id, checkInAt: null },
-        data: { status: AttendanceStatus.PRESENT, checkInAt: now, reason: null, justified: false },
+        data: { status: AttendanceStatus.PRESENT, checkInAt: now, reason: null, justified: false, ...(operator ? { checkInById: operator.id, checkInByName: operator.name } : {}) },
       });
       duplicate = updated.count === 0;
       saved = await this.prisma.attendance.findUnique({ where: unique });
@@ -252,6 +255,7 @@ export class AttendanceService {
             date: day,
             status: AttendanceStatus.PRESENT,
             checkInAt: now,
+            ...(operator ? { checkInById: operator.id, checkInByName: operator.name } : {}),
           },
         });
       } catch (error: any) {
@@ -263,7 +267,7 @@ export class AttendanceService {
             date: day,
             checkInAt: null,
           },
-          data: { status: AttendanceStatus.PRESENT, checkInAt: now, reason: null, justified: false },
+          data: { status: AttendanceStatus.PRESENT, checkInAt: now, reason: null, justified: false, ...(operator ? { checkInById: operator.id, checkInByName: operator.name } : {}) },
         });
         duplicate = updated.count === 0;
         saved = await this.prisma.attendance.findUnique({ where: unique });
@@ -284,6 +288,7 @@ export class AttendanceService {
         status: saved.status,
         date: day.toISOString().slice(0, 10),
         checkInAt: saved.checkInAt,
+        checkInByName: saved.checkInByName,
       },
     };
   }

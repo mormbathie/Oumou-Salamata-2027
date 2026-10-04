@@ -7,6 +7,7 @@ interface ManagedUser {
   id: string;
   username: string;
   email: string;
+  emailVerified: boolean;
   firstName: string;
   lastName: string;
   enabled: boolean;
@@ -177,7 +178,7 @@ export const UsersPage: React.FC = () => {
                       <div className="font-semibold text-slate-800">{managedUser.firstName} {managedUser.lastName}</div>
                       <div className="text-xs text-slate-500">{managedUser.username}{isCurrentUser ? ' · Vous' : ''}</div>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{managedUser.email || '—'}</td>
+                    <td className="px-4 py-3 text-slate-600">{managedUser.email || '—'}<span className={`mt-1 block text-[11px] font-medium ${managedUser.emailVerified ? 'text-emerald-700' : 'text-amber-700'}`}>{managedUser.emailVerified ? 'Adresse vérifiée' : 'Adresse non vérifiée'}</span></td>
                     <td className="px-4 py-3"><div className="flex flex-wrap gap-1">
                       {managedUser.roles.length ? managedUser.roles.map((role) => <span key={role} className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">{role}</span>) : <span className="text-xs text-slate-400">Aucun rôle applicatif</span>}
                     </div></td>

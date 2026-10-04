@@ -12,6 +12,9 @@ import { ClassesPage } from './pages/ClassesPage';
 import { LoginPage } from './pages/LoginPage';
 import { UsersPage } from './pages/UsersPage';
 import { PasswordPage } from './pages/PasswordPage';
+import { ProfilePage } from './pages/ProfilePage';
+import { StaffAttendancePage } from './pages/StaffAttendancePage';
+import { DataTransferPage } from './pages/DataTransferPage';
 
 const AttendanceScanPage = lazy(() => import('./pages/AttendanceScanPage').then((module) => ({ default: module.AttendanceScanPage })));
 
@@ -49,6 +52,9 @@ export const App: React.FC = () => (
           <Route path="classes" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT']}><ClassesPage /></RequireRoles>} />
           <Route path="users" element={<RequireRoles roles={['ADMIN']}><UsersPage /></RequireRoles>} />
           <Route path="password" element={<PasswordPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="staff-attendance" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE']}><StaffAttendancePage /></RequireRoles>} />
+          <Route path="data-transfer" element={<RequireRoles roles={['ADMIN']}><DataTransferPage /></RequireRoles>} />
         </Route>
         <Route path="*" element={<HomeByRole />} />
       </Routes>

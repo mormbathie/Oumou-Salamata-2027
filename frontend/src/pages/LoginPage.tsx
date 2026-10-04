@@ -52,7 +52,7 @@ export const LoginPage: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 border border-white/20 mb-3 shadow-lg">
             <School className="w-8 h-8" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight">École Primaire Oumou Salamat</h1>
+          <h1 className="text-xl font-bold tracking-tight">École As Sakina</h1>
           <p className="text-xs text-emerald-100 mt-1">Plateforme de Gestion Scolaire Sécurisée</p>
           <div className="mt-4 inline-flex items-center space-x-1.5 bg-black/20 px-3 py-1 rounded-full text-[11px] font-semibold text-emerald-200">
             <Shield className="w-3.5 h-3.5 text-amber-300" />

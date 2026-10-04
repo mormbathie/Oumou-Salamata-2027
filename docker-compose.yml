@@ -139,9 +139,9 @@ services:
       KEYCLOAK_INTERNAL_URL: "http://keycloak:8080"
 
       # Informations école
-      SCHOOL_NAME: "École Primaire Oumou Salamat"
+      SCHOOL_NAME: "École As Sakina"
       SCHOOL_PHONE: "+221 33 800 00 00"
-      SCHOOL_EMAIL: "contact@oumou-salamat.sn"
+      SCHOOL_EMAIL: ${SCHOOL_EMAIL:-}
       SCHOOL_ADDRESS: "Dakar, Sénégal"
     ports:
       - "${BACKEND_BIND_ADDRESS:-127.0.0.1}:${BACKEND_PORT:-3001}:3001"

@@ -136,7 +136,7 @@ export class UsersService {
     const username = input.username?.trim();
     const email = input.email?.trim();
     const roleName = input.role?.toUpperCase();
-    if (!username || !email || !input.firstName?.trim() || !input.lastName?.trim()) {
+    if (!username || !email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || !input.firstName?.trim() || !input.lastName?.trim()) {
       throw new BadRequestException('Le nom d’utilisateur, l’adresse e-mail, le prénom et le nom sont obligatoires.');
     }
     if (!input.password || input.password.length < 8) {
@@ -154,7 +154,7 @@ export class UsersService {
         firstName: input.firstName.trim(),
         lastName: input.lastName.trim(),
         enabled: true,
-        emailVerified: true,
+        emailVerified: false,
         requiredActions: ['UPDATE_PASSWORD'],
       }),
     });
@@ -211,6 +211,52 @@ export class UsersService {
     return { updated: true };
   }
 
+  async getOwnProfile(actor: { userId: string }) {
+    if (!actor?.userId) throw new BadRequestException('Utilisateur invalide.');
+    const user = await this.request(`/users/${encodeURIComponent(actor.userId)}`);
+    const local = await this.prisma.user.findUnique({ where: { keycloakId: actor.userId }, select: { phone: true } });
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email || '',
+      emailVerified: Boolean(user.emailVerified),
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      phone: local?.phone || '',
+    };
+  }
+
+  async updateOwnProfile(actor: { userId: string }, input: { firstName: string; lastName: string; email: string; phone?: string }) {
+    if (!actor?.userId) throw new BadRequestException('Utilisateur invalide.');
+    const firstName = input?.firstName?.trim();
+    const lastName = input?.lastName?.trim();
+    const email = input?.email?.trim().toLowerCase();
+    const phone = input?.phone?.trim() || null;
+    if (!firstName || !lastName || !email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      throw new BadRequestException('Prénom, nom et adresse e-mail valides sont obligatoires.');
+    }
+    if (phone && (phone.length > 30 || !/^[+\d\s().-]+$/.test(phone))) {
+      throw new BadRequestException('Numéro de téléphone invalide.');
+    }
+    const duplicate = await this.prisma.user.findFirst({ where: { email, keycloakId: { not: actor.userId } }, select: { id: true } });
+    if (duplicate) throw new ConflictException('Cette adresse e-mail est déjà utilisée.');
+    const current = await this.request(`/users/${encodeURIComponent(actor.userId)}`);
+    const emailChanged = current.email?.toLowerCase() !== email;
+    await this.request(`/users/${encodeURIComponent(actor.userId)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ id: actor.userId, firstName, lastName, email, emailVerified: emailChanged ? false : Boolean(current.emailVerified) }),
+    });
+    await this.prisma.user.updateMany({ where: { keycloakId: actor.userId }, data: { firstName, lastName, email, phone } });
+    return this.getOwnProfile(actor);
+  }
+
+  async requestOwnEmailVerification(actor: { userId: string }) {
+    const profile = await this.getOwnProfile(actor);
+    if (profile.emailVerified) return { sent: false, verified: true };
+    await this.request(`/users/${encodeURIComponent(actor.userId)}/send-verify-email`, { method: 'PUT' });
+    return { sent: true, verified: false };
+  }
+
   async update(id: string, input: { email: string; firstName: string; lastName: string; role: string }, actorId: string) {
     const email = input.email?.trim().toLowerCase();
     const firstName = input.firstName?.trim();
@@ -227,7 +273,7 @@ export class UsersService {
     const user = await this.request(`/users/${encodeURIComponent(id)}`);
     await this.request(`/users/${encodeURIComponent(id)}`, {
       method: 'PUT',
-      body: JSON.stringify({ id, email, firstName, lastName }),
+      body: JSON.stringify({ id, email, firstName, lastName, emailVerified: user.email?.toLowerCase() === email ? Boolean(user.emailVerified) : false }),
     });
     const mappings: any[] = await this.request(`/users/${encodeURIComponent(id)}/role-mappings/realm`);
     const oldAppRoles = mappings.filter((role) => APP_ROLES.includes(role.name) && role.name !== roleName);
@@ -332,6 +378,7 @@ export class UsersService {
       firstName: user.firstName || '',
       lastName: user.lastName || '',
       enabled: Boolean(user.enabled),
+      emailVerified: Boolean(user.emailVerified),
       roles,
     };
   }

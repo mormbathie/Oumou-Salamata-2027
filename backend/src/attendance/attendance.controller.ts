@@ -38,8 +38,8 @@ export class AttendanceController {
   @Post('scan')
   @Roles('ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE')
   @ApiOperation({ summary: 'Scanner le QR d’un élève et enregistrer son heure d’arrivée' })
-  async scanStudent(@Body() body: { qrCode: string }) {
-    return this.attendanceService.scanStudent(body?.qrCode);
+  async scanStudent(@Body() body: { qrCode: string }, @CurrentUser() actor: any) {
+    return this.attendanceService.scanStudent(body?.qrCode, undefined, actor);
   }
 
   @Post('scan/finalize')

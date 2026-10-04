@@ -77,6 +77,50 @@ model User {
   updatedAt   DateTime @updatedAt
 
   classrooms  Classroom[] @relation("TeacherClasses")
+  staffAttendances StaffAttendance[]
+  staffCard StaffQrCard?
+}
+
+model StaffQrCard {
+  teacherId String @id
+  teacher User   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  token String   @unique
+}
+
+model StaffAttendance {
+  id          String           @id @default(uuid())
+  teacherId   String
+  teacher     User             @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  date        DateTime
+  status      AttendanceStatus @default(PRESENT)
+  checkInAt   DateTime?
+  checkOutAt  DateTime?
+  minutesLate Int              @default(0)
+  checkInById String?
+  checkInByName String?
+  checkOutById String?
+  checkOutByName String?
+  reason      String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([teacherId, date])
+  @@index([date, status])
+}
+
+model SchoolHoliday {
+  id        String   @id @default(uuid())
+  date      DateTime @unique
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model SchoolCalendarSettings {
+  id          Int      @id @default(1)
+  restDays    String   @default("0,6")
+  startTime   String   @default("08:00")
+  timeZone    String   @default("Africa/Dakar")
+  updatedAt   DateTime @updatedAt
 }
 
 model AcademicYear {
@@ -144,6 +188,11 @@ model Student {
   status        StudentStatus @default(ACTIVE)
   parentId      String?
   parent        Parent?       @relation(fields: [parentId], references: [id], onDelete: SetNull)
+  createdById   String?
+  createdByName String?
+  createdByRole String?
+  updatedById   String?
+  updatedByName String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
@@ -166,6 +215,9 @@ model Enrollment {
   enrollmentDate  DateTime      @default(now())
   status          String        @default("REGISTERED") // REGISTERED, CANCELLED
   remarks         String?
+  registeredById   String?
+  registeredByName String?
+  registeredByRole String?
   createdAt       DateTime      @default(now())
 
   @@unique([studentId, academicYearId])
@@ -241,6 +293,9 @@ model Invoice {
   balance         Float
   dueDate         DateTime
   status          InvoiceStatus @default(UNPAID)
+  createdById     String?
+  createdByName   String?
+  createdByRole   String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -257,6 +312,8 @@ model Payment {
   paymentMethod PaymentMethod @default(CASH)
   reference     String?       // Numéro transaction Wave / Chèque
   receivedBy    String?       // Nom de l'agent ou comptable
+  receivedById  String?
+  receivedByRole String?
   notes         String?
   createdAt     DateTime      @default(now())
 }
@@ -272,6 +329,8 @@ model Attendance {
   reason      String?
   justified   Boolean          @default(false)
   checkInAt   DateTime?
+  checkInById String?
+  checkInByName String?
   remarks     String?
   createdAt   DateTime         @default(now())
 

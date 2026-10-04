@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserCheck, CreditCard, FileSpreadsheet, CalendarCheck, ScanLine,
-  Settings, LogOut, Shield, School, UserCog, Menu, X, KeyRound,
+  Settings, LogOut, Shield, School, UserCog, Menu, X, KeyRound, UserRound, Download,
 } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 
@@ -26,6 +26,9 @@ export const Layout: React.FC = () => {
     { to: '/attendance/scan', label: 'Scanner les QR codes', icon: ScanLine, roles: ['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE'] },
     { to: '/classes', label: 'Classes & Matières', icon: Settings, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT'] },
     { to: '/users', label: 'Gestion des utilisateurs', icon: UserCog, roles: ['ADMIN'] },
+    { to: '/staff-attendance', label: 'Pointage des professeurs', icon: CalendarCheck, roles: ['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE'] },
+    { to: '/data-transfer', label: 'Import / export', icon: Download, roles: ['ADMIN'] },
+    { to: '/profile', label: 'Mon profil', icon: UserRound, roles: roleNames },
     { to: '/password', label: 'Mon mot de passe', icon: KeyRound, roles: roleNames },
   ].filter((item) => hasRole(item.roles));
 
@@ -39,7 +42,7 @@ export const Layout: React.FC = () => {
       {mobileMenuOpen && <button aria-label="Fermer le menu" onClick={() => setMobileMenuOpen(false)} className="fixed inset-0 z-30 bg-slate-950/50 md:hidden" />}
       <aside className={`fixed inset-y-0 left-0 z-40 flex w-72 max-w-[85vw] flex-col bg-slate-900 text-white shadow-xl transition-transform md:static md:z-20 md:w-64 md:max-w-none md:translate-x-0 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center justify-between border-b border-slate-800 p-4 sm:p-5">
-          <div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-lg"><School className="h-6 w-6" /></div><div><h1 className="text-base font-bold leading-tight">Oumou Salamat</h1><p className="text-xs font-medium uppercase tracking-wider text-emerald-400">École Primaire</p></div></div>
+          <div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-lg"><School className="h-6 w-6" /></div><div><h1 className="text-base font-bold leading-tight">As Sakina</h1><p className="text-xs font-medium uppercase tracking-wider text-emerald-400">École Primaire</p></div></div>
           <button onClick={() => setMobileMenuOpen(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 md:hidden" aria-label="Fermer"><X className="h-5 w-5" /></button>
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">

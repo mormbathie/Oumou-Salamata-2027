@@ -38,7 +38,7 @@ async function bootstrap() {
 
   // Swagger Documentation Setup
   const config = new DocumentBuilder()
-    .setTitle('Système de Gestion Scolaire - École Oumou Salamat')
+    .setTitle('Système de Gestion Scolaire - École As Sakina')
     .setDescription(
       'API REST complète pour la gestion d\'une école primaire: Inscriptions, Élèves, Parents, Factures & Paiements, Bulletins scolaires, Présences & Absences, sécurisé avec Keycloak.',
     )
@@ -48,7 +48,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, {
-    customSiteTitle: 'Documentation API - Oumou Salamat',
+    customSiteTitle: 'Documentation API - As Sakina',
   });
 
   const port = process.env.PORT || 3001;
