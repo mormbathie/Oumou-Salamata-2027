@@ -5,6 +5,13 @@ continue d'utiliser la version indiquée dans `deploy/production.env` ; ne
 changez pas ce manifeste pour un simple test local. Les identifiants techniques
 Keycloak, les noms des images Docker et les URL `sslip.io` restent inchangés.
 
+Dans l'environnement de revue actuellement lancé, ouvrir
+`http://127.0.0.1:5176/`. Son proxy `/api` utilise le port 3003 et la base
+locale isolée `as_sakina_test2`, sans les données scolaires de production.
+Cette adresse fonctionne tant que les processus de développement restent
+ouverts dans cette session. Le client du Keycloak local a été autorisé à
+rediriger vers ce port ; cette autorisation locale ne modifie pas le VPS.
+
 ## Fonctions à vérifier
 
 - Dans **Mon profil**, changer prénom, nom, téléphone et adresse e-mail. Un
