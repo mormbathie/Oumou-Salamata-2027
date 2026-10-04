@@ -33,8 +33,12 @@ export const StaffAttendancePage = () => {
 
   const scan = useCallback(async (raw: string) => {
     const value = raw.trim();
-    if (!value || busyRef.current || (lastScanRef.current.code === value && Date.now() - lastScanRef.current.at < 5000)) return;
-    lastScanRef.current = { code: value, at: Date.now() };
+    if (!value) return;
+    const now = Date.now();
+    const previous = lastScanRef.current;
+    // Every camera frame refreshes the sighting: a held QR code is one scan.
+    lastScanRef.current = { code: value, at: now };
+    if (busyRef.current || (previous.code === value && now - previous.at < 5000)) return;
     busyRef.current = true; setBusy(true); setError(''); setMessage('');
     try {
       const result = await staffAttendanceApi.scan(value);
