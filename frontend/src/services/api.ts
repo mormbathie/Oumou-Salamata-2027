@@ -37,6 +37,8 @@ api.interceptors.response.use(
 );
 
 export const usersApi = {
+  twoFactorStatus: () => api.get('/users/me/two-factor').then(r => r.data),
+  enableTwoFactor: () => api.post('/users/me/two-factor').then(r => r.data),
   getAll: () => api.get('/users').then((r) => r.data),
   create: (data: { username: string; email: string; firstName: string; lastName: string; password: string; role: string }) =>
     api.post('/users', data).then((r) => r.data),
@@ -44,7 +46,7 @@ export const usersApi = {
     api.patch(`/users/${id}/status`, { enabled }).then((r) => r.data),
   delete: (id: string) => api.delete(`/users/${id}`).then((r) => r.data),
   resetPassword: (id: string, password: string) => api.post(`/users/${id}/reset-password`, { password }).then((r) => r.data),
-  changeOwnPassword: (currentPassword: string, newPassword: string) => api.post('/users/me/password', { currentPassword, newPassword }).then((r) => r.data),
+  changeOwnPassword: (currentPassword: string, newPassword: string, totp?: string) => api.post('/users/me/password', { currentPassword, newPassword, totp }).then((r) => r.data),
   update: (id: string, data: { email: string; firstName: string; lastName: string; role: string }) => api.patch(`/users/${id}`, data).then((r) => r.data),
   getOwnProfile: () => api.get('/users/me').then((r) => r.data),
   updateOwnProfile: (data: { firstName: string; lastName: string; email: string; phone: string }) => api.patch('/users/me', data).then((r) => r.data),

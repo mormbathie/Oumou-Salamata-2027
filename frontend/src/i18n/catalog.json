@@ -3143,5 +3143,95 @@
     "fr": "En retard de paiement",
     "en": "Overdue",
     "ar": "متأخرة عن الاستحقاق"
+  },
+  "Authenticator code (if enabled)": {
+    "fr": "Code de l’application d’authentification (si activé)",
+    "en": "Authenticator code (if enabled)",
+    "ar": "رمز تطبيق المصادقة (إذا كان مفعّلاً)"
+  },
+  "If this address belongs to an active account, a reset link will be sent.": {
+    "fr": "Si cette adresse correspond à un compte actif, un lien de réinitialisation vous sera envoyé.",
+    "en": "If this address belongs to an active account, a reset link will be sent.",
+    "ar": "إذا كان هذا العنوان مرتبطاً بحساب نشط، فسيُرسل إليه رابط لإعادة تعيين كلمة المرور."
+  },
+  "Reset my password": {
+    "fr": "Réinitialiser mon mot de passe",
+    "en": "Reset my password",
+    "ar": "إعادة تعيين كلمة المرور"
+  },
+  "Send reset link": {
+    "fr": "Envoyer le lien de réinitialisation",
+    "en": "Send reset link",
+    "ar": "إرسال رابط إعادة التعيين"
+  },
+  "The link expires after 15 minutes. Check your spam folder too.": {
+    "fr": "Le lien expire après 15 minutes. Consultez aussi les courriers indésirables.",
+    "en": "The link expires after 15 minutes. Check your spam folder too.",
+    "ar": "تنتهي صلاحية الرابط بعد 15 دقيقة. تحقق أيضاً من البريد غير المرغوب فيه."
+  },
+  "Back to sign in": {
+    "fr": "Retour à la connexion",
+    "en": "Back to sign in",
+    "ar": "العودة إلى تسجيل الدخول"
+  },
+  "Forgot password?": {
+    "fr": "Mot de passe oublié ?",
+    "en": "Forgot password?",
+    "ar": "هل نسيت كلمة المرور؟"
+  },
+  "Two-factor authentication": {
+    "fr": "Double authentification",
+    "en": "Two-factor authentication",
+    "ar": "المصادقة الثنائية"
+  },
+  "An activation link has been sent. Open it to scan the QR code with your authenticator app.": {
+    "fr": "Un lien d’activation a été envoyé. Ouvrez-le pour scanner le QR code avec votre application d’authentification.",
+    "en": "An activation link has been sent. Open it to scan the QR code with your authenticator app.",
+    "ar": "تم إرسال رابط التفعيل. افتحه لمسح رمز QR باستخدام تطبيق المصادقة."
+  },
+  "Use an authenticator app to get a temporary code when signing in. Keep access to your phone; contact the school if it is lost.": {
+    "fr": "Utilisez une application d’authentification pour obtenir un code temporaire à la connexion. Gardez l’accès à votre téléphone ; en cas de perte, contactez l’école.",
+    "en": "Use an authenticator app to get a temporary code when signing in. Keep access to your phone; contact the school if it is lost.",
+    "ar": "استخدم تطبيق المصادقة للحصول على رمز مؤقت عند تسجيل الدخول. احتفظ بإمكانية الوصول إلى هاتفك واتصل بالمدرسة إذا فقدته."
+  },
+  "Status unavailable": {
+    "fr": "Statut indisponible",
+    "en": "Status unavailable",
+    "ar": "الحالة غير متاحة"
+  },
+  "Enabled": {
+    "fr": "Activée",
+    "en": "Enabled",
+    "ar": "مفعّلة"
+  },
+  "Not enabled": {
+    "fr": "Non activée",
+    "en": "Not enabled",
+    "ar": "غير مفعّلة"
+  },
+  "Activate with an authenticator app": {
+    "fr": "Activer avec une application d’authentification",
+    "en": "Activate with an authenticator app",
+    "ar": "التفعيل باستخدام تطبيق المصادقة"
+  },
+  "Verify your email address before enabling two-factor authentication.": {
+    "fr": "Vérifiez votre adresse e-mail avant d’activer la double authentification.",
+    "en": "Verify your email address before enabling two-factor authentication.",
+    "ar": "تحقق من بريدك الإلكتروني قبل تفعيل المصادقة الثنائية."
+  },
+  "Identifiant, mot de passe ou code de vérification incorrect.": {
+    "fr": "Identifiant, mot de passe ou code de vérification incorrect.",
+    "en": "Identifiant, mot de passe ou code de vérification incorrect.",
+    "ar": "اسم المستخدم أو كلمة المرور أو رمز التحقق غير صحيح."
+  },
+  "Vérifiez votre adresse e-mail avant d’activer la double authentification.": {
+    "fr": "Vérifiez votre adresse e-mail avant d’activer la double authentification.",
+    "en": "Vérifiez votre adresse e-mail avant d’activer la double authentification.",
+    "ar": "تحقق من بريدك الإلكتروني قبل تفعيل المصادقة الثنائية."
+  },
+  "Veuillez patienter avant de demander un nouveau lien.": {
+    "fr": "Veuillez patienter avant de demander un nouveau lien.",
+    "en": "Veuillez patienter avant de demander un nouveau lien.",
+    "ar": "يرجى الانتظار قبل طلب رابط جديد."
   }
 }

@@ -33,3 +33,18 @@ describe('AuthService Keycloak session', () => {
     expect(prisma.user.findFirst).not.toHaveBeenCalled();
   });
 });
+
+describe('Second factor at sign-in', () => {
+  afterEach(() => jest.restoreAllMocks());
+  it('forwards the authenticator code to the identity provider', async () => {
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({ ok: true, json: async () => ({ access_token: 'test-token' }) } as Response);
+    const service = new AuthService({ get: () => undefined } as any, { user: { findFirst: async () => null } } as any);
+    await service.directLogin('awa', 'test-password', '123456');
+    expect((fetchMock.mock.calls[0][1]?.body as URLSearchParams).get('totp')).toBe('123456');
+  });
+  it('refuses a failed password or OTP exchange without issuing a session', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({ ok: false, json: async () => ({ error: 'invalid_grant' }) } as Response);
+    const service = new AuthService({ get: () => undefined } as any, {} as any);
+    await expect(service.directLogin('awa', 'test-password', '000000')).rejects.toThrow('code de vérification incorrect');
+  });
+});

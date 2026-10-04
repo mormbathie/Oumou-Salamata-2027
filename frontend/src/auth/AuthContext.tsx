@@ -17,7 +17,7 @@ interface AuthContextType {
   initializing: boolean;
   user: AuthUser | null;
   token: string | null;
-  directLogin: (username: string, password: string) => Promise<void>;
+  directLogin: (username: string, password: string, totp?: string) => Promise<void>;
   logout: () => void;
   hasRole: (roles: string | string[]) => boolean;
 }
@@ -105,14 +105,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => { window.clearInterval(interval); window.removeEventListener('focus', renew); };
   }, []);
 
-  const directLogin = async (username: string, password: string) => {
+  const directLogin = async (username: string, password: string, totp?: string) => {
     let response: Response;
     try {
       response = await fetch(`${apiBaseUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ username: username.trim(), password }),
+        body: JSON.stringify({ username: username.trim(), password, totp }),
       });
     } catch {
       throw new Error(t("Unable to reach the server. Check that the application services are running."));

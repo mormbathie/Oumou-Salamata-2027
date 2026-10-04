@@ -11,6 +11,13 @@ export const ProfilePage = () => {
   const { user } = useAuth();
   const isTeacher = Boolean(user?.roles?.includes('ENSEIGNANT'));
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [twoFactor, setTwoFactor] = useState<boolean | null>(null);
+  useEffect(() => { void usersApi.twoFactorStatus().then(value => setTwoFactor(value.enabled)).catch(() => setTwoFactor(null)); }, []);
+  const enableTwoFactor = async () => {
+    setError(''); setMessage('');
+    try { await usersApi.enableTwoFactor(); setMessage(t('An activation link has been sent. Open it to scan the QR code with your authenticator app.')); }
+    catch (err: any) { setError(err.response?.data?.message || t('Unable to complete the operation.')); }
+  };
   const [history, setHistory] = useState<any>(null);
   const [qr, setQr] = useState('');
   const [saving, setSaving] = useState(false);
@@ -54,6 +61,13 @@ export const ProfilePage = () => {
         <div className="sm:col-span-2 text-sm">{t("Email:")}<strong className={profile.emailVerified ? 'text-emerald-700' : 'text-amber-700'}>{profile.emailVerified ? t("verified") : t("not verified")}</strong>{!profile.emailVerified && <button type="button" onClick={verify} className="ml-3 text-emerald-700 underline">{t("Send verification link")}</button>}</div>
         <div className="sm:col-span-2 flex flex-wrap gap-3"><button disabled={saving} className="rounded-lg bg-emerald-700 px-5 py-3 font-semibold text-white disabled:opacity-50">{saving ? t("Saving…") : t("Save profile")}</button><Link to="/password" className="rounded-lg border border-slate-300 px-5 py-3 font-semibold">{t("Change my password")}</Link></div>
       </form>}
+      <section className="mt-6 border-t pt-5">
+        <h3 className="font-bold">{t('Two-factor authentication')}</h3>
+        <p className="mt-2 text-sm text-slate-600">{t('Use an authenticator app to get a temporary code when signing in. Keep access to your phone; contact the school if it is lost.')}</p>
+        <p className="mt-2 text-sm">{twoFactor === null ? t('Status unavailable') : twoFactor ? t('Enabled') : t('Not enabled')}</p>
+        {twoFactor === false && <button onClick={enableTwoFactor} disabled={!profile?.emailVerified} className="mt-3 rounded-lg bg-emerald-700 px-4 py-3 text-white disabled:opacity-50">{t('Activate with an authenticator app')}</button>}
+        {!profile?.emailVerified && <p className="mt-2 text-sm text-amber-700">{t('Verify your email address before enabling two-factor authentication.')}</p>}
+      </section>
       {error && <p role="alert" className="mt-4 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
       {message && <p role="status" className="mt-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">{message}</p>}
     </div>

@@ -1,3 +1,4 @@
+import { AccountSecurityService } from '../auth/account-security.service';
 import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -12,7 +13,7 @@ import { UsersService } from './users.service';
 @Roles('ADMIN')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, private readonly security: AccountSecurityService) {}
 
   @Get()
   findAll() {
@@ -26,9 +27,17 @@ export class UsersController {
 
   @Post('me/password')
   @Roles()
-  changeOwnPassword(@CurrentUser() actor: any, @Body() body: { currentPassword: string; newPassword: string }) {
-    return this.usersService.changeOwnPassword(actor, body?.currentPassword, body?.newPassword);
+  changeOwnPassword(@CurrentUser() actor: any, @Body() body: { currentPassword: string; newPassword: string; totp?: string }) {
+    return this.usersService.changeOwnPassword(actor, body?.currentPassword, body?.newPassword, body?.totp);
   }
+
+  @Get('me/two-factor')
+  @Roles()
+  twoFactorStatus(@CurrentUser() actor: any) { return this.security.status(actor.userId); }
+
+  @Post('me/two-factor')
+  @Roles()
+  enrollTwoFactor(@CurrentUser() actor: any) { return this.security.enroll(actor.userId); }
 
   @Get('me')
   @Roles()

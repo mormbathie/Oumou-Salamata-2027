@@ -206,13 +206,13 @@ export class UsersService {
     return { updated: true, temporary: false };
   }
 
-  async changeOwnPassword(actor: { userId: string; username: string }, currentPassword: string, newPassword: string) {
+  async changeOwnPassword(actor: { userId: string; username: string }, currentPassword: string, newPassword: string, totp?: string) {
     if (!actor?.userId || !actor?.username) throw new BadRequestException('Utilisateur invalide.');
     if (!currentPassword || !newPassword || newPassword.length < 8) {
       throw new BadRequestException('Le mot de passe actuel et un nouveau mot de passe de 8 caractères minimum sont obligatoires.');
     }
     if (currentPassword === newPassword) throw new BadRequestException('Choisissez un nouveau mot de passe différent.');
-    await this.auth.directLogin(actor.username, currentPassword);
+    await this.auth.directLogin(actor.username, currentPassword, totp);
     await this.request(`/users/${encodeURIComponent(actor.userId)}/reset-password`, {
       method: 'PUT',
       body: JSON.stringify({ type: 'password', value: newPassword, temporary: false }),

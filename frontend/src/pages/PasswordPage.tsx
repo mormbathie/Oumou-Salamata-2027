@@ -5,6 +5,7 @@ import { usersApi } from '../services/api';
 
 export const PasswordPage: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
+  const [totp, setTotp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [saving, setSaving] = useState(false);
@@ -19,7 +20,7 @@ export const PasswordPage: React.FC = () => {
     if (newPassword === currentPassword) { setError(t("Choose a different new password.")); return; }
     setSaving(true);
     try {
-      await usersApi.changeOwnPassword(currentPassword, newPassword);
+      await usersApi.changeOwnPassword(currentPassword, newPassword, totp);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -39,6 +40,7 @@ export const PasswordPage: React.FC = () => {
       <label className="block text-sm font-medium text-slate-700">{t("Current password")}<input required type="password" autoComplete="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 p-3" /></label>
       <label className="block text-sm font-medium text-slate-700">{t("New password")}<input required minLength={8} type="password" autoComplete="new-password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 p-3" /></label>
       <label className="block text-sm font-medium text-slate-700">{t("Confirm new password")}<input required minLength={8} type="password" autoComplete="new-password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 p-3" /></label>
+      <label className="block text-sm font-medium">{t('Authenticator code (if enabled)')}<input value={totp} onChange={e => setTotp(e.target.value.replace(/\D/g, '').slice(0, 6))} autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" className="mt-1 w-full rounded-lg border p-3" /></label>
       {error && <p role="alert" className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
       {message && <p role="status" className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">{message}</p>}
       <button disabled={saving} className="w-full rounded-lg bg-emerald-700 px-4 py-3 font-semibold text-white disabled:opacity-50">{saving ? t("Updating…") : t("Change my password")}</button>

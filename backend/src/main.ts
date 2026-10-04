@@ -6,6 +6,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Production requests reach the API through the single trusted reverse proxy.
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   // Global API Prefix
   app.setGlobalPrefix('api');
 

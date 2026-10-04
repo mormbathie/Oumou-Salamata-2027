@@ -39,7 +39,7 @@ describe('UsersService password changes', () => {
 
     await service.changeOwnPassword({ userId: 'my-id', username: 'awa' }, 'old-password', 'new-password');
 
-    expect(auth.directLogin).toHaveBeenCalledWith('awa', 'old-password');
+    expect(auth.directLogin).toHaveBeenCalledWith('awa', 'old-password', undefined);
     expect(request).toHaveBeenCalledWith('/users/my-id/reset-password', {
       method: 'PUT',
       body: JSON.stringify({ type: 'password', value: 'new-password', temporary: false }),

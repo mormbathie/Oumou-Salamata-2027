@@ -32,14 +32,14 @@ export class AuthService {
       if (/account is not fully set up/i.test(description)) {
         throw new ForbiddenException({ code: 'PASSWORD_UPDATE_REQUIRED', message: 'Votre compte nécessite une mise à jour. Contactez un administrateur pour réinitialiser le mot de passe.' });
       }
-      throw new UnauthorizedException('Identifiant ou mot de passe incorrect.');
+      throw new UnauthorizedException('Identifiant, mot de passe ou code de vérification incorrect.');
     }
     return response.json();
   }
 
-  async directLogin(username: string, password: string) {
+  async directLogin(username: string, password: string, totp?: string) {
     try {
-      const tokenData = await this.exchangeToken({ grant_type: 'password', username, password });
+      const tokenData = await this.exchangeToken({ grant_type: 'password', username, password, ...(totp ? { totp } : {}) });
 
       // Find or sync local user in db
       const localUser = await this.prisma.user.findFirst({ where: { username } });

@@ -219,3 +219,37 @@ le VPS, puis mettre à jour `.env`, CORS, les origines/redirections du client
 Keycloak et l'attribut `frontendUrl` du realm existant. Recréer les services et
 vérifier une nouvelle connexion. Conserver les bases, documents et mots de passe.
 Le script de bootstrap sert uniquement à initialiser une installation neuve.
+
+## Activer les e-mails avec Zimbra OVH
+
+Le script `deploy/configure-email.py` configure la boîte
+`contact@assakina-school.com` dans le service de connexion existant. Il demande
+son mot de passe dans un terminal interactif, teste une connexion SMTP chiffrée
+vers `smtp.mail.ovh.net:465`, envoie un message de test à cette même boîte puis
+enregistre les paramètres. Le secret ne figure ni dans Git ni dans la commande.
+
+```bash
+ssh -t ubuntu@57.131.160.254 'sudo python3 /opt/oumou-salamat/deploy/configure-email.py'
+```
+
+Vérifier la réception du test dans Zimbra, puis demander un lien depuis
+**Mon profil** avec une adresse réelle. Aucun redémarrage n'est nécessaire.
+La vérification obligatoire des adresses et le double facteur restent distincts
+et ne sont pas activés par ce script.
+
+## Double facteur et récupération de mot de passe
+
+Dans **Mon profil**, les utilisateurs ayant une adresse vérifiée peuvent demander
+un e-mail d’activation du deuxième facteur. Le lien configure un authentificateur
+TOTP natif ; les nouvelles connexions exigent alors le mot de passe et le code.
+Les comptes existants ne sont pas bloqués tant que leur activation n’est pas
+terminée. Le changement de mot de passe accepte aussi le code TOTP.
+
+Sur la connexion, **Mot de passe oublié ?** envoie une action UPDATE_PASSWORD
+à l’adresse du compte actif. Les liens ont une durée de 15 minutes. Les réponses
+restent identiques pour les adresses absentes, désactivées ou limitées. Les
+demandes sont limitées à cinq par adresse IP et deux par adresse e-mail en
+quinze minutes, en mémoire du processus. Le deuxième facteur est conservé lors
+de la récupération du mot de passe. En cas de téléphone perdu, une récupération
+d’identité par l’administration est nécessaire ; aucun retrait automatique du
+facteur n’est proposé. Les paramètres OTP natifs du realm doivent être conservés.

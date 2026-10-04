@@ -1,3 +1,4 @@
+import { AccountSecurityService } from './account-security.service';
 import { Controller, Get, Post, Body, UseGuards, Req, Res, UnauthorizedException } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
@@ -9,7 +10,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @ApiTags('Authentification & Keycloak')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly security: AccountSecurityService) {}
 
   private sessionCookie(request: Request, response: Response, token: string) {
     response.cookie('school_refresh', token, {
@@ -39,11 +40,17 @@ export class AuthController {
       required: ['username', 'password'],
     },
   })
-  async login(@Body() body: { username: string; password: string }, @Req() request: Request, @Res({ passthrough: true }) response: Response) {
-    const tokens = await this.authService.directLogin(body.username, body.password);
+  async login(@Body() body: { username: string; password: string; totp?: string }, @Req() request: Request, @Res({ passthrough: true }) response: Response) {
+    const tokens = await this.authService.directLogin(body.username, body.password, body.totp);
     this.sessionCookie(request, response, tokens.refresh_token);
     const { refresh_token: _refreshToken, ...publicTokens } = tokens;
     return publicTokens;
+  }
+
+  @Public()
+  @Post('forgot-password')
+  forgotPassword(@Body() body: { email: string }, @Req() request: Request) {
+    return this.security.forgotPassword(body?.email, request.ip || 'unknown');
   }
 
   @Public()

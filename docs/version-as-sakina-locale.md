@@ -48,12 +48,12 @@ rediriger vers ce port ; cette autorisation locale ne modifie pas le VPS.
 ## Vérification des adresses e-mail
 
 La saisie vérifie la syntaxe d'une adresse ; seul le lien envoyé par Keycloak
-permet d'en confirmer la possession. Aucun service SMTP n'est encore configuré.
+permet d'en confirmer la possession. Le SMTP Zimbra OVH est configuré en production.
 Dans **Mon profil**, « Envoyer un lien de vérification » deviendra opérationnel
 après configuration SMTP du realm Keycloak avec les paramètres et identifiants
 fournis par le futur prestataire. Tester l'envoi vers une adresse réelle avant
 d'activer la vérification obligatoire ou l'authentification à deux facteurs.
-Cette version n'active pas encore le double facteur. Les nouveaux comptes sont
+Le profil permet maintenant d’activer un authentificateur TOTP par un lien envoyé à une adresse vérifiée. Les nouveaux comptes sont
 créés avec `emailVerified=false` ; un compte déjà marqué vérifié dans Keycloak
 conserve son état jusqu'à ce que son adresse soit modifiée.
 
