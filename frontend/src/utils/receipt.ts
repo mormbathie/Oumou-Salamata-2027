@@ -1,3 +1,4 @@
+import { t, locale, getLanguage, roleLabel } from "../i18n";
 type ReceiptRecord = {
   payment: {
     paymentNumber: string;
@@ -37,12 +38,12 @@ const escapeHtml = (value: unknown) => {
 };
 
 const money = (value: number) =>
-  new Intl.NumberFormat('fr-FR').format(Number(value) || 0) + ' FCFA';
+  new Intl.NumberFormat(locale()).format(Number(value) || 0) + ' FCFA';
 
 export const printPaymentReceipt = (receipt: ReceiptRecord) => {
   const printWindow = window.open('', '_blank', 'width=900,height=700');
   if (!printWindow) {
-    window.alert('Autorisez les fenêtres contextuelles pour imprimer le reçu.');
+    window.alert(t("Allow pop-ups to print the receipt."));
     return;
   }
   printWindow.opener = null;
@@ -53,25 +54,25 @@ export const printPaymentReceipt = (receipt: ReceiptRecord) => {
   const studentName = (student.firstName || '') + ' ' + (student.lastName || '');
   const parentName = ((parent.firstName || '') + ' ' + (parent.lastName || '')).trim();
   const classroom = student.enrollments?.[0]?.classroom?.name || '—';
-  const date = new Date(payment.paymentDate).toLocaleDateString('fr-FR');
+  const date = new Date(payment.paymentDate).toLocaleDateString(locale());
   const paymentMethods: Record<string, string> = {
-    CASH: 'Espèces',
+    CASH: t("Cash"),
     WAVE: 'Wave',
     ORANGE_MONEY: 'Orange Money',
-    BANK_TRANSFER: 'Virement bancaire',
-    CHECK: 'Chèque',
+    BANK_TRANSFER: t("Bank transfer"),
+    CHECK: t("Check"),
   };
   const statuses: Record<string, string> = {
-    PAID: 'Payée',
-    PARTIAL: 'Partiellement payée',
-    UNPAID: 'Impayée',
-    OVERDUE: 'En retard',
+    PAID: t("Paid"),
+    PARTIAL: t("Partially paid"),
+    UNPAID: t("Unpaid"),
+    OVERDUE: t("Late"),
   };
 
   const content = [
-    '<!doctype html><html lang="fr"><head><meta charset="utf-8">',
+    '<!doctype html><html lang="' + getLanguage() + '" dir="' + (getLanguage() === 'ar' ? 'rtl' : 'ltr') + '"><head><meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
-    '<title>Reçu ', escapeHtml(payment.paymentNumber), '</title>',
+    '<title>', escapeHtml(t('Receipt number')), ' ', escapeHtml(payment.paymentNumber), '</title>',
     '<style>',
     '@page{size:A4;margin:18mm}*{box-sizing:border-box}',
     'body{margin:0;color:#172033;font:14px/1.5 Arial,Helvetica,sans-serif}',
@@ -95,36 +96,35 @@ export const printPaymentReceipt = (receipt: ReceiptRecord) => {
     'footer{margin-top:26px;color:#64748b;text-align:center;font-size:10px}',
     '@media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}',
     '</style></head><body><main>',
-    '<header><div class="mark">AS</div><h1>École As Sakina</h1>',
-    '<p>Enseignement élémentaire · Dakar, Sénégal</p>',
-    '<p>Tél. +221 33 800 00 00</p>',
-    '<div class="badge">REÇU DE CAISSE SCOLAIRE</div></header>',
-    '<section class="meta"><div><span class="label">Numéro du reçu</span><span class="value mono">',
+    '<header><div class="mark">AS</div><h1>' + escapeHtml(t("As Sakina School")) + '</h1>',
+    '<p>' + escapeHtml(t("Primary education \u00b7 Dakar, Senegal")) + '</p>',
+    '<div class="badge">' + escapeHtml(t("SCHOOL PAYMENT RECEIPT")) + '</div></header>',
+    '<section class="meta"><div><span class="label">' + escapeHtml(t("Receipt number")) + '</span><span class="value mono">',
     escapeHtml(payment.paymentNumber), '</span></div><div style="text-align:right">',
-    '<span class="label">Date du paiement</span><span class="value">', escapeHtml(date),
+    '<span class="label">' + escapeHtml(t("Payment date")) + '</span><span class="value">', escapeHtml(date),
     '</span></div></section>',
     '<section class="details">',
-    '<div class="row"><span>Élève</span><span>', escapeHtml(studentName.trim()), '</span></div>',
-    '<div class="row"><span>Matricule</span><span class="mono">', escapeHtml(student.matricule), '</span></div>',
-    '<div class="row"><span>Classe</span><span>', escapeHtml(classroom), '</span></div>',
-    '<div class="row"><span>Parent / payeur</span><span>', escapeHtml(parentName || 'Non renseigné'), '</span></div>',
-    '<div class="row"><span>Facture</span><span class="mono">', escapeHtml(invoice.invoiceNumber), '</span></div>',
-    '<div class="row"><span>Motif</span><span>', escapeHtml(invoice.title), '</span></div>',
-    '<div class="row"><span>Mode de paiement</span><span>',
+    '<div class="row"><span>' + escapeHtml(t("Student")) + '</span><span>', escapeHtml(studentName.trim()), '</span></div>',
+    '<div class="row"><span>' + escapeHtml(t("Student ID")) + '</span><span class="mono">', escapeHtml(student.matricule), '</span></div>',
+    '<div class="row"><span>' + escapeHtml(t("Class")) + '</span><span>', escapeHtml(classroom), '</span></div>',
+    '<div class="row"><span>' + escapeHtml(t("Parent / payer")) + '</span><span>', escapeHtml(parentName || t("Not provided")), '</span></div>',
+    '<div class="row"><span>' + escapeHtml(t("Invoice")) + '</span><span class="mono">', escapeHtml(invoice.invoiceNumber), '</span></div>',
+    '<div class="row"><span>' + escapeHtml(t("Description")) + '</span><span>', escapeHtml(invoice.title), '</span></div>',
+    '<div class="row"><span>' + escapeHtml(t("Payment method")) + '</span><span>',
     escapeHtml(paymentMethods[payment.paymentMethod] || payment.paymentMethod),
-    payment.reference ? ' · Réf. ' + escapeHtml(payment.reference) : '', '</span></div></section>',
-    '<p><span class="label">Paiement enregistré par</span><strong>', escapeHtml(payment.receivedBy || 'Non renseigné'),
-    payment.receivedByRole ? ' · ' + escapeHtml(payment.receivedByRole) : '', '</strong></p>',
-    '<section class="amount"><span>Montant encaissé</span><strong>', money(payment.amount), '</strong></section>',
-    '<section class="totals"><div class="total"><span class="label">Montant facture</span><strong>',
-    money(invoice.amount), '</strong></div><div class="total"><span class="label">Total payé</span><strong>',
-    money(invoice.paidAmount), '</strong></div><div class="total"><span class="label">Reste à payer</span><strong>',
+    payment.reference ? ' · Ref. ' + escapeHtml(payment.reference) : '', '</span></div></section>',
+    '<p><span class="label">' + escapeHtml(t("Payment recorded by")) + '</span><strong>', escapeHtml(payment.receivedBy || t("Not provided")),
+    payment.receivedByRole ? ' · ' + escapeHtml(roleLabel(payment.receivedByRole)) : '', '</strong></p>',
+    '<section class="amount"><span>' + escapeHtml(t("Amount received")) + '</span><strong>', money(payment.amount), '</strong></section>',
+    '<section class="totals"><div class="total"><span class="label">' + escapeHtml(t("Invoice amount")) + '</span><strong>',
+    money(invoice.amount), '</strong></div><div class="total"><span class="label">' + escapeHtml(t("Total paid")) + '</span><strong>',
+    money(invoice.paidAmount), '</strong></div><div class="total"><span class="label">' + escapeHtml(t("Balance due")) + '</span><strong>',
     money(invoice.balance), '</strong></div></section>',
-    '<p><span class="label">Statut de la facture</span><strong>',
+    '<p><span class="label">' + escapeHtml(t("Invoice status")) + '</span><strong>',
     escapeHtml(statuses[invoice.status] || invoice.status), '</strong></p>',
-    '<section class="signatures"><div class="signature">Signature du parent / payeur</div>',
-    '<div class="signature">Cachet et signature de la caisse</div></section>',
-    '<footer>Merci de conserver ce reçu comme preuve de paiement.</footer>',
+    '<section class="signatures"><div class="signature">' + escapeHtml(t("Parent / payer signature")) + '</div>',
+    '<div class="signature">' + escapeHtml(t("School office stamp and signature")) + '</div></section>',
+    '<footer>' + escapeHtml(t("Please keep this receipt as proof of payment.")) + '</footer>',
     '</main><script>window.addEventListener("load",function(){setTimeout(function(){window.focus();window.print();},250)});</script>',
     '</body></html>',
   ].join('');

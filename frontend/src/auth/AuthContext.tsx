@@ -1,3 +1,4 @@
+import { t, translateMessage } from "../i18n/index";
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { clearSession, refreshAccessToken, tokenExpiresSoon } from './session';
 
@@ -8,6 +9,7 @@ export interface AuthUser {
   firstName?: string;
   lastName?: string;
   roles: string[];
+  mustChangePassword?: boolean;
 }
 
 interface AuthContextType {
@@ -28,7 +30,7 @@ async function responseMessage(response: Response) {
   try {
     const data = await response.json();
     const message = data.message || data.error_description || data.error;
-    return Array.isArray(message) ? message.join(', ') : message;
+    return Array.isArray(message) ? message.map(translateMessage).join(', ') : translateMessage(message);
   } catch {
     return '';
   }
@@ -71,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           response = await fetch(`${apiBaseUrl}/auth/me`, { headers: { Authorization: `Bearer ${accessToken}` }, credentials: 'include' });
         }
         if (response.status === 401) { clearSession(); return; }
-        if (!response.ok) throw new Error('Profil momentanément indisponible.');
+        if (!response.ok) throw new Error(t("Profile temporarily unavailable."));
         const profile = await response.json();
         if (cancelled) return;
         setUser(profile);
@@ -113,7 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify({ username: username.trim(), password }),
       });
     } catch {
-      throw new Error('Impossible de joindre le serveur. Vérifiez que le backend et Keycloak sont démarrés.');
+      throw new Error(t("Unable to reach the server. Check that the application services are running."));
     }
 
     if (!response.ok) {
@@ -122,11 +124,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw Object.assign(new Error(body.message), { code: body.code });
       }
       const message = Array.isArray(body.message) ? body.message.join(', ') : body.message;
-      throw new Error(message || 'Identifiant ou mot de passe incorrect.');
+      throw new Error(translateMessage(message) || t("Identifiant ou mot de passe incorrect."));
     }
 
     const data = await response.json();
-    if (!data.access_token) throw new Error('Keycloak n’a pas renvoyé de jeton de connexion.');
+    if (!data.access_token) throw new Error(t("The sign-in service did not return an access token."));
 
     const profileResponse = await fetch(`${apiBaseUrl}/auth/me`, {
       headers: { Authorization: `Bearer ${data.access_token}` },
@@ -134,7 +136,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     if (!profileResponse.ok) {
       const message = await responseMessage(profileResponse);
-      throw new Error(message || 'Connexion obtenue, mais le profil utilisateur est inaccessible.');
+      throw new Error(message || t("Connexion obtenue, mais le profil utilisateur est inaccessible."));
     }
 
     const profile = await profileResponse.json();

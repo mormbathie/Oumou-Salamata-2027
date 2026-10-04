@@ -1,3 +1,4 @@
+import { t, locale } from "../i18n/index";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import {
@@ -21,15 +22,15 @@ function messageFrom(error: any) {
 }
 
 const statusLabels: Record<string, string> = {
-  PRESENT: 'Présent',
+  PRESENT: t("Present"),
   ABSENT: 'Absent',
-  LATE: 'En retard',
-  EXCUSED: 'Excusé',
+  LATE: t("Late"),
+  EXCUSED: t("Excused"),
 };
 
 function formatTime(value?: string | null) {
   if (!value) return '—';
-  return new Date(value).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Dakar' });
+  return new Date(value).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Dakar' });
 }
 
 export const AttendanceScanPage: React.FC = () => {
@@ -118,7 +119,7 @@ export const AttendanceScanPage: React.FC = () => {
     }).catch((error: any) => {
       if (disposed) return;
       setCameraError(error?.name === 'NotAllowedError'
-        ? 'Autorisez l’accès à la caméra dans le navigateur, ou saisissez le matricule ci-dessous.'
+        ? t("Allow camera access in your browser, or enter the student ID below.")
         : messageFrom(error));
       setCameraActive(false);
     });
@@ -148,14 +149,14 @@ export const AttendanceScanPage: React.FC = () => {
   }, [lastScan?.student?.id]);
 
   const finalizeAttendance = async () => {
-    if (!classroomId || !window.confirm('Clôturer l’appel ? Tous les élèves sans pointage enregistré seront marqués absents.')) return;
+    if (!classroomId || !window.confirm(t("Finalize attendance? Students without a check-in will be marked absent."))) return;
     setFinalizing(true);
     setScanError('');
     setFinalizeMessage('');
     try {
       const result = await attendanceApi.finalizeScan({ classroomId, date: today });
       setRoster(result);
-      setFinalizeMessage(result.absencesRecorded + ' absence(s) enregistrée(s). Un scan tardif corrigera l’absence et conservera l’heure d’arrivée.');
+      setFinalizeMessage(result.absencesRecorded + t(" absences recorded. A later scan will update the record and keep the arrival time."));
     } catch (error) {
       setScanError(messageFrom(error));
     } finally {
@@ -164,13 +165,13 @@ export const AttendanceScanPage: React.FC = () => {
   };
 
   const finalizeAllAttendance = async () => {
-    if (!window.confirm('Clôturer l’appel de toutes les classes de l’année en cours ? Les élèves sans pointage seront marqués absents.')) return;
+    if (!window.confirm(t("Finalize attendance for every class this school year? Students without a check-in will be marked absent."))) return;
     setFinalizing(true);
     setScanError('');
     setFinalizeMessage('');
     try {
       const result = await attendanceApi.finalizeAllScans(today);
-      setFinalizeMessage(`${result.classroomsFinalized} classe(s) clôturée(s), ${result.absencesRecorded} absence(s) enregistrée(s).`);
+      setFinalizeMessage(t("{0} classes finalized, {1} absences recorded.", [result.classroomsFinalized, result.absencesRecorded]));
       await loadRoster();
     } catch (error) {
       setScanError(messageFrom(error));
@@ -187,14 +188,14 @@ export const AttendanceScanPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 text-emerald-700">
             <ScanLine className="h-5 w-5" />
-            <span className="text-xs font-bold uppercase tracking-wider">Contrôle de présence</span>
+            <span className="text-xs font-bold uppercase tracking-wider">{t("Attendance check")}</span>
           </div>
-          <h2 className="mt-1 text-2xl font-bold text-slate-900">Scanner les élèves</h2>
-          <p className="mt-1 text-sm text-slate-500">Présentez la carte devant la caméra : l’élève et sa classe sont reconnus automatiquement.</p>
+          <h2 className="mt-1 text-2xl font-bold text-slate-900">{t("Scan students")}</h2>
+          <p className="mt-1 text-sm text-slate-500">{t("Show the card to the camera. The student and class are recognized automatically.")}</p>
         </div>
         <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
           <Clock3 className="h-4 w-4 text-emerald-600" />
-          {new Date(today + 'T12:00:00Z').toLocaleDateString('fr-FR', { dateStyle: 'full', timeZone: 'Africa/Dakar' })}
+          {new Date(today + 'T12:00:00Z').toLocaleDateString(locale(), { dateStyle: 'full', timeZone: 'Africa/Dakar' })}
         </div>
       </div>
 
@@ -204,27 +205,27 @@ export const AttendanceScanPage: React.FC = () => {
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
         <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs text-slate-600">{cameraActive ? 'Caméra active · scan prêt' : 'Caméra arrêtée'}</p>
+            <p className="text-xs text-slate-600">{cameraActive ? t("Camera on · ready to scan") : t("Camera off")}</p>
             <button type="button" onClick={() => { setCameraError(''); setCameraActive((active) => !active); }} disabled={scanBusy} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50 sm:w-auto">
               {cameraActive ? <CameraOff className="h-4 w-4" /> : <Camera className="h-4 w-4" />}
-              {cameraActive ? 'Arrêter la caméra' : 'Démarrer le scan'}
+              {cameraActive ? t("Stop camera") : t("Start scanning")}
             </button>
           </div>
 
           <div className="relative overflow-hidden rounded-xl bg-slate-950">
             <video ref={videoRef} className={'h-[min(42dvh,360px)] min-h-52 w-full object-contain ' + (cameraActive ? 'block' : 'hidden')} muted playsInline />
-            {!cameraActive && <div className="grid min-h-52 place-items-center p-6 text-center text-slate-400"><div><Camera className="mx-auto mb-3 h-10 w-10 text-slate-600" /><p className="text-sm">La caméra est arrêtée</p><p className="mt-1 text-xs">Démarrez le scan ou saisissez un matricule.</p></div></div>}
+            {!cameraActive && <div className="grid min-h-52 place-items-center p-6 text-center text-slate-400"><div><Camera className="mx-auto mb-3 h-10 w-10 text-slate-600" /><p className="text-sm">{t("The camera is off")}</p><p className="mt-1 text-xs">{t("Start scanning or enter a student ID.")}</p></div></div>}
             {lastScan && <div role="status" className="absolute inset-x-2 bottom-2 flex items-center gap-2 rounded-lg bg-emerald-950/95 p-2 text-white shadow-lg">
               {lastScanPhoto ? <img src={lastScanPhoto} alt="" className="h-11 w-11 shrink-0 rounded-md bg-white object-contain" /> : <UserRound className="h-8 w-8 shrink-0 text-emerald-200" />}
-              <div className="min-w-0"><p className="truncate text-sm font-bold">{lastScan.student.firstName} {lastScan.student.lastName}</p><p className="text-xs text-emerald-100">{lastScan.classroom.name} · {lastScan.duplicate ? 'Déjà pointé' : 'Présence enregistrée'}</p></div>
+              <div className="min-w-0"><p className="truncate text-sm font-bold">{lastScan.student.firstName} {lastScan.student.lastName}</p><p className="text-xs text-emerald-100">{lastScan.classroom.name} · {lastScan.duplicate ? t("Already checked in") : t("Attendance recorded")}</p></div>
             </div>}
-            {scanBusy && <div className="absolute inset-0 grid place-items-center bg-slate-950/70 text-sm font-semibold text-white">Enregistrement du pointage…</div>}
+            {scanBusy && <div className="absolute inset-0 grid place-items-center bg-slate-950/70 text-sm font-semibold text-white">{t("Recording attendance…")}</div>}
           </div>
           {cameraError && <p role="alert" className="text-xs text-amber-700">{cameraError}</p>}
 
           <form onSubmit={(event) => { event.preventDefault(); void processScan(manualCode); }} className="flex flex-col gap-2 sm:flex-row">
             <input value={manualCode} onChange={(event) => setManualCode(event.target.value)} placeholder="QR code ou matricule (ex. OS-2026-0001)" className="min-w-0 flex-1 rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-            <button type="submit" disabled={!manualCode.trim() || scanBusy} className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100 disabled:opacity-50"><Check className="h-4 w-4" />Pointer</button>
+            <button type="submit" disabled={!manualCode.trim() || scanBusy} className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100 disabled:opacity-50"><Check className="h-4 w-4" />{t("Pointer")}</button>
           </form>
 
           {lastScan && (
@@ -233,51 +234,50 @@ export const AttendanceScanPage: React.FC = () => {
               <div className="min-w-0 flex-1">
                 <p className="font-semibold text-emerald-950">{lastScan.student.firstName} {lastScan.student.lastName}</p>
                 <p className="font-mono text-xs text-emerald-800">{lastScan.student.matricule} · {lastScan.classroom.name}</p>
-                <p className="mt-1 text-xs text-emerald-800">{lastScan.duplicate ? 'Déjà pointé' : 'Présence enregistrée'} à {formatTime(lastScan.attendance.checkInAt)}{lastScan.attendance.checkInByName ? ` · par ${lastScan.attendance.checkInByName}` : ''}</p>
+                <p className="mt-1 text-xs text-emerald-800">{lastScan.duplicate ? t("Already checked in") : t("Attendance recorded")}  {t("at")}{formatTime(lastScan.attendance.checkInAt)}{lastScan.attendance.checkInByName ? t(" · by {0}", [lastScan.attendance.checkInByName]) : ''}</p>
               </div>
-              <span className="text-xs font-semibold text-emerald-800">Prêt pour le prochain scan</span>
+              <span className="text-xs font-semibold text-emerald-800">{t("Ready for the next scan")}</span>
             </div>
           )}
         </section>
 
         <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center justify-between gap-3">
-            <div><h3 className="font-bold text-slate-900">Pointage du jour</h3><p className="text-xs text-slate-500">{roster?.classroom?.name || 'Scannez une carte pour afficher sa classe'}</p></div>
+            <div><h3 className="font-bold text-slate-900">{t("Today’s attendance")}</h3><p className="text-xs text-slate-500">{roster?.classroom?.name || t("Scan a card to display its class")}</p></div>
             <button type="button" onClick={() => void loadRoster()} disabled={loadingRoster || !classroomId} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50">{loadingRoster ? 'Actualisation…' : 'Actualiser'}</button>
           </div>
-          <label className="block text-xs font-semibold text-slate-600">Consulter ou clôturer une classe
-            <select value={classroomId} onChange={(event) => setClassroomId(event.target.value)} disabled={loadingClasses || !classes.length} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm">
-              <option value="">Sélectionner pour consulter</option>
-              {classes.map((classroom) => <option key={classroom.id} value={classroom.id}>{classroom.name} · {classroom._count?.enrollments ?? 0} élèves</option>)}
+          <label className="block text-xs font-semibold text-slate-600">{t("View or finalize a class")}<select value={classroomId} onChange={(event) => setClassroomId(event.target.value)} disabled={loadingClasses || !classes.length} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm">
+              <option value="">{t("Select a class to view")}</option>
+              {classes.map((classroom) => <option key={classroom.id} value={classroom.id}>{classroom.name} · {classroom._count?.enrollments ?? 0} {t("students")}</option>)}
             </select>
           </label>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <div className="rounded-lg bg-slate-50 p-3"><span className="flex items-center gap-1 text-[10px] font-bold uppercase text-slate-500"><Users className="h-3 w-3" />Total</span><b className="mt-1 block text-xl">{summary.total}</b></div>
-            <div className="rounded-lg bg-emerald-50 p-3"><span className="text-[10px] font-bold uppercase text-emerald-700">Présents</span><b className="mt-1 block text-xl text-emerald-800">{summary.present}</b></div>
-            <div className="rounded-lg bg-rose-50 p-3"><span className="text-[10px] font-bold uppercase text-rose-700">Absents</span><b className="mt-1 block text-xl text-rose-800">{summary.absent}</b></div>
-            <div className="rounded-lg bg-amber-50 p-3"><span className="text-[10px] font-bold uppercase text-amber-700">Retards</span><b className="mt-1 block text-xl text-amber-800">{summary.late}</b></div>
+            <div className="rounded-lg bg-slate-50 p-3"><span className="flex items-center gap-1 text-[10px] font-bold uppercase text-slate-500"><Users className="h-3 w-3" />{t("Total")}</span><b className="mt-1 block text-xl">{summary.total}</b></div>
+            <div className="rounded-lg bg-emerald-50 p-3"><span className="text-[10px] font-bold uppercase text-emerald-700">{t("Present")}</span><b className="mt-1 block text-xl text-emerald-800">{summary.present}</b></div>
+            <div className="rounded-lg bg-rose-50 p-3"><span className="text-[10px] font-bold uppercase text-rose-700">{t("Absents")}</span><b className="mt-1 block text-xl text-rose-800">{summary.absent}</b></div>
+            <div className="rounded-lg bg-amber-50 p-3"><span className="text-[10px] font-bold uppercase text-amber-700">{t("Lates")}</span><b className="mt-1 block text-xl text-amber-800">{summary.late}</b></div>
           </div>
 
           <div className="max-h-[460px] overflow-auto rounded-lg border border-slate-100">
             <table className="w-full text-left text-xs">
-              <thead className="sticky top-0 bg-slate-50 text-[10px] uppercase text-slate-500"><tr><th className="px-3 py-2">Élève</th><th className="px-3 py-2">État</th><th className="px-3 py-2">Arrivée</th></tr></thead>
+              <thead className="sticky top-0 bg-slate-50 text-[10px] uppercase text-slate-500"><tr><th className="px-3 py-2">{t("Student")}</th><th className="px-3 py-2">{t("Status")}</th><th className="px-3 py-2">{t("Arrival")}</th></tr></thead>
               <tbody className="divide-y divide-slate-100">
                 {(roster?.students || []).map((student: any) => <tr key={student.id} className="hover:bg-slate-50">
                   <td className="px-3 py-2.5"><span className="font-semibold text-slate-800">{student.firstName} {student.lastName}</span><span className="hidden ml-2 font-mono text-[10px] text-slate-400 sm:inline">{student.matricule}</span></td>
-                  <td className="px-3 py-2.5"><span className={'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-semibold ' + (student.status === 'PRESENT' ? 'bg-emerald-100 text-emerald-800' : student.status === 'LATE' ? 'bg-amber-100 text-amber-800' : student.status === 'EXCUSED' ? 'bg-sky-100 text-sky-800' : 'bg-rose-100 text-rose-800')}>{student.status === 'PRESENT' ? <CheckCircle2 className="h-3 w-3" /> : student.status === 'ABSENT' ? <XCircle className="h-3 w-3" /> : null}{statusLabels[student.status] || student.status}{student.status === 'ABSENT' && !student.scanned ? ' · non scanné' : ''}</span></td>
+                  <td className="px-3 py-2.5"><span className={'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-semibold ' + (student.status === 'PRESENT' ? 'bg-emerald-100 text-emerald-800' : student.status === 'LATE' ? 'bg-amber-100 text-amber-800' : student.status === 'EXCUSED' ? 'bg-sky-100 text-sky-800' : 'bg-rose-100 text-rose-800')}>{student.status === 'PRESENT' ? <CheckCircle2 className="h-3 w-3" /> : student.status === 'ABSENT' ? <XCircle className="h-3 w-3" /> : null}{statusLabels[student.status] || student.status}{student.status === 'ABSENT' && !student.scanned ? t(" · not scanned") : ''}</span></td>
                   <td className="px-3 py-2.5 text-slate-600">{formatTime(student.checkInAt)}</td>
                 </tr>)}
-                {!loadingRoster && roster?.students?.length === 0 && <tr><td colSpan={3} className="p-5 text-center text-slate-400">Aucun élève inscrit dans cette classe.</td></tr>}
-                {loadingRoster && <tr><td colSpan={3} className="p-5 text-center text-slate-400">Chargement du registre…</td></tr>}
+                {!loadingRoster && roster?.students?.length === 0 && <tr><td colSpan={3} className="p-5 text-center text-slate-400">{t("No students enrolled in this class.")}</td></tr>}
+                {loadingRoster && <tr><td colSpan={3} className="p-5 text-center text-slate-400">{t("Loading attendance…")}</td></tr>}
               </tbody>
             </table>
           </div>
           <div className="flex flex-col gap-2 border-t border-slate-100 pt-3">
-            <p className="flex items-start gap-1.5 text-[11px] text-slate-500"><ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />Les élèves non scannés deviennent absents à la clôture de l’appel.</p>
+            <p className="flex items-start gap-1.5 text-[11px] text-slate-500"><ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />{t("Students without a scan are marked absent when attendance is finalized.")}</p>
             <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-              {classroomId && <button type="button" onClick={() => void finalizeAttendance()} disabled={finalizing || loadingRoster} className="rounded-lg border border-rose-200 px-4 py-2.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50">Clôturer cette classe</button>}
-              <button type="button" onClick={() => void finalizeAllAttendance()} disabled={finalizing || !classes.length} className="rounded-lg bg-rose-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-rose-700 disabled:opacity-50">{finalizing ? 'Clôture…' : 'Clôturer toutes les classes'}</button>
+              {classroomId && <button type="button" onClick={() => void finalizeAttendance()} disabled={finalizing || loadingRoster} className="rounded-lg border border-rose-200 px-4 py-2.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50">{t("Finalize this class")}</button>}
+              <button type="button" onClick={() => void finalizeAllAttendance()} disabled={finalizing || !classes.length} className="rounded-lg bg-rose-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-rose-700 disabled:opacity-50">{finalizing ? t("Finalizing…") : t("Finalize all classes")}</button>
             </div>
           </div>
         </section>

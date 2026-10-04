@@ -42,7 +42,7 @@ export class UsersService {
     const password = this.config.get<string>('KEYCLOAK_ADMIN_PASSWORD');
     if (!username || !password) {
       throw new ServiceUnavailableException(
-        'La gestion Keycloak n’est pas configurée. Vérifiez KEYCLOAK_ADMIN_USERNAME et KEYCLOAK_ADMIN_PASSWORD.',
+        'La gestion des comptes n’est pas configurée. Contactez l’administrateur.',
       );
     }
 
@@ -62,12 +62,12 @@ export class UsersService {
         },
       );
     } catch {
-      throw new ServiceUnavailableException('Keycloak est indisponible.');
+      throw new ServiceUnavailableException('Le service de connexion est indisponible.');
     }
 
     if (!response.ok) {
       throw new ServiceUnavailableException(
-        'La connexion administrateur à Keycloak a échoué. Vérifiez les identifiants de configuration.',
+        'La connexion au service des comptes a échoué. Contactez l’administrateur.',
       );
     }
 
@@ -90,12 +90,12 @@ export class UsersService {
       });
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      throw new ServiceUnavailableException('Keycloak est indisponible.');
+      throw new ServiceUnavailableException('Le service de connexion est indisponible.');
     }
 
     if (!response.ok) {
       const raw = await response.text();
-      let message = 'Keycloak a refusé la demande.';
+      let message = 'Le service des comptes a refusé la demande.';
       try {
         const body = JSON.parse(raw);
         message = body.errorMessage || body.error || message;
@@ -155,18 +155,18 @@ export class UsersService {
         lastName: input.lastName.trim(),
         enabled: true,
         emailVerified: false,
-        requiredActions: ['UPDATE_PASSWORD'],
+        requiredActions: [],
       }),
     });
     const user = created || (await this.request(`/users?username=${encodeURIComponent(username)}&exact=true`))?.[0];
     if (!user?.id) {
-      throw new BadGatewayException('Le compte a été créé, mais Keycloak n’a pas renvoyé son identifiant.');
+      throw new BadGatewayException('Le compte a été créé, mais son identifiant est indisponible.');
     }
 
     try {
       await this.request(`/users/${encodeURIComponent(user.id)}/reset-password`, {
         method: 'PUT',
-        body: JSON.stringify({ type: 'password', value: input.password, temporary: true }),
+        body: JSON.stringify({ type: 'password', value: input.password, temporary: false }),
       });
       const role = await this.ensureRealmRole(roleName);
       await this.request(`/users/${encodeURIComponent(user.id)}/role-mappings/realm`, {
@@ -175,6 +175,7 @@ export class UsersService {
       });
       const safeUser = this.publicUser(user, [role]);
       await this.syncLocalUser(safeUser);
+      await this.prisma.user.updateMany({ where: { keycloakId: user.id }, data: { mustChangePassword: true } });
       return safeUser;
     } catch (error) {
       try {
@@ -192,9 +193,17 @@ export class UsersService {
     }
     await this.request(`/users/${encodeURIComponent(id)}/reset-password`, {
       method: 'PUT',
-      body: JSON.stringify({ type: 'password', value: password, temporary: true }),
+      body: JSON.stringify({ type: 'password', value: password, temporary: false }),
     });
-    return { updated: true, temporary: true };
+    const user = await this.request(`/users/${encodeURIComponent(id)}`);
+    if (user?.requiredActions?.includes('UPDATE_PASSWORD')) {
+      await this.request(`/users/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        body: JSON.stringify({ id, requiredActions: user.requiredActions.filter((action: string) => action !== 'UPDATE_PASSWORD') }),
+      });
+    }
+    await this.prisma.user.updateMany({ where: { keycloakId: id }, data: { mustChangePassword: true } });
+    return { updated: true, temporary: false };
   }
 
   async changeOwnPassword(actor: { userId: string; username: string }, currentPassword: string, newPassword: string) {
@@ -208,6 +217,7 @@ export class UsersService {
       method: 'PUT',
       body: JSON.stringify({ type: 'password', value: newPassword, temporary: false }),
     });
+    await this.prisma.user.updateMany({ where: { keycloakId: actor.userId }, data: { mustChangePassword: false } });
     return { updated: true };
   }
 

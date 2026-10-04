@@ -1,3 +1,4 @@
+import { t } from "../i18n/index";
 import React, { useEffect, useState } from 'react';
 import {
   FileSpreadsheet,
@@ -122,7 +123,7 @@ export const GradesPage: React.FC = () => {
         }));
 
       if (gradesArray.length === 0) {
-        alert('Veuillez saisir au moins une note');
+        alert(t("Enter at least one grade"));
         return;
       }
 
@@ -137,7 +138,7 @@ export const GradesPage: React.FC = () => {
       alert(res.message);
       loadClassData();
     } catch (err: any) {
-      alert(`Erreur d'enregistrement: ${err.message}`);
+      alert(t("Erreur d'enregistrement: {0}", [err.message]));
     }
   };
 
@@ -151,7 +152,7 @@ export const GradesPage: React.FC = () => {
       alert(res.message);
       loadClassData();
     } catch (err: any) {
-      alert(`Erreur: ${err.message}`);
+      alert(t("Error: {0}", [err.message]));
     } finally {
       setLoading(false);
     }
@@ -168,7 +169,7 @@ export const GradesPage: React.FC = () => {
       setSelectedReportCard(details);
       setShowReportCardModal(true);
     } catch (err: any) {
-      alert(`Bulletin non encore calculé pour cet élève. Cliquez sur "Générer les bulletins" d'abord.`);
+      alert(t("No report card has been calculated for this student yet. Generate report cards first."));
     } finally {
       setLoading(false);
     }
@@ -179,10 +180,9 @@ export const GradesPage: React.FC = () => {
       {/* Title & Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Cahier de Notes & Bulletins Scolaires</h2>
+          <h2 className="text-xl font-bold text-slate-800">{t("Cahier de Grades & Report Cards Scolaires")}</h2>
           <p className="text-xs text-slate-500">
-            Saisie des évaluations, calcul automatisé des moyennes générales et génération des bulletins
-          </p>
+            {t("Enter grades, calculate averages automatically, and generate report cards")}</p>
         </div>
         <div className="flex items-center space-x-2 bg-slate-200/80 p-1 rounded-xl text-xs font-semibold">
           <button
@@ -191,15 +191,14 @@ export const GradesPage: React.FC = () => {
               activeTab === 'entry' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Saisie des Notes
-          </button>
+            {t("Enter Grades")}</button>
           <button
             onClick={() => setActiveTab('report_cards')}
             className={`px-3 py-1.5 rounded-lg transition ${
               activeTab === 'report_cards' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Bulletins Trimestriels ({classReportCards.length})
+            {t("Bulletins Trimestriels (")}{classReportCards.length})
           </button>
         </div>
       </div>
@@ -207,7 +206,7 @@ export const GradesPage: React.FC = () => {
       {/* Selectors Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
         <div>
-          <label className="font-semibold text-slate-600 block mb-1">Classe :</label>
+          <label className="font-semibold text-slate-600 block mb-1">{t("Class:")}</label>
           <select
             value={selectedClass}
             onChange={(e) => setSelectedClass(e.target.value)}
@@ -222,22 +221,22 @@ export const GradesPage: React.FC = () => {
         </div>
 
         <div>
-          <label className="font-semibold text-slate-600 block mb-1">Trimestre :</label>
+          <label className="font-semibold text-slate-600 block mb-1">{t("Trimestre :")}</label>
           <select
             value={selectedTerm}
             onChange={(e) => setSelectedTerm(e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-medium focus:ring-2 focus:ring-emerald-500"
           >
-            <option value="TRIMESTRE_1">1er Trimestre</option>
-            <option value="TRIMESTRE_2">2ème Trimestre</option>
-            <option value="TRIMESTRE_3">3ème Trimestre</option>
+            <option value="TRIMESTRE_1">{t("1er Trimestre")}</option>
+            <option value="TRIMESTRE_2">{t("Second term")}</option>
+            <option value="TRIMESTRE_3">{t("Third term")}</option>
           </select>
         </div>
 
         {activeTab === 'entry' && (
           <>
             <div>
-              <label className="font-semibold text-slate-600 block mb-1">Matière :</label>
+              <label className="font-semibold text-slate-600 block mb-1">{t("Subject :")}</label>
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
@@ -245,23 +244,23 @@ export const GradesPage: React.FC = () => {
               >
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
-                    {s.name} (Coeff {s.coefficient})
+                    {s.name} {t("(Coeff")}{s.coefficient})
                   </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="font-semibold text-slate-600 block mb-1">Type d'évaluation :</label>
+              <label className="font-semibold text-slate-600 block mb-1">{t("Assessment type:")}</label>
               <select
                 value={examType}
                 onChange={(e) => setExamType(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-medium focus:ring-2 focus:ring-emerald-500"
               >
-                <option value="COMPOSITION">Composition Trimestrielle</option>
-                <option value="DEVOIR_1">Devoir N°1</option>
-                <option value="DEVOIR_2">Devoir N°2</option>
-                <option value="INTERRO">Interrogation / Contrôle</option>
+                <option value="COMPOSITION">{t("Composition Trimestrielle")}</option>
+                <option value="DEVOIR_1">{t("Devoir N°1")}</option>
+                <option value="DEVOIR_2">{t("Devoir N°2")}</option>
+                <option value="INTERRO">{t("Quiz / Test")}</option>
               </select>
             </div>
           </>
@@ -274,18 +273,17 @@ export const GradesPage: React.FC = () => {
           <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
             <div>
               <h3 className="font-bold text-sm text-slate-800">
-                Saisie pour : {classDetails?.name || 'Classe'} • {subjects.find((s) => s.id === selectedSubject)?.name || 'Matière'}
+                {t("Entering grades for:")}{classDetails?.name || t("Class")} • {subjects.find((s) => s.id === selectedSubject)?.name || t("Subject")}
               </h3>
               <p className="text-[11px] text-slate-500">
-                Barème standard de notation sur 20 points
-              </p>
+                {t("Standard grading scale of 20 points")}</p>
             </div>
             <button
               onClick={handleSaveGrades}
               className="inline-flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition"
             >
               <Save className="w-3.5 h-3.5" />
-              <span>Enregistrer les Notes</span>
+              <span>{t("Save Grades")}</span>
             </button>
           </div>
 
@@ -293,18 +291,17 @@ export const GradesPage: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-100/60 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
                 <tr>
-                  <th className="px-5 py-3">N°</th>
-                  <th className="px-4 py-3">Matricule & Élève</th>
-                  <th className="px-4 py-3 w-40">Note sur 20</th>
-                  <th className="px-4 py-3">Appréciation / Remarque du Maître</th>
+                  <th className="px-5 py-3">{t("N°")}</th>
+                  <th className="px-4 py-3">{t("Student ID & name")}</th>
+                  <th className="px-4 py-3 w-40">{t("Note sur 20")}</th>
+                  <th className="px-4 py-3">{t("Teacher comments")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {classDetails?.enrollments?.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="text-center py-8 text-slate-400">
-                      Aucun élève inscrit dans cette classe
-                    </td>
+                      {t("No students enrolled in this class")}</td>
                   </tr>
                 ) : (
                   classDetails?.enrollments?.map((enr: any, idx: number) => {
@@ -339,7 +336,7 @@ export const GradesPage: React.FC = () => {
                         <td className="px-4 py-3">
                           <input
                             type="text"
-                            placeholder="Ex: Travail soigné, bon raisonnement..."
+                            placeholder={t("Example: Careful work, good reasoning…")}
                             value={remarksVal}
                             onChange={(e) => handleRemarksChange(student.id, e.target.value)}
                             className="w-full p-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-white text-xs"
@@ -361,18 +358,17 @@ export const GradesPage: React.FC = () => {
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
               <h3 className="font-bold text-sm text-slate-800">
-                Bulletins de la classe : {classDetails?.name} ({selectedTerm})
+                {t("Class report cards:")}{classDetails?.name} ({selectedTerm})
               </h3>
               <p className="text-[11px] text-slate-500">
-                Calcul automatique des rangs, des moyennes de classe et des appréciations officielles
-              </p>
+                {t("Automatically calculate ranks, class averages, and official comments")}</p>
             </div>
             <button
               onClick={handleGenerateClassBulletins}
               className="inline-flex items-center space-x-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Générer / Recalculer les Bulletins</span>
+              <span>{t("Generate / Recalculate Report Cards")}</span>
             </button>
           </div>
 
@@ -380,20 +376,19 @@ export const GradesPage: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
                 <tr>
-                  <th className="px-5 py-3">Rang</th>
-                  <th className="px-4 py-3">Élève</th>
-                  <th className="px-4 py-3">Moyenne Générale</th>
-                  <th className="px-4 py-3">Moyenne Classe</th>
-                  <th className="px-4 py-3">Appréciation Officielle</th>
-                  <th className="px-5 py-3 text-right">Actions</th>
+                  <th className="px-5 py-3">{t("Rang")}</th>
+                  <th className="px-4 py-3">{t("Student")}</th>
+                  <th className="px-4 py-3">{t("Overall Average")}</th>
+                  <th className="px-4 py-3">{t("Class Average")}</th>
+                  <th className="px-4 py-3">{t("Official Comment")}</th>
+                  <th className="px-5 py-3 text-right">{t("Actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {classReportCards.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="text-center py-8 text-slate-400">
-                      Aucun bulletin généré pour cette classe et ce trimestre. Cliquez sur "Générer / Recalculer".
-                    </td>
+                      {t("No report cards for this class and term. Select Generate / Recalculate.")}</td>
                   </tr>
                 ) : (
                   classReportCards.map((rc) => (
@@ -425,7 +420,7 @@ export const GradesPage: React.FC = () => {
                           className="inline-flex items-center space-x-1 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition"
                         >
                           <FileText className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>Voir Bulletin</span>
+                          <span>{t("View Report Card")}</span>
                         </button>
                       </td>
                     </tr>
@@ -447,15 +442,14 @@ export const GradesPage: React.FC = () => {
               <div className="border-b-2 border-slate-800 pb-4">
                 <div className="flex items-center justify-between text-center">
                   <div className="text-left">
-                    <p className="text-[10px] font-bold uppercase text-slate-600">RÉPUBLIQUE DU SÉNÉGAL</p>
-                    <p className="text-[9px] text-slate-500">Ministère de l'Éducation Nationale</p>
-                    <p className="text-[9px] text-slate-500">Inspection d'Académie de Dakar</p>
+                    <p className="text-[10px] font-bold uppercase text-slate-600">{t("REPUBLIC OF SENEGAL")}</p>
+                    <p className="text-[9px] text-slate-500">{t("Ministry of National Education")}</p>
+                    <p className="text-[9px] text-slate-500">{t("Dakar Education Authority")}</p>
                   </div>
                   <div className="text-center">
                     <h2 className="text-base font-black uppercase text-slate-900 tracking-wider">
-                      ÉCOLE AS SAKINA
-                    </h2>
-                    <p className="text-[10px] text-slate-500">Discipline • Travail • Réussite</p>
+                      {t("AS SAKINA SCHOOL")}</h2>
+                    <p className="text-[10px] text-slate-500">{t("Discipline • Work • Success")}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-[10px] font-bold text-slate-700">{selectedReportCard.academicYear?.name || '2026-2027'}</p>
@@ -466,29 +460,28 @@ export const GradesPage: React.FC = () => {
                 </div>
                 <div className="mt-4 text-center">
                   <h3 className="text-lg font-black tracking-widest uppercase bg-slate-900 text-white py-1 rounded-lg">
-                    BULLETIN DE NOTES
-                  </h3>
+                    {t("BULLETIN DE NOTES")}</h3>
                 </div>
               </div>
 
               {/* Student Details Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">Élève :</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">{t("Student :")}</span>
                   <span className="font-bold text-slate-800">
                     {selectedReportCard.student?.firstName} {selectedReportCard.student?.lastName}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">Matricule :</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">{t("Matricule :")}</span>
                   <span className="font-mono text-emerald-700 font-bold">{selectedReportCard.student?.matricule}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">Classe :</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">{t("Class:")}</span>
                   <span className="font-bold text-slate-800">{selectedReportCard.classroom?.name}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">Maître titulaire :</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">{t("Class teacher:")}</span>
                   <span className="font-medium text-slate-700">
                     {selectedReportCard.classroom?.teacher?.firstName ? `${selectedReportCard.classroom.teacher.firstName} ${selectedReportCard.classroom.teacher.lastName}` : 'M. Sow'}
                   </span>
@@ -500,11 +493,11 @@ export const GradesPage: React.FC = () => {
                 <table className="w-full text-left">
                   <thead className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
                     <tr>
-                      <th className="px-4 py-2.5">Matières Enseignées</th>
-                      <th className="px-3 py-2.5 text-center">Coeff</th>
-                      <th className="px-3 py-2.5 text-center">Moyenne / 20</th>
-                      <th className="px-3 py-2.5 text-center">Points (Note x Coeff)</th>
-                      <th className="px-4 py-2.5">Appréciations du Maître</th>
+                      <th className="px-4 py-2.5">{t("Subjects Taught")}</th>
+                      <th className="px-3 py-2.5 text-center">{t("Coeff")}</th>
+                      <th className="px-3 py-2.5 text-center">{t("Moyenne / 20")}</th>
+                      <th className="px-3 py-2.5 text-center">{t("Points (Note x Coeff)")}</th>
+                      <th className="px-4 py-2.5">{t("Teacher Comments")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -521,7 +514,7 @@ export const GradesPage: React.FC = () => {
                   {/* Footer Totals */}
                   <tfoot className="bg-slate-100 font-bold text-slate-800 border-t border-slate-200">
                     <tr>
-                      <td className="px-4 py-2.5 uppercase">TOTAL GÉNÉRAL</td>
+                      <td className="px-4 py-2.5 uppercase">{t("OVERALL TOTAL")}</td>
                       <td className="px-3 py-2.5 text-center">{selectedReportCard.totalCoeff || 8}</td>
                       <td className="px-3 py-2.5 text-center text-sm text-emerald-800 font-black">
                         {selectedReportCard.overallAverage} / 20
@@ -536,21 +529,21 @@ export const GradesPage: React.FC = () => {
               {/* Statistics & Ranking */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-center">
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Rang de l'élève</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">{t("Student Rank")}</span>
                   <span className="text-xl font-black text-emerald-700">
                     {selectedReportCard.rank ? `${selectedReportCard.rank}e` : '-'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Moyenne Classe</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">{t("Class Average")}</span>
                   <span className="text-base font-bold text-slate-700">{selectedReportCard.classAverage || '-'}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Plus Forte Moyenne</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">{t("Plus Forte Moyenne")}</span>
                   <span className="text-base font-bold text-emerald-600">{selectedReportCard.maxAverage || '-'}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Plus Faible Moyenne</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">{t("Plus Faible Moyenne")}</span>
                   <span className="text-base font-bold text-rose-500">{selectedReportCard.minAverage || '-'}</span>
                 </div>
               </div>
@@ -558,16 +551,16 @@ export const GradesPage: React.FC = () => {
               {/* Remarks and Signatures */}
               <div className="pt-4 grid grid-cols-3 gap-4 text-xs border-t border-slate-200">
                 <div className="text-center p-3 border border-slate-200 rounded-xl">
-                  <p className="font-bold text-slate-700 mb-10">Visa de l'Enseignant</p>
-                  <p className="text-[10px] text-slate-300">Signature</p>
+                  <p className="font-bold text-slate-700 mb-10">{t("Visa de l'Enseignant")}</p>
+                  <p className="text-[10px] text-slate-300">{t("Signature")}</p>
                 </div>
                 <div className="text-center p-3 border border-slate-200 rounded-xl">
-                  <p className="font-bold text-slate-700 mb-10">Visa du Directeur</p>
-                  <p className="text-[10px] text-slate-300">Cachet & Signature</p>
+                  <p className="font-bold text-slate-700 mb-10">{t("Principal’s Approval")}</p>
+                  <p className="text-[10px] text-slate-300">{t("Cachet & Signature")}</p>
                 </div>
                 <div className="text-center p-3 border border-slate-200 rounded-xl">
-                  <p className="font-bold text-slate-700 mb-10">Signature des Parents</p>
-                  <p className="text-[10px] text-slate-300">Vu et pris connaissance</p>
+                  <p className="font-bold text-slate-700 mb-10">{t("Parent’s Signature")}</p>
+                  <p className="text-[10px] text-slate-300">{t("Vu et pris connaissance")}</p>
                 </div>
               </div>
             </div>
@@ -579,15 +572,14 @@ export const GradesPage: React.FC = () => {
                 onClick={() => setShowReportCardModal(false)}
                 className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-xs hover:bg-white"
               >
-                Fermer
-              </button>
+                {t("Close")}</button>
               <button
                 type="button"
                 onClick={() => window.print()}
                 className="inline-flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-md"
               >
                 <Printer className="w-3.5 h-3.5" />
-                <span>Imprimer le Bulletin</span>
+                <span>{t("Print Report Card")}</span>
               </button>
             </div>
           </div>

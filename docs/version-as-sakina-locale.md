@@ -1,9 +1,18 @@
 # Version École As Sakina — validation locale
 
-Cette version est à vérifier en local avant toute mise à jour du VPS. Le VPS
-continue d'utiliser la version indiquée dans `deploy/production.env` ; ne
-changez pas ce manifeste pour un simple test local. Les identifiants techniques
-Keycloak, les noms des images Docker et les URL `sslip.io` restent inchangés.
+L'interface propose le français (par défaut), l'anglais et l'arabe. Le choix est
+mémorisé dans le navigateur ; changer de langue recharge la page. L'arabe
+utilise une lecture de droite à gauche. Les données saisies par l'école
+(noms, libellés de factures, matières) conservent leur contenu original.
+
+La première connexion et une réinitialisation administrative imposent le
+changement de mot de passe **dans l'application**. Les autres actions de l'API
+sont refusées tant que ce changement n'est pas terminé. Le texte de première
+connexion sur l'écran de connexion ne contient aucun lien externe.
+
+La livraison sur `assakina-school.com` est autorisée le 4 octobre 2026 après
+les vérifications locales. Les identifiants techniques du realm et les noms
+des images Docker restent inchangés ; l'interface utilise École As Sakina.
 
 Dans l'environnement de revue actuellement lancé, ouvrir
 `http://127.0.0.1:5176/`. Son proxy `/api` utilise le port 3003 et la base

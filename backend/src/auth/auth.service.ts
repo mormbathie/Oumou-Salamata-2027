@@ -28,11 +28,11 @@ export class AuthService {
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      const description = String(errorData.error_description || 'Identifiants Keycloak invalides');
+      const description = String(errorData.error_description || 'Identifiants invalides');
       if (/account is not fully set up/i.test(description)) {
-        throw new ForbiddenException({ code: 'PASSWORD_UPDATE_REQUIRED', message: 'Vous devez changer votre mot de passe provisoire dans Keycloak.' });
+        throw new ForbiddenException({ code: 'PASSWORD_UPDATE_REQUIRED', message: 'Votre compte nécessite une mise à jour. Contactez un administrateur pour réinitialiser le mot de passe.' });
       }
-      throw new UnauthorizedException(description);
+      throw new UnauthorizedException('Identifiant ou mot de passe incorrect.');
     }
     return response.json();
   }
@@ -50,7 +50,7 @@ export class AuthService {
       };
     } catch (err: any) {
       if (err instanceof UnauthorizedException || err instanceof ForbiddenException) throw err;
-      throw new UnauthorizedException(`Échec de connexion Keycloak: ${err.message}`);
+      throw new UnauthorizedException('Le service de connexion est indisponible. Réessayez plus tard.');
     }
   }
 
@@ -71,7 +71,7 @@ export class AuthService {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ client_id: this.clientId, refresh_token: refreshToken }),
     });
-    if (!response.ok) throw new UnauthorizedException('La déconnexion Keycloak a échoué.');
+    if (!response.ok) throw new UnauthorizedException('La déconnexion a échoué.');
   }
 
   async getProfile(user: any) {
@@ -107,6 +107,7 @@ export class AuthService {
 
     return {
       ...user,
+      mustChangePassword: Boolean(syncedUser?.mustChangePassword),
       localProfile: syncedUser,
     };
   }

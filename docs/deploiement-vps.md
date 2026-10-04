@@ -6,17 +6,35 @@ dans un volume persistant. Vercel pourra être configuré ultérieurement.
 
 | Élément | Valeur |
 | --- | --- |
-| Application | `https://oumou-salamat.57.131.160.254.sslip.io` |
-| API | `https://oumou-salamat.57.131.160.254.sslip.io/api` |
-| Santé de l'API | `https://oumou-salamat.57.131.160.254.sslip.io/api/health` |
-| Authentification | `https://auth.57.131.160.254.sslip.io` |
+| Application | `https://assakina-school.com` |
+| API | `https://assakina-school.com/api` |
+| Santé de l'API | `https://assakina-school.com/api/health` |
+| Authentification | `https://auth.assakina-school.com` |
 | Dossier sur le VPS | `/opt/oumou-salamat` |
 
-Les adresses [sslip.io](https://sslip.io/) renvoient l'IP contenue dans leur nom.
-Elles permettent ce premier déploiement sans achat de domaine. Caddy obtient
+Le domaine `assakina-school.com` et le sous-domaine `auth.assakina-school.com`
+doivent avoir un enregistrement DNS vers `57.131.160.254`. Caddy obtient
 et renouvelle les certificats [HTTPS automatiquement](https://caddyserver.com/docs/automatic-https).
-Ces adresses temporaires dépendent du service DNS sslip.io ; elles pourront être
-remplacées par les domaines de l'école.
+Le premier déploiement utilisait des adresses temporaires `sslip.io`.
+La migration conserve les comptes, les bases et les secrets existants.
+
+## Migration du domaine existant
+
+Après une sauvegarde complète et la validation du DNS, transférer les sources
+de la version choisie, puis exécuter sur le VPS :
+
+```bash
+cd /opt/oumou-salamat
+sudo python3 deploy/migrate-domain.py --app-host assakina-school.com --auth-host auth.assakina-school.com
+set -a; . deploy/production.env; set +a
+sudo --preserve-env=APP_VERSION docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d --no-build --no-deps --wait --wait-timeout 300 keycloak caddy
+```
+
+Ce script sauvegarde les configurations privées dans
+`/var/backups/oumou-salamat/config/`, conserve les mots de passe, met à jour les
+origines et redirections du client existant, et applique les durées de session.
+Il ne réimporte pas le realm et ne crée pas de comptes de démonstration.
+Les nouvelles images du frontend doivent utiliser `https://auth.assakina-school.com`.
 
 Déploiement vérifié le 2 octobre 2026 : six conteneurs sains, certificat HTTPS
 valide, page de connexion affichée dans le navigateur, connexion administrateur,
@@ -163,7 +181,7 @@ sur le serveur, et après disponibilité des deux images Docker Hub :
 
 ```bash
 cd /opt/oumou-salamat
-sudo python3 deploy/bootstrap.py --app-host oumou-salamat.57.131.160.254.sslip.io --auth-host auth.57.131.160.254.sslip.io
+sudo python3 deploy/bootstrap.py --app-host assakina-school.com --auth-host auth.assakina-school.com
 sudo docker volume create oumou_salamat_vps_postgres_data
 set -a; . deploy/production.env; set +a
 sudo --preserve-env=APP_VERSION docker compose -f docker-compose.yml -f docker-compose.vps.yml config --quiet
@@ -181,8 +199,18 @@ sudo systemctl enable --now oumou-salamat-backup.timer
 sudo systemctl start oumou-salamat-backup.service
 ```
 
-La publication des images est automatique après les tests sur `main` ; la mise
-à jour sur le VPS reste une étape explicite et contrôlée.
+Après activation de la variable GitHub `VPS_AUTO_DEPLOY_ENABLED=true`, chaque
+push sur `main` lance les tests, publie les deux images puis déploie ce même SHA.
+Les secrets `VPS_SSH_KEY` et `VPS_KNOWN_HOSTS` fournissent une clé dédiée et
+l'identité vérifiée du serveur. La clé est limitée par `authorized_keys` à
+`/usr/local/bin/assakina-receive-release` ; elle ne donne pas de shell interactif.
+
+Le récepteur accepte uniquement le SHA actuel de `main`, sauvegarde les données,
+télécharge l'archive publique du dépôt et préserve les fichiers privés. Il écrit
+le SHA publié dans le manifeste **du serveur**, puis lance les vérifications de
+`deploy-vps.sh`. Le manifeste Git reste utilisé pour les opérations manuelles :
+vérifier sa version avant tout transfert manuel. Désactiver la variable avant
+un retour arrière manuel afin de conserver la version choisie.
 
 ## Ajouter un domaine ensuite
 

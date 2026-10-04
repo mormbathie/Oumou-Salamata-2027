@@ -1,3 +1,4 @@
+import { t, locale, roleLabel } from "../i18n/index";
 import React, { useEffect, useState } from 'react';
 import {
   CreditCard,
@@ -105,7 +106,7 @@ export const FinancesPage: React.FC = () => {
 
       loadFinances();
     } catch (err: any) {
-      alert(`Erreur de paiement: ${err.response?.data?.message || err.message}`);
+      alert(t("Payment error: {0}", [err.response?.data?.message || err.message]));
     }
   };
 
@@ -121,7 +122,7 @@ export const FinancesPage: React.FC = () => {
       setShowBatchModal(false);
       loadFinances();
     } catch (err: any) {
-      alert(`Erreur: ${err.message}`);
+      alert(t("Error: {0}", [err.message]));
     }
   };
 
@@ -139,10 +140,9 @@ export const FinancesPage: React.FC = () => {
       {/* Top Banner & Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Gestion Financière & Facturation</h2>
+          <h2 className="text-xl font-bold text-slate-800">{t("Finances & Billing")}</h2>
           <p className="text-xs text-slate-500">
-            Facturation des scolarités, enregistrement des versements et édition des reçus
-          </p>
+            {t("Manage tuition invoices, payments, and receipts")}</p>
         </div>
         <div className="flex items-center space-x-3">
           <button
@@ -150,7 +150,7 @@ export const FinancesPage: React.FC = () => {
             className="inline-flex items-center space-x-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3.5 py-2 rounded-xl text-xs font-semibold border border-indigo-200 transition"
           >
             <Layers className="w-4 h-4" />
-            <span>Générer Mensualités Classe</span>
+            <span>{t("Generate Class Tuition Invoices")}</span>
           </button>
         </div>
       </div>
@@ -159,50 +159,43 @@ export const FinancesPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Total Facturé
-          </span>
+            {t("Total Invoiced")}</span>
           <div className="text-2xl font-bold text-slate-800">
-            {(stats?.totalInvoiced || 0).toLocaleString()} <span className="text-xs text-slate-400">FCFA</span>
+            {(stats?.totalInvoiced || 0).toLocaleString()} <span className="text-xs text-slate-400">{t("FCFA")}</span>
           </div>
-          <span className="text-[11px] text-slate-500">{stats?.invoiceCount || 0} factures émises</span>
+          <span className="text-[11px] text-slate-500">{stats?.invoiceCount || 0} {t("invoices issued")}</span>
         </div>
 
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Total Recouvré (Encaissé)
-          </span>
+            {t("Total Collected")}</span>
           <div className="text-2xl font-bold text-emerald-600">
-            {(stats?.totalCollected || 0).toLocaleString()} <span className="text-xs text-emerald-700/60">FCFA</span>
+            {(stats?.totalCollected || 0).toLocaleString()} <span className="text-xs text-emerald-700/60">{t("FCFA")}</span>
           </div>
           <span className="text-[11px] text-emerald-600 font-medium">
-            Taux de recouvrement : {stats?.recoveryRate || 0}%
+            {t("Taux de recouvrement :")}{stats?.recoveryRate || 0}%
           </span>
         </div>
 
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Reste à recouvrer
-          </span>
+            {t("Outstanding Balance")}</span>
           <div className="text-2xl font-bold text-amber-600">
-            {(stats?.totalOutstanding || 0).toLocaleString()} <span className="text-xs text-amber-700/60">FCFA</span>
+            {(stats?.totalOutstanding || 0).toLocaleString()} <span className="text-xs text-amber-700/60">{t("FCFA")}</span>
           </div>
-          <span className="text-[11px] text-amber-600 font-medium">Créances en cours</span>
+          <span className="text-[11px] text-amber-600 font-medium">{t("Outstanding payments")}</span>
         </div>
 
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Statut des Factures
-          </span>
+            {t("Invoice Status")}</span>
           <div className="flex items-center space-x-2 text-xs mt-2">
             <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
-              {stats?.byStatus?.PAID || 0} Payées
-            </span>
+              {stats?.byStatus?.PAID || 0} {t("Paids")}</span>
             <span className="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-bold">
-              {stats?.byStatus?.PARTIAL || 0} Partielles
-            </span>
+              {stats?.byStatus?.PARTIAL || 0} {t("Partielles")}</span>
             <span className="bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full font-bold">
-              {stats?.byStatus?.UNPAID || 0} Impayées
-            </span>
+              {stats?.byStatus?.UNPAID || 0} {t("Unpaids")}</span>
           </div>
         </div>
       </div>
@@ -212,27 +205,27 @@ export const FinancesPage: React.FC = () => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
-            <span className="font-semibold text-slate-600">Statut :</span>
+            <span className="font-semibold text-slate-600">{t("Status :")}</span>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-emerald-500"
             >
-              <option value="">Tous les statuts</option>
-              <option value="PAID">Payée</option>
-              <option value="PARTIAL">Partielle</option>
-              <option value="UNPAID">Impayée</option>
+              <option value="">{t("All statuses")}</option>
+              <option value="PAID">{t("Paid")}</option>
+              <option value="PARTIAL">{t("Partielle")}</option>
+              <option value="UNPAID">{t("Unpaid")}</option>
             </select>
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className="font-semibold text-slate-600">Classe :</span>
+            <span className="font-semibold text-slate-600">{t("Class:")}</span>
             <select
               value={classFilter}
               onChange={(e) => setClassFilter(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-emerald-500"
             >
-              <option value="">Toutes les classes</option>
+              <option value="">{t("All classes")}</option>
               {classes.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -243,8 +236,7 @@ export const FinancesPage: React.FC = () => {
         </div>
 
         <div className="text-slate-400">
-          Affichage de <span className="font-bold text-slate-700">{invoices.length}</span> facture(s)
-        </div>
+          {t("Showing")}<span className="font-bold text-slate-700">{invoices.length}</span> {t("invoices")}</div>
       </div>
 
       {/* Invoices Table */}
@@ -253,28 +245,26 @@ export const FinancesPage: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
               <tr>
-                <th className="px-5 py-3.5">N° Facture & Date</th>
-                <th className="px-4 py-3.5">Élève & Classe</th>
-                <th className="px-4 py-3.5">Libellé</th>
-                <th className="px-4 py-3.5">Montant Total</th>
-                <th className="px-4 py-3.5">Déjà Réglé</th>
-                <th className="px-4 py-3.5">Reste à Payer</th>
-                <th className="px-4 py-3.5">Statut</th>
-                <th className="px-5 py-3.5 text-right">Actions</th>
+                <th className="px-5 py-3.5">{t("Invoice No. & Date")}</th>
+                <th className="px-4 py-3.5">{t("Student & Class")}</th>
+                <th className="px-4 py-3.5">{t("Description")}</th>
+                <th className="px-4 py-3.5">{t("Total Amount")}</th>
+                <th className="px-4 py-3.5">{t("Already Paid")}</th>
+                <th className="px-4 py-3.5">{t("Balance Due")}</th>
+                <th className="px-4 py-3.5">{t("Status")}</th>
+                <th className="px-5 py-3.5 text-right">{t("Actions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
                   <td colSpan={8} className="text-center py-8 text-slate-400">
-                    Chargement des factures...
-                  </td>
+                    {t("Loading invoices…")}</td>
                 </tr>
               ) : invoices.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="text-center py-8 text-slate-400">
-                    Aucune facture trouvée.
-                  </td>
+                    {t("No invoices found.")}</td>
                 </tr>
               ) : (
                 invoices.map((inv) => {
@@ -284,9 +274,9 @@ export const FinancesPage: React.FC = () => {
                       <td className="px-5 py-3.5">
                         <span className="font-mono font-bold text-slate-800">{inv.invoiceNumber}</span>
                         <p className="text-[10px] text-slate-400">
-                          {new Date(inv.createdAt).toLocaleDateString('fr-FR')}
+                          {new Date(inv.createdAt).toLocaleDateString(locale())}
                         </p>
-                        {inv.createdByName && <p className="text-[10px] text-slate-500">Créée par {inv.createdByName} · {inv.createdByRole}</p>}
+                        {inv.createdByName && <p className="text-[10px] text-slate-500">{t("Created by")}{inv.createdByName} · {roleLabel(inv.createdByRole)}</p>}
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="font-semibold text-slate-800">
@@ -297,9 +287,9 @@ export const FinancesPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-4 py-3.5 font-medium text-slate-700">{inv.title}</td>
-                      <td className="px-4 py-3.5 font-bold text-slate-800">{inv.amount.toLocaleString()} F</td>
-                      <td className="px-4 py-3.5 text-emerald-600 font-semibold">{inv.paidAmount.toLocaleString()} F</td>
-                      <td className="px-4 py-3.5 text-amber-600 font-bold">{inv.balance.toLocaleString()} F</td>
+                      <td className="px-4 py-3.5 font-bold text-slate-800">{inv.amount.toLocaleString()} {t("F")}</td>
+                      <td className="px-4 py-3.5 text-emerald-600 font-semibold">{inv.paidAmount.toLocaleString()} {t("F")}</td>
+                      <td className="px-4 py-3.5 text-amber-600 font-bold">{inv.balance.toLocaleString()} {t("F")}</td>
                       <td className="px-4 py-3.5">
                         <span
                           className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
@@ -310,7 +300,7 @@ export const FinancesPage: React.FC = () => {
                               : 'bg-rose-100 text-rose-800'
                           }`}
                         >
-                          {inv.status === 'PAID' ? 'Payée' : inv.status === 'PARTIAL' ? 'Partielle' : 'Impayée'}
+                          {inv.status === 'PAID' ? t("Paid") : inv.status === 'PARTIAL' ? 'Partielle' : t("Unpaid")}
                         </span>
                       </td>
                       <td className="px-5 py-3.5 text-right space-x-2">
@@ -320,17 +310,17 @@ export const FinancesPage: React.FC = () => {
                             className="inline-flex items-center space-x-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-medium transition"
                           >
                             <CreditCard className="w-3 h-3" />
-                            <span>Régler</span>
+                            <span>{t("Pay")}</span>
                           </button>
                         )}
                         {inv.payments && inv.payments.length > 0 && (
                           <button
                             onClick={() => handleViewReceipt(inv, inv.payments[0])}
-                            title="Voir le reçu du dernier paiement"
+                            title={t("View the latest payment receipt")}
                             className="inline-flex items-center space-x-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-medium transition"
                           >
                             <Receipt className="w-3 h-3 text-slate-500" />
-                            <span>Reçu</span>
+                            <span>{t("Receipt")}</span>
                           </button>
                         )}
                       </td>
@@ -343,14 +333,14 @@ export const FinancesPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal: Enregistrer un Paiement */}
+      {/* Modal: Save un Paiement */}
       {showPaymentModal && selectedInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-base text-slate-800">Enregistrer un Versement</h3>
-                <p className="text-xs text-slate-400">Émission instantanée du reçu de paiement</p>
+                <h3 className="font-bold text-base text-slate-800">{t("Record a Payment")}</h3>
+                <p className="text-xs text-slate-400">{t("Generate a payment receipt immediately")}</p>
               </div>
               <button onClick={() => setShowPaymentModal(false)} className="text-slate-400 hover:bg-slate-100 p-1 rounded-lg">
                 <X className="w-5 h-5" />
@@ -360,23 +350,23 @@ export const FinancesPage: React.FC = () => {
             <form onSubmit={handleSubmitPayment} className="p-6 space-y-4 text-xs">
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Élève :</span>
+                  <span className="text-slate-400">{t("Student :")}</span>
                   <span className="font-bold text-slate-800">
                     {selectedInvoice.student?.firstName} {selectedInvoice.student?.lastName}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Facture :</span>
+                  <span className="text-slate-400">{t("Invoice:")}</span>
                   <span className="font-mono text-slate-700">{selectedInvoice.invoiceNumber}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Solde restant :</span>
-                  <span className="font-bold text-amber-600">{selectedInvoice.balance.toLocaleString()} FCFA</span>
+                  <span className="text-slate-400">{t("Solde restant :")}</span>
+                  <span className="font-bold text-amber-600">{selectedInvoice.balance.toLocaleString()} {t("FCFA")}</span>
                 </div>
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Montant à verser (FCFA) *</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Amount to pay (FCFA) *")}</label>
                 <input
                   type="number"
                   min="100"
@@ -389,25 +379,25 @@ export const FinancesPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Mode de règlement *</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Payment method *")}</label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
                   className="w-full p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
                 >
-                  <option value="CASH">Espèces (Caisse école)</option>
-                  <option value="WAVE">Wave Mobile Money</option>
-                  <option value="ORANGE_MONEY">Orange Money</option>
-                  <option value="BANK_TRANSFER">Virement Bancaire</option>
-                  <option value="CHECK">Chèque</option>
+                  <option value="CASH">{t("Cash (school office)")}</option>
+                  <option value="WAVE">{t("Wave Mobile Money")}</option>
+                  <option value="ORANGE_MONEY">{t("Orange Money")}</option>
+                  <option value="BANK_TRANSFER">{t("Virement Bancaire")}</option>
+                  <option value="CHECK">{t("Check")}</option>
                 </select>
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Référence transaction (Wave / Chèque / ID)</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Transaction reference (Wave / check / ID)")}</label>
                 <input
                   type="text"
-                  placeholder="Ex: WAVE-9923842 ou N° Chèque"
+                  placeholder={t("Example: WAVE-9923842 or check number")}
                   value={paymentRef}
                   onChange={(e) => setPaymentRef(e.target.value)}
                   className="w-full p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
@@ -415,10 +405,10 @@ export const FinancesPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Observations</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Observations")}</label>
                 <input
                   type="text"
-                  placeholder="Ex: Versement du mois d'octobre"
+                  placeholder={t("Example: October payment")}
                   value={paymentNotes}
                   onChange={(e) => setPaymentNotes(e.target.value)}
                   className="w-full p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
@@ -431,14 +421,12 @@ export const FinancesPage: React.FC = () => {
                   onClick={() => setShowPaymentModal(false)}
                   className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50"
                 >
-                  Annuler
-                </button>
+                  {t("Cancel")}</button>
                 <button
                   type="submit"
                   className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium shadow-md"
                 >
-                  Confirmer l'encaissement
-                </button>
+                  {t("Confirmer l'encaissement")}</button>
               </div>
             </form>
           </div>
@@ -451,8 +439,8 @@ export const FinancesPage: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-base text-slate-800">Génération Groupée de Mensualités</h3>
-                <p className="text-xs text-slate-400">Émission automatique des factures pour tous les élèves d'une classe</p>
+                <h3 className="font-bold text-base text-slate-800">{t("Batch Tuition Invoices")}</h3>
+                <p className="text-xs text-slate-400">{t("Automatically create invoices for every student in a class")}</p>
               </div>
               <button onClick={() => setShowBatchModal(false)} className="text-slate-400 hover:bg-slate-100 p-1 rounded-lg">
                 <X className="w-5 h-5" />
@@ -461,7 +449,7 @@ export const FinancesPage: React.FC = () => {
 
             <form onSubmit={handleGenerateBatch} className="p-6 space-y-4 text-xs">
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Classe concernée *</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Selected class *")}</label>
                 <select
                   required
                   value={batchClassId}
@@ -470,14 +458,13 @@ export const FinancesPage: React.FC = () => {
                 >
                   {classes.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.name} - Mensualité : {c.monthlyTuition.toLocaleString()} FCFA
-                    </option>
+                      {c.name} {t("- Monthly tuition:")}{c.monthlyTuition.toLocaleString()} {t("FCFA")}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Mois / Libellé *</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Month / Description *")}</label>
                 <input
                   type="text"
                   required
@@ -489,7 +476,7 @@ export const FinancesPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Date d'échéance *</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Due date *")}</label>
                 <input
                   type="date"
                   required
@@ -505,21 +492,19 @@ export const FinancesPage: React.FC = () => {
                   onClick={() => setShowBatchModal(false)}
                   className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50"
                 >
-                  Annuler
-                </button>
+                  {t("Cancel")}</button>
                 <button
                   type="submit"
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-md"
                 >
-                  Lancer la génération
-                </button>
+                  {t("Generate invoices")}</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* Modal: Reçu de Paiement Imprimable */}
+      {/* Modal: Receipt de Paiement Imprimable */}
       {showReceiptModal && currentReceiptPayment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
@@ -531,30 +516,28 @@ export const FinancesPage: React.FC = () => {
                   <School className="w-6 h-6" />
                 </div>
                 <h2 className="text-lg font-black tracking-wide uppercase text-slate-800">
-                  École As Sakina
-                </h2>
-                <p className="text-xs text-slate-500">Enseignement Élémentaire - Dakar, Sénégal</p>
-                <p className="text-[11px] text-slate-400">Tél: +221 33 800 00 00</p>
+                  {t("As Sakina School")}</h2>
+                <p className="text-xs text-slate-500">{t("Primary education - Dakar, Senegal")}</p>
+                <p className="text-[11px] text-slate-400">{t("Phone: +221 33 800 00 00")}</p>
 
                 <div className="mt-4 bg-emerald-50 border border-emerald-200 py-1.5 px-4 rounded-lg inline-block">
                   <span className="text-xs font-black text-emerald-800 tracking-wider uppercase">
-                    REÇU DE CAISSE SCOLAIRE
-                  </span>
+                    {t("SCHOOL PAYMENT RECEIPT")}</span>
                 </div>
               </div>
 
               {/* Receipt Info */}
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <span className="text-slate-400 block text-[10px] uppercase font-bold">N° Reçu :</span>
+                  <span className="text-slate-400 block text-[10px] uppercase font-bold">{t("Receipt no.:")}</span>
                   <span className="font-mono font-bold text-slate-800 text-sm">
                     {currentReceiptPayment.payment.paymentNumber}
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-slate-400 block text-[10px] uppercase font-bold">Date :</span>
+                  <span className="text-slate-400 block text-[10px] uppercase font-bold">{t("Date :")}</span>
                   <span className="font-semibold text-slate-800">
-                    {new Date(currentReceiptPayment.payment.paymentDate).toLocaleDateString('fr-FR')}
+                    {new Date(currentReceiptPayment.payment.paymentDate).toLocaleDateString(locale())}
                   </span>
                 </div>
               </div>
@@ -562,23 +545,23 @@ export const FinancesPage: React.FC = () => {
               {/* Student and Invoice Info */}
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Nom de l'élève :</span>
+                  <span className="text-slate-500">{t("Student name:")}</span>
                   <span className="font-bold text-slate-800">
                     {currentReceiptPayment.invoice.student?.firstName} {currentReceiptPayment.invoice.student?.lastName}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Matricule :</span>
+                  <span className="text-slate-500">{t("Matricule :")}</span>
                   <span className="font-mono text-emerald-700">
                     {currentReceiptPayment.invoice.student?.matricule}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Motif :</span>
+                  <span className="text-slate-500">{t("Motif :")}</span>
                   <span className="font-semibold text-slate-800">{currentReceiptPayment.invoice.title}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Mode de paiement :</span>
+                  <span className="text-slate-500">{t("Payment method:")}</span>
                   <span className="font-semibold text-slate-800">
                     {currentReceiptPayment.payment.paymentMethod} {currentReceiptPayment.payment.reference ? `(${currentReceiptPayment.payment.reference})` : ''}
                   </span>
@@ -587,26 +570,25 @@ export const FinancesPage: React.FC = () => {
 
               {/* Amount Highlight */}
               <div className="bg-emerald-600 text-white p-4 rounded-xl flex items-center justify-between shadow-md">
-                <span className="text-xs font-semibold uppercase tracking-wider">Montant Encaissé :</span>
+                <span className="text-xs font-semibold uppercase tracking-wider">{t("Montant Collected :")}</span>
                 <span className="text-xl font-black">
-                  {currentReceiptPayment.payment.amount.toLocaleString()} FCFA
-                </span>
+                  {currentReceiptPayment.payment.amount.toLocaleString()} {t("FCFA")}</span>
               </div>
 
               <div className="flex justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-                <span>Reste à payer : <strong className="text-slate-800">{currentReceiptPayment.invoice.balance.toLocaleString()} FCFA</strong></span>
-                <span>Statut facture : <strong className="text-emerald-700">{currentReceiptPayment.invoice.status}</strong></span>
+                <span>{t("Balance due :")}<strong className="text-slate-800">{currentReceiptPayment.invoice.balance.toLocaleString()} {t("FCFA")}</strong></span>
+                <span>{t("Invoice status:")}<strong className="text-emerald-700">{currentReceiptPayment.invoice.status}</strong></span>
               </div>
 
               {/* Signatures */}
               <div className="pt-6 grid grid-cols-2 text-center text-xs border-t border-dashed border-slate-200">
                 <div>
-                  <p className="text-[11px] text-slate-400 mb-10">Signature du Parent / Payeur</p>
+                  <p className="text-[11px] text-slate-400 mb-10">{t("Parent / Payer Signature")}</p>
                   <p className="text-[10px] text-slate-300">....................................</p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-400 mb-10">Cachet & Signature Caisse</p>
-                  <p className="text-xs font-semibold text-emerald-700">{currentReceiptPayment.payment.receivedBy || 'Service comptable'}{currentReceiptPayment.payment.receivedByRole ? ` · ${currentReceiptPayment.payment.receivedByRole}` : ''}</p>
+                  <p className="text-[11px] text-slate-400 mb-10">{t("Cachet & Signature Caisse")}</p>
+                  <p className="text-xs font-semibold text-emerald-700">{currentReceiptPayment.payment.receivedBy || 'Service comptable'}{currentReceiptPayment.payment.receivedByRole ? ` · ${roleLabel(currentReceiptPayment.payment.receivedByRole)}` : ''}</p>
                 </div>
               </div>
             </div>
@@ -618,15 +600,14 @@ export const FinancesPage: React.FC = () => {
                 onClick={() => setShowReceiptModal(false)}
                 className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-xs hover:bg-white"
               >
-                Fermer
-              </button>
+                {t("Close")}</button>
               <button
                 type="button"
                 onClick={handlePrintReceipt}
                 className="inline-flex items-center space-x-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shadow-md"
               >
                 <Printer className="w-3.5 h-3.5" />
-                <span>Imprimer / enregistrer PDF</span>
+                <span>{t("Imprimer / enregistrer PDF")}</span>
               </button>
             </div>
           </div>

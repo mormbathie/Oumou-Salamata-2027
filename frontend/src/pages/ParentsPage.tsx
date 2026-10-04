@@ -1,3 +1,4 @@
+import { t } from "../i18n/index";
 import React, { useEffect, useState } from 'react';
 import {
   UserCheck,
@@ -26,7 +27,7 @@ export const ParentsPage: React.FC = () => {
     email: '',
     address: 'Dakar',
     profession: '',
-    relation: 'Père',
+    relation: 'Father',
   });
 
   const loadParents = async () => {
@@ -62,11 +63,11 @@ export const ParentsPage: React.FC = () => {
         email: '',
         address: 'Dakar',
         profession: '',
-        relation: 'Père',
+        relation: 'Father',
       });
       loadParents();
     } catch (err: any) {
-      alert(`Erreur: ${err.message || 'Impossible de créer le parent'}`);
+      alert(t("Error: {0}", [err.message || 'Unable to create the parent']));
     }
   };
 
@@ -75,17 +76,16 @@ export const ParentsPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Parents d'Élèves & Tuteurs</h2>
+          <h2 className="text-xl font-bold text-slate-800">{t("Parents d'Students & Guardians")}</h2>
           <p className="text-xs text-slate-500">
-            Annuaire des responsables légaux et suivi des enfants rattachés
-          </p>
+            {t("Directory of guardians and their children")}</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
           className="inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-md transition"
         >
           <UserPlus className="w-4 h-4" />
-          <span>Ajouter un Parent</span>
+          <span>{t("Add a Parent")}</span>
         </button>
       </div>
 
@@ -94,7 +94,7 @@ export const ParentsPage: React.FC = () => {
         <form onSubmit={handleSearchSubmit} className="relative w-full max-w-md">
           <input
             type="text"
-            placeholder="Rechercher par nom, téléphone ou email..."
+            placeholder={t("Search by name, phone, or email…")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -102,15 +102,14 @@ export const ParentsPage: React.FC = () => {
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
         </form>
         <span className="text-xs text-slate-500 font-medium">
-          Total : <span className="text-slate-800 font-bold">{parents.length}</span> parents enregistrés
-        </span>
+          {t("Total :")}<span className="text-slate-800 font-bold">{parents.length}</span> {t("parents registered")}</span>
       </div>
 
       {/* Parents Grid */}
       {loading ? (
-        <div className="text-center py-12 text-slate-400 text-sm">Chargement des parents...</div>
+        <div className="text-center py-12 text-slate-400 text-sm">{t("Loading parents…")}</div>
       ) : parents.length === 0 ? (
-        <div className="text-center py-12 text-slate-400 text-sm">Aucun parent trouvé.</div>
+        <div className="text-center py-12 text-slate-400 text-sm">{t("No parents found.")}</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {parents.map((p) => (
@@ -165,11 +164,11 @@ export const ParentsPage: React.FC = () => {
                 {/* Enfants rattachés */}
                 <div className="mt-4 pt-3 border-t border-slate-100">
                   <span className="text-[11px] uppercase font-bold text-slate-400 tracking-wider block mb-2">
-                    Enfants inscrits ({p.students?.length || 0})
+                    {t("Enfants inscrits (")}{p.students?.length || 0})
                   </span>
                   <div className="space-y-1.5">
                     {p.students?.length === 0 ? (
-                      <span className="text-[11px] text-slate-400 italic">Aucun élève rattaché</span>
+                      <span className="text-[11px] text-slate-400 italic">{t("No students linked")}</span>
                     ) : (
                       p.students?.map((s: any) => {
                         const className = s.enrollments?.[0]?.classroom?.name || 'CI';
@@ -201,7 +200,7 @@ export const ParentsPage: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="font-bold text-base text-slate-800">Ajouter un Parent / Tuteur</h3>
+              <h3 className="font-bold text-base text-slate-800">{t("Add a Parent / Guardian")}</h3>
               <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:bg-slate-100 p-1 rounded-lg">
                 <X className="w-5 h-5" />
               </button>
@@ -210,7 +209,7 @@ export const ParentsPage: React.FC = () => {
             <form onSubmit={handleCreateParent} className="p-6 space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-medium text-slate-700 block mb-1">Prénom *</label>
+                  <label className="font-medium text-slate-700 block mb-1">{t("First name *")}</label>
                   <input
                     type="text"
                     required
@@ -220,7 +219,7 @@ export const ParentsPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="font-medium text-slate-700 block mb-1">Nom *</label>
+                  <label className="font-medium text-slate-700 block mb-1">{t("Last name *")}</label>
                   <input
                     type="text"
                     required
@@ -232,7 +231,7 @@ export const ParentsPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Téléphone *</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Phone *")}</label>
                 <input
                   type="text"
                   required
@@ -244,7 +243,7 @@ export const ParentsPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Email</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Email")}</label>
                 <input
                   type="email"
                   placeholder="parent@example.com"
@@ -256,22 +255,22 @@ export const ParentsPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-medium text-slate-700 block mb-1">Lien de parenté</label>
+                  <label className="font-medium text-slate-700 block mb-1">{t("Relationship")}</label>
                   <select
                     value={formData.relation}
                     onChange={(e) => setFormData({ ...formData, relation: e.target.value })}
                     className="w-full p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   >
-                    <option value="Père">Père</option>
-                    <option value="Mère">Mère</option>
-                    <option value="Tuteur">Tuteur / Tutrice</option>
+                    <option value="Father">{t("Father")}</option>
+                    <option value="Mother">{t("Mother")}</option>
+                    <option value="Guardian">{t("Guardian / Tutrice")}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="font-medium text-slate-700 block mb-1">Profession</label>
+                  <label className="font-medium text-slate-700 block mb-1">{t("Profession")}</label>
                   <input
                     type="text"
-                    placeholder="Ex: Enseignant"
+                    placeholder={t("Ex: Enseignant")}
                     value={formData.profession}
                     onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
                     className="w-full p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
@@ -280,7 +279,7 @@ export const ParentsPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Adresse</label>
+                <label className="font-medium text-slate-700 block mb-1">{t("Adresse")}</label>
                 <input
                   type="text"
                   placeholder="Quartier, Ville"
@@ -296,14 +295,12 @@ export const ParentsPage: React.FC = () => {
                   onClick={() => setShowAddModal(false)}
                   className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50"
                 >
-                  Annuler
-                </button>
+                  {t("Cancel")}</button>
                 <button
                   type="submit"
                   className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium shadow-md"
                 >
-                  Enregistrer
-                </button>
+                  {t("Save")}</button>
               </div>
             </form>
           </div>

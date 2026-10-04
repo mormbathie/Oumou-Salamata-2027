@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { translateMessage } from '../i18n';
 import { refreshAccessToken } from '../auth/session';
 
 const api = axios.create({
@@ -17,6 +18,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    if (error.response?.data?.message) {
+      const message = error.response.data.message;
+      error.response.data.message = Array.isArray(message) ? message.map(translateMessage) : translateMessage(message);
+    }
     const original = error.config as typeof error.config & { _retried?: boolean };
     if (error.response?.status === 401 && original && !original._retried) {
       original._retried = true;

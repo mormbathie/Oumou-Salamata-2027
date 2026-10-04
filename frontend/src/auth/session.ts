@@ -1,3 +1,4 @@
+import { t } from "../i18n/index";
 const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 let refreshPromise: Promise<string> | null = null;
@@ -17,7 +18,7 @@ export function refreshAccessToken(): Promise<string> {
     }).then(async (response) => {
       if (!response.ok) {
         if (response.status === 401) clearSession();
-        throw new Error('Session expirée. Reconnectez-vous.');
+        throw new Error(t("Session expired. Sign in again."));
       }
       const data = await response.json();
       if (!data.access_token) throw new Error('Renouvellement de session invalide.');

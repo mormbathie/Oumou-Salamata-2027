@@ -1,0 +1,3147 @@
+{
+  "Checking your session…": {
+    "fr": "Vérification de la session…",
+    "en": "Checking your session…",
+    "ar": "جارٍ التحقق من الجلسة…"
+  },
+  "Chargement du scanner…": {
+    "fr": "Chargement du scanner…",
+    "en": "Loading scanner…",
+    "ar": "جارٍ تحميل الماسح…"
+  },
+  "Profile temporarily unavailable.": {
+    "fr": "Profil momentanément indisponible.",
+    "en": "Profile temporarily unavailable.",
+    "ar": "الملف الشخصي غير متاح مؤقتًا."
+  },
+  "Unable to reach the server. Check that the application services are running.": {
+    "fr": "Impossible de joindre le serveur. Vérifiez que les services de l’application sont démarrés.",
+    "en": "Unable to reach the server. Check that the application services are running.",
+    "ar": "تعذر الاتصال بالخادم. تحقق من تشغيل خدمات التطبيق."
+  },
+  "Identifiant ou mot de passe incorrect.": {
+    "fr": "Identifiant ou mot de passe incorrect.",
+    "en": "Invalid username or password.",
+    "ar": "اسم المستخدم أو كلمة المرور غير صحيحة."
+  },
+  "The sign-in service did not return an access token.": {
+    "fr": "Le service de connexion n’a pas renvoyé de jeton.",
+    "en": "The sign-in service did not return an access token.",
+    "ar": "لم تُرجع خدمة تسجيل الدخول رمز الوصول."
+  },
+  "Connexion obtenue, mais le profil utilisateur est inaccessible.": {
+    "fr": "Connexion obtenue, mais le profil utilisateur est inaccessible.",
+    "en": "Signed in, but the user profile is unavailable.",
+    "ar": "تم تسجيل الدخول لكن تعذر الوصول إلى الملف الشخصي."
+  },
+  "Session expired. Sign in again.": {
+    "fr": "Session expirée. Reconnectez-vous.",
+    "en": "Session expired. Sign in again.",
+    "ar": "انتهت الجلسة. يرجى تسجيل الدخول مجددًا."
+  },
+  "Attendance Officer": {
+    "fr": "Contrôle des présences",
+    "en": "Attendance Officer",
+    "ar": "مراقب الحضور"
+  },
+  "Principal": {
+    "fr": "Directeur",
+    "en": "Principal",
+    "ar": "المدير"
+  },
+  "Dashboard": {
+    "fr": "Tableau de bord",
+    "en": "Dashboard",
+    "ar": "لوحة التحكم"
+  },
+  "Enrollment & Students": {
+    "fr": "Inscriptions & Élèves",
+    "en": "Enrollment & Students",
+    "ar": "التسجيل والتلاميذ"
+  },
+  "Parents & Guardians": {
+    "fr": "Parents d’élèves",
+    "en": "Parents & Guardians",
+    "ar": "أولياء الأمور والأوصياء"
+  },
+  "Invoices & Payments": {
+    "fr": "Factures & Paiements",
+    "en": "Invoices & Payments",
+    "ar": "الفواتير والمدفوعات"
+  },
+  "Grades & Report Cards": {
+    "fr": "Notes & Bulletins",
+    "en": "Grades & Report Cards",
+    "ar": "الدرجات وكشوف النتائج"
+  },
+  "Attendance & Absences": {
+    "fr": "Présences & Absences",
+    "en": "Attendance & Absences",
+    "ar": "الحضور والغياب"
+  },
+  "Scan Student QR Codes": {
+    "fr": "Scanner les QR codes",
+    "en": "Scan Student QR Codes",
+    "ar": "مسح رموز التلاميذ"
+  },
+  "Classes & Subjects": {
+    "fr": "Classes & Matières",
+    "en": "Classes & Subjects",
+    "ar": "الفصول والمواد"
+  },
+  "User Management": {
+    "fr": "Gestion des utilisateurs",
+    "en": "User Management",
+    "ar": "إدارة المستخدمين"
+  },
+  "Teacher Attendance": {
+    "fr": "Pointage des professeurs",
+    "en": "Teacher Attendance",
+    "ar": "حضور المعلمين"
+  },
+  "Import / Export": {
+    "fr": "Import / export",
+    "en": "Import / Export",
+    "ar": "الاستيراد والتصدير"
+  },
+  "My Profile": {
+    "fr": "Mon profil",
+    "en": "My Profile",
+    "ar": "ملفي الشخصي"
+  },
+  "My Password": {
+    "fr": "Mon mot de passe",
+    "en": "My Password",
+    "ar": "كلمة المرور"
+  },
+  "Close menu": {
+    "fr": "Fermer le menu",
+    "en": "Close menu",
+    "ar": "إغلاق القائمة"
+  },
+  "As Sakina": {
+    "fr": "As Sakina",
+    "en": "As Sakina",
+    "ar": "السكينة"
+  },
+  "Primary School": {
+    "fr": "École Primaire",
+    "en": "Primary School",
+    "ar": "مدرسة ابتدائية"
+  },
+  "Close": {
+    "fr": "Fermer",
+    "en": "Close",
+    "ar": "إغلاق"
+  },
+  "Your session": {
+    "fr": "Votre session",
+    "en": "Your session",
+    "ar": "جلستك"
+  },
+  "Sign out": {
+    "fr": "Déconnexion",
+    "en": "Sign out",
+    "ar": "تسجيل الخروج"
+  },
+  "Open menu": {
+    "fr": "Ouvrir le menu",
+    "en": "Open menu",
+    "ar": "فتح القائمة"
+  },
+  "School year 2026 - 2027": {
+    "fr": "Année scolaire 2026 - 2027",
+    "en": "School year 2026 - 2027",
+    "ar": "السنة الدراسية 2026 - 2027"
+  },
+  "Dakar, Senegal": {
+    "fr": "Dakar, Sénégal",
+    "en": "Dakar, Senegal",
+    "ar": "داكار، السنغال"
+  },
+  "Erreur d'enregistrement: {0}": {
+    "fr": "Erreur d'enregistrement: {0}",
+    "en": "Save error: {0}",
+    "ar": "خطأ في الحفظ: {0}"
+  },
+  "Attendance Register": {
+    "fr": "Registre d'Appel des Présences",
+    "en": "Attendance Register",
+    "ar": "سجل الحضور"
+  },
+  "Daily attendance by class, absence reasons, and attendance rates": {
+    "fr": "Pointage journalier par classe, justification des absences et calcul des taux d'assiduité",
+    "en": "Daily attendance by class, absence reasons, and attendance rates",
+    "ar": "الحضور اليومي لكل فصل وأسباب الغياب ونسب الحضور"
+  },
+  "Tout marquer Present": {
+    "fr": "Tout marquer Présent",
+    "en": "Mark all present",
+    "ar": "تحديد الجميع حاضرين"
+  },
+  "Save attendance": {
+    "fr": "Enregistrer l'Appel",
+    "en": "Save attendance",
+    "ar": "حفظ الحضور"
+  },
+  "Attendance saved successfully.": {
+    "fr": "Feuille d'appel enregistrée avec succès dans la base de données !",
+    "en": "Attendance saved successfully.",
+    "ar": "تم حفظ الحضور بنجاح."
+  },
+  "Selected class:": {
+    "fr": "Classe sélectionnée :",
+    "en": "Selected class:",
+    "ar": "الفصل المحدد:"
+  },
+  "Attendance date:": {
+    "fr": "Date du pointage :",
+    "en": "Attendance date:",
+    "ar": "تاريخ الحضور:"
+  },
+  "Total Students": {
+    "fr": "Effectif Total",
+    "en": "Total Students",
+    "ar": "إجمالي التلاميذ"
+  },
+  "Present": {
+    "fr": "Présent",
+    "en": "Present",
+    "ar": "حاضر"
+  },
+  "Absents": {
+    "fr": "Absents",
+    "en": "Absent",
+    "ar": "غائبون"
+  },
+  "Attendance rate": {
+    "fr": "Taux Présence",
+    "en": "Attendance rate",
+    "ar": "نسبة الحضور"
+  },
+  "N°": {
+    "fr": "N°",
+    "en": "No.",
+    "ar": "الرقم"
+  },
+  "Student ID & name": {
+    "fr": "Matricule & élève",
+    "en": "Student ID & name",
+    "ar": "رقم التلميذ واسمه"
+  },
+  "Attendance status": {
+    "fr": "Statut de Présence",
+    "en": "Attendance status",
+    "ar": "حالة الحضور"
+  },
+  "Motif de l'absence / Remarque": {
+    "fr": "Motif de l'absence / Remarque",
+    "en": "Absence reason / comment",
+    "ar": "سبب الغياب / ملاحظة"
+  },
+  "Excused": {
+    "fr": "Excusé",
+    "en": "Excused",
+    "ar": "بعذر"
+  },
+  "Loading attendance sheet…": {
+    "fr": "Chargement de la feuille d'appel...",
+    "en": "Loading attendance sheet…",
+    "ar": "جارٍ تحميل سجل الحضور…"
+  },
+  "No students enrolled in this class.": {
+    "fr": "Aucun élève inscrit dans cette classe.",
+    "en": "No students enrolled in this class.",
+    "ar": "لا يوجد تلاميذ مسجلون في هذا الفصل."
+  },
+  "Absent": {
+    "fr": "Absent",
+    "en": "Absent",
+    "ar": "غائب"
+  },
+  "En Late": {
+    "fr": "En Retard",
+    "en": "Late",
+    "ar": "متأخر"
+  },
+  "Late": {
+    "fr": "En retard",
+    "en": "Late",
+    "ar": "متأخر"
+  },
+  "Allow camera access in your browser, or enter the student ID below.": {
+    "fr": "Autorisez l’accès à la caméra dans le navigateur, ou saisissez le matricule ci-dessous.",
+    "en": "Allow camera access in your browser, or enter the student ID below.",
+    "ar": "اسمح للمتصفح بالوصول إلى الكاميرا أو أدخل رقم التلميذ أدناه."
+  },
+  "Finalize attendance? Students without a check-in will be marked absent.": {
+    "fr": "Clôturer l’appel ? Tous les élèves sans pointage enregistré seront marqués absents.",
+    "en": "Finalize attendance? Students without a check-in will be marked absent.",
+    "ar": "إغلاق سجل الحضور؟ سيتم تسجيل التلاميذ الذين لم يحضروا كغائبين."
+  },
+  " absences recorded. A later scan will update the record and keep the arrival time.": {
+    "fr": " absence(s) enregistrée(s). Un scan tardif corrigera l’absence et conservera l’heure d’arrivée.",
+    "en": " absences recorded. A later scan will update the record and keep the arrival time.",
+    "ar": " تم تسجيل حالات الغياب. سيُحدّث المسح المتأخر السجل ويحفظ وقت الوصول."
+  },
+  "Finalize attendance for every class this school year? Students without a check-in will be marked absent.": {
+    "fr": "Clôturer l’appel de toutes les classes de l’année en cours ? Les élèves sans pointage seront marqués absents.",
+    "en": "Finalize attendance for every class this school year? Students without a check-in will be marked absent.",
+    "ar": "إغلاق الحضور لجميع فصول السنة الدراسية؟ سيتم تسجيل من لم يحضر كغائب."
+  },
+  "{0} classes finalized, {1} absences recorded.": {
+    "fr": "{0} classe(s) clôturée(s), {1} absence(s) enregistrée(s).",
+    "en": "{0} classes finalized, {1} absences recorded.",
+    "ar": "تم إغلاق {0} فصل وتسجيل {1} حالة غياب."
+  },
+  "Attendance check": {
+    "fr": "Contrôle de présence",
+    "en": "Attendance check",
+    "ar": "مراقبة الحضور"
+  },
+  "Scan students": {
+    "fr": "Scanner les élèves",
+    "en": "Scan students",
+    "ar": "مسح رموز التلاميذ"
+  },
+  "Show the card to the camera. The student and class are recognized automatically.": {
+    "fr": "Présentez la carte devant la caméra : l’élève et sa classe sont reconnus automatiquement.",
+    "en": "Show the card to the camera. The student and class are recognized automatically.",
+    "ar": "اعرض البطاقة أمام الكاميرا. يتم التعرف على التلميذ وفصله تلقائيًا."
+  },
+  "Camera on · ready to scan": {
+    "fr": "Caméra active · scan prêt",
+    "en": "Camera on · ready to scan",
+    "ar": "الكاميرا تعمل · جاهز للمسح"
+  },
+  "Camera off": {
+    "fr": "Caméra arrêtée",
+    "en": "Camera off",
+    "ar": "الكاميرا متوقفة"
+  },
+  "Stop camera": {
+    "fr": "Arrêter la caméra",
+    "en": "Stop camera",
+    "ar": "إيقاف الكاميرا"
+  },
+  "Start scanning": {
+    "fr": "Démarrer le scan",
+    "en": "Start scanning",
+    "ar": "بدء المسح"
+  },
+  "The camera is off": {
+    "fr": "La caméra est arrêtée",
+    "en": "The camera is off",
+    "ar": "الكاميرا متوقفة"
+  },
+  "Start scanning or enter a student ID.": {
+    "fr": "Démarrez le scan ou saisissez un matricule.",
+    "en": "Start scanning or enter a student ID.",
+    "ar": "ابدأ المسح أو أدخل رقم التلميذ."
+  },
+  "Already checked in": {
+    "fr": "Déjà pointé",
+    "en": "Already checked in",
+    "ar": "تم تسجيل الحضور مسبقًا"
+  },
+  "Attendance recorded": {
+    "fr": "Présence enregistrée",
+    "en": "Attendance recorded",
+    "ar": "تم تسجيل الحضور"
+  },
+  "Recording attendance…": {
+    "fr": "Enregistrement du pointage…",
+    "en": "Recording attendance…",
+    "ar": "جارٍ تسجيل الحضور…"
+  },
+  "Pointer": {
+    "fr": "Pointer",
+    "en": "Check in",
+    "ar": "تسجيل الحضور"
+  },
+  "at": {
+    "fr": "à",
+    "en": "at",
+    "ar": "في"
+  },
+  " · by {0}": {
+    "fr": " · par {0}",
+    "en": " · by {0}",
+    "ar": " · بواسطة {0}"
+  },
+  "Ready for the next scan": {
+    "fr": "Prêt pour le prochain scan",
+    "en": "Ready for the next scan",
+    "ar": "جاهز للمسح التالي"
+  },
+  "Today’s attendance": {
+    "fr": "Présences du jour",
+    "en": "Today’s attendance",
+    "ar": "حضور اليوم"
+  },
+  "Scan a card to display its class": {
+    "fr": "Scannez une carte pour afficher sa classe",
+    "en": "Scan a card to display its class",
+    "ar": "امسح بطاقة لعرض فصلها"
+  },
+  "View or finalize a class": {
+    "fr": "Consulter ou clôturer une classe",
+    "en": "View or finalize a class",
+    "ar": "عرض فصل أو إغلاق حضوره"
+  },
+  "Select a class to view": {
+    "fr": "Sélectionner pour consulter",
+    "en": "Select a class to view",
+    "ar": "اختر فصلًا للعرض"
+  },
+  "students": {
+    "fr": "élèves",
+    "en": "students",
+    "ar": "تلاميذ"
+  },
+  "Total": {
+    "fr": "Total",
+    "en": "Total",
+    "ar": "الإجمالي"
+  },
+  "Lates": {
+    "fr": "Retards",
+    "en": "Late",
+    "ar": "المتأخرون"
+  },
+  "Student": {
+    "fr": "Élève",
+    "en": "Student",
+    "ar": "التلميذ"
+  },
+  "Status": {
+    "fr": "État",
+    "en": "Status",
+    "ar": "الحالة"
+  },
+  "Arrival": {
+    "fr": "Arrivée",
+    "en": "Arrival",
+    "ar": "الوصول"
+  },
+  " · not scanned": {
+    "fr": " · non scanné",
+    "en": " · not scanned",
+    "ar": " · لم يُمسح"
+  },
+  "Loading attendance…": {
+    "fr": "Chargement du registre…",
+    "en": "Loading attendance…",
+    "ar": "جارٍ تحميل الحضور…"
+  },
+  "Students without a scan are marked absent when attendance is finalized.": {
+    "fr": "Les élèves non scannés deviennent absents à la clôture de l’appel.",
+    "en": "Students without a scan are marked absent when attendance is finalized.",
+    "ar": "يُسجّل التلاميذ الذين لم تُمسح بطاقاتهم كغائبين عند إغلاق الحضور."
+  },
+  "Finalize this class": {
+    "fr": "Clôturer cette classe",
+    "en": "Finalize this class",
+    "ar": "إغلاق حضور هذا الفصل"
+  },
+  "Finalizing…": {
+    "fr": "Clôture…",
+    "en": "Finalizing…",
+    "ar": "جارٍ الإغلاق…"
+  },
+  "Finalize all classes": {
+    "fr": "Clôturer toutes les classes",
+    "en": "Finalize all classes",
+    "ar": "إغلاق حضور جميع الفصول"
+  },
+  "Impossible d’affecter l’enseignant : {0}": {
+    "fr": "Impossible d’affecter l’enseignant : {0}",
+    "en": "Unable to assign teacher: {0}",
+    "ar": "تعذر تعيين المعلم: {0}"
+  },
+  "Error: {0}": {
+    "fr": "Erreur: {0}",
+    "en": "Error: {0}",
+    "ar": "خطأ: {0}"
+  },
+  "Error creating the class: ": {
+    "fr": "Erreur lors de la création de la classe: ",
+    "en": "Error creating the class: ",
+    "ar": "خطأ في إنشاء الفصل: "
+  },
+  "Classes & Subjects Taught": {
+    "fr": "Classes & Matières Enseignées",
+    "en": "Classes & Subjects Taught",
+    "ar": "الفصول والمواد الدراسية"
+  },
+  "Primary school structure (CI, CP, CE1, CE2, CM1, CM2)": {
+    "fr": "Structure pédagogique du cycle élémentaire (CI, CP, CE1, CE2, CM1, CM2)",
+    "en": "Primary school structure (CI, CP, CE1, CE2, CM1, CM2)",
+    "ar": "مراحل التعليم الابتدائي (CI، CP، CE1، CE2، CM1، CM2)"
+  },
+  "Create a class": {
+    "fr": "Créer une classe",
+    "en": "Create a class",
+    "ar": "إنشاء فصل"
+  },
+  "Add a Subject": {
+    "fr": "Ajouter une Matière",
+    "en": "Add a Subject",
+    "ar": "إضافة مادة"
+  },
+  "Primary School Classes": {
+    "fr": "Classes de l'Enseignement Primaire",
+    "en": "Primary School Classes",
+    "ar": "فصول المدرسة الابتدائية"
+  },
+  "No classes have been created yet.": {
+    "fr": "Aucune classe n'est encore créée.",
+    "en": "No classes have been created yet.",
+    "ar": "لم يتم إنشاء أي فصل بعد."
+  },
+  "Create a class before assigning students.": {
+    "fr": "Crée une classe pour pouvoir y affecter les élèves.",
+    "en": "Create a class before assigning students.",
+    "ar": "أنشئ فصلًا قبل توزيع التلاميذ."
+  },
+  "Create the first class": {
+    "fr": "Créer la première classe",
+    "en": "Create the first class",
+    "ar": "إنشاء الفصل الأول"
+  },
+  "Niveau": {
+    "fr": "Niveau",
+    "en": "Level",
+    "ar": "المستوى"
+  },
+  "Students": {
+    "fr": "Élèves",
+    "en": "Students",
+    "ar": "التلاميذ"
+  },
+  "Class teacher:": {
+    "fr": "Maître titulaire :",
+    "en": "Class teacher:",
+    "ar": "معلم الفصل:"
+  },
+  "No teacher assigned": {
+    "fr": "Aucun enseignant affecté",
+    "en": "No teacher assigned",
+    "ar": "لم يُعيّن معلم"
+  },
+  "Edit class": {
+    "fr": "Modifier la classe",
+    "en": "Edit class",
+    "ar": "تعديل الفصل"
+  },
+  "Assign a teacher": {
+    "fr": "Affecter un enseignant",
+    "en": "Assign a teacher",
+    "ar": "تعيين معلم"
+  },
+  "No teacher": {
+    "fr": "Aucun enseignant",
+    "en": "No teacher",
+    "ar": "بدون معلم"
+  },
+  "Frais d'inscription :": {
+    "fr": "Frais d'inscription :",
+    "en": "Enrollment fee:",
+    "ar": "رسوم التسجيل:"
+  },
+  "FCFA": {
+    "fr": "FCFA",
+    "en": "FCFA",
+    "ar": "FCFA"
+  },
+  "Monthly tuition:": {
+    "fr": "Mensualité scolarité :",
+    "en": "Monthly tuition:",
+    "ar": "الرسوم الشهرية:"
+  },
+  "FCFA / mois": {
+    "fr": "FCFA / mois",
+    "en": "FCFA / month",
+    "ar": "FCFA / شهر"
+  },
+  "Subjects and Coefficients": {
+    "fr": "Matières et Coefficients Pédagogiques",
+    "en": "Subjects and Coefficients",
+    "ar": "المواد والمعاملات"
+  },
+  "subjects configured": {
+    "fr": "matières configurées",
+    "en": "subjects configured",
+    "ar": "مواد مُعدّة"
+  },
+  "Code": {
+    "fr": "Code",
+    "en": "Code",
+    "ar": "الرمز"
+  },
+  "Subject": {
+    "fr": "Matière",
+    "en": "Subject",
+    "ar": "المادة"
+  },
+  "Coefficient Officiel": {
+    "fr": "Coefficient Officiel",
+    "en": "Official coefficient",
+    "ar": "المعامل الرسمي"
+  },
+  "Actions": {
+    "fr": "Actions",
+    "en": "Actions",
+    "ar": "الإجراءات"
+  },
+  "Edit": {
+    "fr": "Modifier",
+    "en": "Edit",
+    "ar": "تعديل"
+  },
+  "Active": {
+    "fr": "Actif",
+    "en": "Active",
+    "ar": "نشط"
+  },
+  "The class will belong to the current school year.": {
+    "fr": "La classe sera rattachée à l'année scolaire en cours.",
+    "en": "The class will belong to the current school year.",
+    "ar": "سيُضاف الفصل إلى السنة الدراسية الحالية."
+  },
+  "Class name *": {
+    "fr": "Nom de la classe *",
+    "en": "Class name *",
+    "ar": "اسم الفصل *"
+  },
+  "Niveau *": {
+    "fr": "Niveau *",
+    "en": "Level *",
+    "ar": "المستوى *"
+  },
+  "CI": {
+    "fr": "CI",
+    "en": "CI",
+    "ar": "CI"
+  },
+  "CP": {
+    "fr": "CP",
+    "en": "CP",
+    "ar": "CP"
+  },
+  "CE1": {
+    "fr": "CE1",
+    "en": "CE1",
+    "ar": "CE1"
+  },
+  "CE2": {
+    "fr": "CE2",
+    "en": "CE2",
+    "ar": "CE2"
+  },
+  "CM1": {
+    "fr": "CM1",
+    "en": "CM1",
+    "ar": "CM1"
+  },
+  "CM2": {
+    "fr": "CM2",
+    "en": "CM2",
+    "ar": "CM2"
+  },
+  "Effectif maximal *": {
+    "fr": "Effectif maximal *",
+    "en": "Maximum students *",
+    "ar": "الحد الأقصى للتلاميذ *"
+  },
+  "Enseignant responsable": {
+    "fr": "Enseignant responsable",
+    "en": "Responsible teacher",
+    "ar": "المعلم المسؤول"
+  },
+  "Affecter plus tard": {
+    "fr": "Affecter plus tard",
+    "en": "Assign later",
+    "ar": "التعيين لاحقًا"
+  },
+  "Create a user with the Teacher role in User Management.": {
+    "fr": "Crée un compte avec le rôle ENSEIGNANT dans la gestion des utilisateurs.",
+    "en": "Create a user with the Teacher role in User Management.",
+    "ar": "أنشئ مستخدمًا بدور معلم في إدارة المستخدمين."
+  },
+  "Frais d'inscription (FCFA)": {
+    "fr": "Frais d'inscription (FCFA)",
+    "en": "Enrollment fee (FCFA)",
+    "ar": "رسوم التسجيل (FCFA)"
+  },
+  "Monthly tuition (FCFA)": {
+    "fr": "Mensualité (FCFA)",
+    "en": "Monthly tuition (FCFA)",
+    "ar": "الرسوم الشهرية (FCFA)"
+  },
+  "If there is no school year yet, it will be created with the first class.": {
+    "fr": "Si aucune année scolaire n'existe encore, elle sera créée automatiquement à la création de la première classe.",
+    "en": "If there is no school year yet, it will be created with the first class.",
+    "ar": "إذا لم توجد سنة دراسية، ستُنشأ مع الفصل الأول."
+  },
+  "Cancel": {
+    "fr": "Annuler",
+    "en": "Cancel",
+    "ar": "إلغاء"
+  },
+  "Saving…": {
+    "fr": "Enregistrement…",
+    "en": "Saving…",
+    "ar": "جارٍ الحفظ…"
+  },
+  "Save": {
+    "fr": "Enregistrer",
+    "en": "Save",
+    "ar": "حفظ"
+  },
+  "Create class": {
+    "fr": "Créer la classe",
+    "en": "Create class",
+    "ar": "إنشاء الفصل"
+  },
+  "Edit subject": {
+    "fr": "Modifier la matière",
+    "en": "Edit subject",
+    "ar": "تعديل المادة"
+  },
+  "Add subject": {
+    "fr": "Ajouter une matière",
+    "en": "Add subject",
+    "ar": "إضافة مادة"
+  },
+  "Subject name *": {
+    "fr": "Nom de la matière *",
+    "en": "Subject name *",
+    "ar": "اسم المادة *"
+  },
+  "Example: Science": {
+    "fr": "Ex: Éveil Scientifique",
+    "en": "Example: Science",
+    "ar": "مثال: العلوم"
+  },
+  "Short code *": {
+    "fr": "Code abrégé *",
+    "en": "Short code *",
+    "ar": "الرمز المختصر *"
+  },
+  "Coefficient *": {
+    "fr": "Coefficient *",
+    "en": "Coefficient *",
+    "ar": "المعامل *"
+  },
+  "Add": {
+    "fr": "Ajouter",
+    "en": "Add",
+    "ar": "إضافة"
+  },
+  "Integrated and Secure School Management": {
+    "fr": "Gestion Scolaire Intégrée & Sécurisée",
+    "en": "Integrated and Secure School Management",
+    "ar": "إدارة مدرسية متكاملة وآمنة"
+  },
+  "Welcome to the As Sakina School portal": {
+    "fr": "Bienvenue sur le portail de l'École As Sakina",
+    "en": "Welcome to the As Sakina School portal",
+    "ar": "مرحبًا بك في بوابة مدرسة السكينة"
+  },
+  "Current school year:": {
+    "fr": "Année scolaire active :",
+    "en": "Current school year:",
+    "ar": "السنة الدراسية الحالية:"
+  },
+  ". Track enrollment, billing, grades, and attendance in real time.": {
+    "fr": ". Suivi des inscriptions, de la facturation, des notes et du registre des présences en temps réel.",
+    "en": ". Track enrollment, billing, grades, and attendance in real time.",
+    "ar": ". متابعة التسجيل والفواتير والدرجات والحضور لحظة بلحظة."
+  },
+  "Boys": {
+    "fr": "Garçons",
+    "en": "Boys",
+    "ar": "ذكور"
+  },
+  "Girls": {
+    "fr": "Filles",
+    "en": "Girls",
+    "ar": "إناث"
+  },
+  "Collected": {
+    "fr": "Encaissé",
+    "en": "Collected",
+    "ar": "المبلغ المحصل"
+  },
+  "Taux de recouvrement :": {
+    "fr": "Taux de recouvrement :",
+    "en": "Collection rate:",
+    "ar": "نسبة التحصيل:"
+  },
+  "Balance due": {
+    "fr": "Reste à payer",
+    "en": "Balance due",
+    "ar": "الرصيد المستحق"
+  },
+  "invoices with an outstanding balance": {
+    "fr": "facture(s) en attente de solde",
+    "en": "invoices with an outstanding balance",
+    "ar": "فواتير برصيد متبقٍ"
+  },
+  "Today's attendance": {
+    "fr": "Assiduité du jour",
+    "en": "Today's attendance",
+    "ar": "حضور اليوم"
+  },
+  "Today's attendance recorded": {
+    "fr": "Pointage du jour validé",
+    "en": "Today's attendance recorded",
+    "ar": "تم تسجيل حضور اليوم"
+  },
+  "Students by class": {
+    "fr": "Répartition des effectifs par classe",
+    "en": "Students by class",
+    "ar": "توزيع التلاميذ حسب الفصل"
+  },
+  "Class occupancy rates (CI to CM2)": {
+    "fr": "Taux de remplissage des classes (du CI au CM2)",
+    "en": "Class occupancy rates (CI to CM2)",
+    "ar": "نسب إشغال الفصول (من CI إلى CM2)"
+  },
+  "Classes": {
+    "fr": "Classes",
+    "en": "Classes",
+    "ar": "فصول"
+  },
+  "students (": {
+    "fr": "élèves (",
+    "en": "students (",
+    "ar": "تلاميذ ("
+  },
+  "Derniers Encaissements": {
+    "fr": "Derniers Encaissements",
+    "en": "Latest Payments",
+    "ar": "آخر التحصيلات"
+  },
+  "Recent receipts": {
+    "fr": "Reçus récents",
+    "en": "Recent receipts",
+    "ar": "الإيصالات الأخيرة"
+  },
+  "No recent payments": {
+    "fr": "Aucun paiement récent",
+    "en": "No recent payments",
+    "ar": "لا توجد مدفوعات حديثة"
+  },
+  "F": {
+    "fr": "F",
+    "en": "F",
+    "ar": "F"
+  },
+  "Unable to complete the operation.": {
+    "fr": "Opération impossible.",
+    "en": "Unable to complete the operation.",
+    "ar": "تعذر إتمام العملية."
+  },
+  "Import {0} rows? Existing records will be kept.": {
+    "fr": "Importer {0} ligne(s) ? Les lignes existantes seront conservées.",
+    "en": "Import {0} rows? Existing records will be kept.",
+    "ar": "استيراد {0} صف؟ سيتم الاحتفاظ بالسجلات الموجودة."
+  },
+  "{0} new rows added.": {
+    "fr": "{0} nouvelle(s) ligne(s) enregistrée(s).",
+    "en": "{0} new rows added.",
+    "ar": "تمت إضافة {0} صف جديد."
+  },
+  "Data Import and Export": {
+    "fr": "Import et export des données",
+    "en": "Data Import and Export",
+    "ar": "استيراد البيانات وتصديرها"
+  },
+  "Administrators only. An XLSX file contains one sheet per table; a CSV file contains one table.": {
+    "fr": "Réservé aux administrateurs. Un fichier XLSX contient une feuille par table ; un CSV concerne une seule table.",
+    "en": "Administrators only. An XLSX file contains one sheet per table; a CSV file contains one table.",
+    "ar": "للمسؤولين فقط. يحتوي ملف Excel على ورقة لكل جدول، وملف CSV على جدول واحد."
+  },
+  "Export": {
+    "fr": "Exporter",
+    "en": "Export",
+    "ar": "تصدير"
+  },
+  "Use an export as a template for importing. Document files are not included.": {
+    "fr": "Utilisez l’export comme modèle pour préparer un import. Les fichiers de documents eux-mêmes ne sont pas inclus.",
+    "en": "Use an export as a template for importing. Document files are not included.",
+    "ar": "استخدم ملف التصدير كنموذج للاستيراد. لا يشمل ملفات المستندات."
+  },
+  "All tables · Excel": {
+    "fr": "Toutes les tables · Excel",
+    "en": "All tables · Excel",
+    "ar": "جميع الجداول · Excel"
+  },
+  "Selected table · CSV": {
+    "fr": "Table choisie · CSV",
+    "en": "Selected table · CSV",
+    "ar": "الجدول المحدد · CSV"
+  },
+  "Import": {
+    "fr": "Importer",
+    "en": "Import",
+    "ar": "استيراد"
+  },
+  "Import adds missing records. It keeps existing records and stops if a relationship is invalid. User accounts and document files are managed separately.": {
+    "fr": "L’import ajoute les identifiants absents. Il conserve les enregistrements existants et échoue entièrement si une relation est invalide. Les comptes utilisateurs et les fichiers de documents sont gérés séparément.",
+    "en": "Import adds missing records. It keeps existing records and stops if a relationship is invalid. User accounts and document files are managed separately.",
+    "ar": "يضيف الاستيراد السجلات المفقودة ويحافظ على الموجودة ويتوقف عند علاقة غير صالحة. تُدار حسابات المستخدمين وملفات المستندات بشكل منفصل."
+  },
+  "Preview": {
+    "fr": "Prévisualiser",
+    "en": "Preview",
+    "ar": "معاينة"
+  },
+  "Import missing rows": {
+    "fr": "Importer les lignes absentes",
+    "en": "Import missing rows",
+    "ar": "استيراد الصفوف المفقودة"
+  },
+  "rows to review": {
+    "fr": "ligne(s) à examiner",
+    "en": "rows to review",
+    "ar": "صفوف للمراجعة"
+  },
+  "Payment error: {0}": {
+    "fr": "Erreur de paiement: {0}",
+    "en": "Payment error: {0}",
+    "ar": "خطأ في الدفع: {0}"
+  },
+  "Finances & Billing": {
+    "fr": "Gestion Financière & Facturation",
+    "en": "Finances & Billing",
+    "ar": "الشؤون المالية والفواتير"
+  },
+  "Manage tuition invoices, payments, and receipts": {
+    "fr": "Facturation des scolarités, enregistrement des versements et édition des reçus",
+    "en": "Manage tuition invoices, payments, and receipts",
+    "ar": "إدارة فواتير الدراسة والمدفوعات والإيصالات"
+  },
+  "Generate Class Tuition Invoices": {
+    "fr": "Générer Mensualités Classe",
+    "en": "Generate Class Tuition Invoices",
+    "ar": "إنشاء فواتير شهرية للفصل"
+  },
+  "Total Invoiced": {
+    "fr": "Total Facturé",
+    "en": "Total Invoiced",
+    "ar": "إجمالي الفواتير"
+  },
+  "invoices issued": {
+    "fr": "factures émises",
+    "en": "invoices issued",
+    "ar": "فواتير صادرة"
+  },
+  "Total Collected": {
+    "fr": "Total Recouvré (Encaissé)",
+    "en": "Total Collected",
+    "ar": "إجمالي المبالغ المحصلة"
+  },
+  "Outstanding Balance": {
+    "fr": "Reste à recouvrer",
+    "en": "Outstanding Balance",
+    "ar": "الرصيد المتبقي"
+  },
+  "Outstanding payments": {
+    "fr": "Créances en cours",
+    "en": "Outstanding payments",
+    "ar": "مدفوعات مستحقة"
+  },
+  "Invoice Status": {
+    "fr": "Statut des Factures",
+    "en": "Invoice Status",
+    "ar": "حالة الفواتير"
+  },
+  "Paids": {
+    "fr": "Payées",
+    "en": "Paid",
+    "ar": "مدفوعة"
+  },
+  "Partielles": {
+    "fr": "Partielles",
+    "en": "Partial",
+    "ar": "مدفوعة جزئيًا"
+  },
+  "Unpaids": {
+    "fr": "Impayées",
+    "en": "Unpaid",
+    "ar": "غير مدفوعة"
+  },
+  "Status :": {
+    "fr": "Statut :",
+    "en": "Status :",
+    "ar": "الحالة:"
+  },
+  "All statuses": {
+    "fr": "Tous les statuts",
+    "en": "All statuses",
+    "ar": "جميع الحالات"
+  },
+  "Paid": {
+    "fr": "Payée",
+    "en": "Paid",
+    "ar": "مدفوعة"
+  },
+  "Partielle": {
+    "fr": "Partielle",
+    "en": "Partial",
+    "ar": "جزئية"
+  },
+  "Unpaid": {
+    "fr": "Impayée",
+    "en": "Unpaid",
+    "ar": "غير مدفوعة"
+  },
+  "Class:": {
+    "fr": "Classe :",
+    "en": "Class:",
+    "ar": "الفصل:"
+  },
+  "All classes": {
+    "fr": "Toutes les classes",
+    "en": "All classes",
+    "ar": "جميع الفصول"
+  },
+  "Showing": {
+    "fr": "Affichage de",
+    "en": "Showing",
+    "ar": "عرض"
+  },
+  "invoices": {
+    "fr": "facture(s)",
+    "en": "invoices",
+    "ar": "فواتير"
+  },
+  "Invoice No. & Date": {
+    "fr": "N° Facture & Date",
+    "en": "Invoice No. & Date",
+    "ar": "رقم الفاتورة والتاريخ"
+  },
+  "Student & Class": {
+    "fr": "Élève & Classe",
+    "en": "Student & Class",
+    "ar": "التلميذ والفصل"
+  },
+  "Description": {
+    "fr": "Libellé",
+    "en": "Description",
+    "ar": "الوصف"
+  },
+  "Total Amount": {
+    "fr": "Montant Total",
+    "en": "Total Amount",
+    "ar": "المبلغ الإجمالي"
+  },
+  "Already Paid": {
+    "fr": "Déjà Réglé",
+    "en": "Already Paid",
+    "ar": "المبلغ المدفوع"
+  },
+  "Balance Due": {
+    "fr": "Reste à Payer",
+    "en": "Balance Due",
+    "ar": "الرصيد المستحق"
+  },
+  "Loading invoices…": {
+    "fr": "Chargement des factures...",
+    "en": "Loading invoices…",
+    "ar": "جارٍ تحميل الفواتير…"
+  },
+  "No invoices found.": {
+    "fr": "Aucune facture trouvée.",
+    "en": "No invoices found.",
+    "ar": "لا توجد فواتير."
+  },
+  "Created by": {
+    "fr": "Créée par",
+    "en": "Created by",
+    "ar": "أنشأها"
+  },
+  "Pay": {
+    "fr": "Régler",
+    "en": "Pay",
+    "ar": "دفع"
+  },
+  "View the latest payment receipt": {
+    "fr": "Voir le reçu du dernier paiement",
+    "en": "View the latest payment receipt",
+    "ar": "عرض إيصال آخر دفعة"
+  },
+  "Receipt": {
+    "fr": "Reçu",
+    "en": "Receipt",
+    "ar": "إيصال"
+  },
+  "Record a Payment": {
+    "fr": "Enregistrer un Versement",
+    "en": "Record a Payment",
+    "ar": "تسجيل دفعة"
+  },
+  "Generate a payment receipt immediately": {
+    "fr": "Émission instantanée du reçu de paiement",
+    "en": "Generate a payment receipt immediately",
+    "ar": "إنشاء إيصال دفع فورًا"
+  },
+  "Student :": {
+    "fr": "Élève :",
+    "en": "Student :",
+    "ar": "التلميذ:"
+  },
+  "Invoice:": {
+    "fr": "Facture :",
+    "en": "Invoice:",
+    "ar": "الفاتورة:"
+  },
+  "Solde restant :": {
+    "fr": "Solde restant :",
+    "en": "Remaining balance:",
+    "ar": "الرصيد المتبقي:"
+  },
+  "Amount to pay (FCFA) *": {
+    "fr": "Montant à verser (FCFA) *",
+    "en": "Amount to pay (FCFA) *",
+    "ar": "المبلغ للدفع (FCFA) *"
+  },
+  "Payment method *": {
+    "fr": "Mode de règlement *",
+    "en": "Payment method *",
+    "ar": "طريقة الدفع *"
+  },
+  "Cash (school office)": {
+    "fr": "Espèces (Caisse école)",
+    "en": "Cash (school office)",
+    "ar": "نقدًا (مكتب المدرسة)"
+  },
+  "Wave Mobile Money": {
+    "fr": "Wave Mobile Money",
+    "en": "Wave Mobile Money",
+    "ar": "Wave Mobile Money"
+  },
+  "Orange Money": {
+    "fr": "Orange Money",
+    "en": "Orange Money",
+    "ar": "Orange Money"
+  },
+  "Virement Bancaire": {
+    "fr": "Virement Bancaire",
+    "en": "Bank transfer",
+    "ar": "تحويل بنكي"
+  },
+  "Check": {
+    "fr": "Chèque",
+    "en": "Check",
+    "ar": "شيك"
+  },
+  "Transaction reference (Wave / check / ID)": {
+    "fr": "Référence transaction (Wave / Chèque / ID)",
+    "en": "Transaction reference (Wave / check / ID)",
+    "ar": "مرجع المعاملة (Wave / شيك / رقم)"
+  },
+  "Example: WAVE-9923842 or check number": {
+    "fr": "Ex: WAVE-9923842 ou N° Chèque",
+    "en": "Example: WAVE-9923842 or check number",
+    "ar": "مثال: WAVE-9923842 أو رقم الشيك"
+  },
+  "Observations": {
+    "fr": "Observations",
+    "en": "Comments",
+    "ar": "ملاحظات"
+  },
+  "Example: October payment": {
+    "fr": "Ex: Versement du mois d'octobre",
+    "en": "Example: October payment",
+    "ar": "مثال: دفعة شهر أكتوبر"
+  },
+  "Confirmer l'encaissement": {
+    "fr": "Confirmer l'encaissement",
+    "en": "Confirm payment",
+    "ar": "تأكيد التحصيل"
+  },
+  "Batch Tuition Invoices": {
+    "fr": "Génération Groupée de Mensualités",
+    "en": "Batch Tuition Invoices",
+    "ar": "إنشاء الفواتير الشهرية دفعة واحدة"
+  },
+  "Automatically create invoices for every student in a class": {
+    "fr": "Émission automatique des factures pour tous les élèves d'une classe",
+    "en": "Automatically create invoices for every student in a class",
+    "ar": "إنشاء فواتير تلقائيًا لجميع تلاميذ الفصل"
+  },
+  "Selected class *": {
+    "fr": "Classe concernée *",
+    "en": "Selected class *",
+    "ar": "الفصل المحدد *"
+  },
+  "- Monthly tuition:": {
+    "fr": "- Mensualité :",
+    "en": "- Monthly tuition:",
+    "ar": "- الرسوم الشهرية:"
+  },
+  "Month / Description *": {
+    "fr": "Mois / Libellé *",
+    "en": "Month / Description *",
+    "ar": "الشهر / الوصف *"
+  },
+  "Due date *": {
+    "fr": "Date d'échéance *",
+    "en": "Due date *",
+    "ar": "تاريخ الاستحقاق *"
+  },
+  "Generate invoices": {
+    "fr": "Lancer la génération",
+    "en": "Generate invoices",
+    "ar": "إنشاء الفواتير"
+  },
+  "As Sakina School": {
+    "fr": "École As Sakina",
+    "en": "As Sakina School",
+    "ar": "مدرسة السكينة"
+  },
+  "Primary education - Dakar, Senegal": {
+    "fr": "Enseignement Élémentaire - Dakar, Sénégal",
+    "en": "Primary education - Dakar, Senegal",
+    "ar": "التعليم الابتدائي - داكار، السنغال"
+  },
+  "Phone: +221 33 800 00 00": {
+    "fr": "Tél: +221 33 800 00 00",
+    "en": "Phone: +221 33 800 00 00",
+    "ar": "الهاتف: +221 33 800 00 00"
+  },
+  "SCHOOL PAYMENT RECEIPT": {
+    "fr": "REÇU DE CAISSE SCOLAIRE",
+    "en": "SCHOOL PAYMENT RECEIPT",
+    "ar": "إيصال دفع مدرسي"
+  },
+  "Receipt no.:": {
+    "fr": "N° Reçu :",
+    "en": "Receipt no.:",
+    "ar": "رقم الإيصال:"
+  },
+  "Date :": {
+    "fr": "Date :",
+    "en": "Date :",
+    "ar": "التاريخ:"
+  },
+  "Student name:": {
+    "fr": "Nom de l'élève :",
+    "en": "Student name:",
+    "ar": "اسم التلميذ:"
+  },
+  "Matricule :": {
+    "fr": "Matricule :",
+    "en": "Student ID:",
+    "ar": "رقم التلميذ:"
+  },
+  "Motif :": {
+    "fr": "Motif :",
+    "en": "Description:",
+    "ar": "الوصف:"
+  },
+  "Payment method:": {
+    "fr": "Mode de paiement :",
+    "en": "Payment method:",
+    "ar": "طريقة الدفع:"
+  },
+  "Montant Collected :": {
+    "fr": "Montant Encaissé :",
+    "en": "Amount received:",
+    "ar": "المبلغ المحصل:"
+  },
+  "Balance due :": {
+    "fr": "Reste à payer :",
+    "en": "Balance due :",
+    "ar": "الرصيد المستحق:"
+  },
+  "Invoice status:": {
+    "fr": "Statut facture :",
+    "en": "Invoice status:",
+    "ar": "حالة الفاتورة:"
+  },
+  "Parent / Payer Signature": {
+    "fr": "Signature du Parent / Payeur",
+    "en": "Parent / Payer Signature",
+    "ar": "توقيع ولي الأمر / الدافع"
+  },
+  "Cachet & Signature Caisse": {
+    "fr": "Cachet & Signature Caisse",
+    "en": "Office Stamp & Signature",
+    "ar": "ختم وتوقيع مكتب المدرسة"
+  },
+  "Imprimer / enregistrer PDF": {
+    "fr": "Imprimer / enregistrer PDF",
+    "en": "Print / Save PDF",
+    "ar": "طباعة / حفظ PDF"
+  },
+  "Enter at least one grade": {
+    "fr": "Veuillez saisir au moins une note",
+    "en": "Enter at least one grade",
+    "ar": "أدخل درجة واحدة على الأقل"
+  },
+  "No report card has been calculated for this student yet. Generate report cards first.": {
+    "fr": "Bulletin non encore calculé pour cet élève. Cliquez sur \"Générer les bulletins\" d'abord.",
+    "en": "No report card has been calculated for this student yet. Generate report cards first.",
+    "ar": "لم يتم حساب كشف نتائج لهذا التلميذ بعد. أنشئ كشوف النتائج أولًا."
+  },
+  "Cahier de Grades & Report Cards Scolaires": {
+    "fr": "Cahier de Notes & Bulletins Scolaires",
+    "en": "Grades & School Report Cards",
+    "ar": "دفتر الدرجات وكشوف النتائج"
+  },
+  "Enter grades, calculate averages automatically, and generate report cards": {
+    "fr": "Saisie des évaluations, calcul automatisé des moyennes générales et génération des bulletins",
+    "en": "Enter grades, calculate averages automatically, and generate report cards",
+    "ar": "إدخال الدرجات وحساب المعدلات تلقائيًا وإنشاء كشوف النتائج"
+  },
+  "Enter Grades": {
+    "fr": "Saisie des Notes",
+    "en": "Enter Grades",
+    "ar": "إدخال الدرجات"
+  },
+  "Bulletins Trimestriels (": {
+    "fr": "Bulletins Trimestriels (",
+    "en": "Term Report Cards (",
+    "ar": "كشوف النتائج الفصلية ("
+  },
+  "Trimestre :": {
+    "fr": "Trimestre :",
+    "en": "Term:",
+    "ar": "الفصل الدراسي:"
+  },
+  "1er Trimestre": {
+    "fr": "1er Trimestre",
+    "en": "First term",
+    "ar": "الفصل الدراسي الأول"
+  },
+  "Second term": {
+    "fr": "2ème Trimestre",
+    "en": "Second term",
+    "ar": "الفصل الدراسي الثاني"
+  },
+  "Third term": {
+    "fr": "3ème Trimestre",
+    "en": "Third term",
+    "ar": "الفصل الدراسي الثالث"
+  },
+  "Subject :": {
+    "fr": "Matière :",
+    "en": "Subject :",
+    "ar": "المادة:"
+  },
+  "(Coeff": {
+    "fr": "(Coeff",
+    "en": "(Coeff",
+    "ar": "(المعامل"
+  },
+  "Assessment type:": {
+    "fr": "Type d'évaluation :",
+    "en": "Assessment type:",
+    "ar": "نوع التقييم:"
+  },
+  "Composition Trimestrielle": {
+    "fr": "Composition Trimestrielle",
+    "en": "Term exam",
+    "ar": "اختبار نهاية الفصل"
+  },
+  "Devoir N°1": {
+    "fr": "Devoir N°1",
+    "en": "Assignment No. 1",
+    "ar": "الواجب الأول"
+  },
+  "Devoir N°2": {
+    "fr": "Devoir N°2",
+    "en": "Assignment No. 2",
+    "ar": "الواجب الثاني"
+  },
+  "Quiz / Test": {
+    "fr": "Interrogation / Contrôle",
+    "en": "Quiz / Test",
+    "ar": "اختبار قصير"
+  },
+  "Entering grades for:": {
+    "fr": "Saisie pour :",
+    "en": "Entering grades for:",
+    "ar": "إدخال الدرجات لـ:"
+  },
+  "Class": {
+    "fr": "Classe",
+    "en": "Class",
+    "ar": "الفصل"
+  },
+  "Standard grading scale of 20 points": {
+    "fr": "Barème standard de notation sur 20 points",
+    "en": "Standard grading scale of 20 points",
+    "ar": "مقياس الدرجات من 20 نقطة"
+  },
+  "Save Grades": {
+    "fr": "Enregistrer les Notes",
+    "en": "Save Grades",
+    "ar": "حفظ الدرجات"
+  },
+  "Note sur 20": {
+    "fr": "Note sur 20",
+    "en": "Grade out of 20",
+    "ar": "الدرجة من 20"
+  },
+  "Teacher comments": {
+    "fr": "Appréciation / Remarque du Maître",
+    "en": "Teacher comments",
+    "ar": "ملاحظات المعلم"
+  },
+  "No students enrolled in this class": {
+    "fr": "Aucun élève inscrit dans cette classe",
+    "en": "No students enrolled in this class",
+    "ar": "لا يوجد تلاميذ مسجلون في هذا الفصل"
+  },
+  "Example: Careful work, good reasoning…": {
+    "fr": "Ex: Travail soigné, bon raisonnement...",
+    "en": "Example: Careful work, good reasoning…",
+    "ar": "مثال: عمل متقن وتفكير سليم…"
+  },
+  "Class report cards:": {
+    "fr": "Bulletins de la classe :",
+    "en": "Class report cards:",
+    "ar": "كشوف نتائج الفصل:"
+  },
+  "Automatically calculate ranks, class averages, and official comments": {
+    "fr": "Calcul automatique des rangs, des moyennes de classe et des appréciations officielles",
+    "en": "Automatically calculate ranks, class averages, and official comments",
+    "ar": "حساب الترتيب ومعدلات الفصل والملاحظات الرسمية تلقائيًا"
+  },
+  "Generate / Recalculate Report Cards": {
+    "fr": "Générer / Recalculer les Bulletins",
+    "en": "Generate / Recalculate Report Cards",
+    "ar": "إنشاء / إعادة حساب كشوف النتائج"
+  },
+  "Rang": {
+    "fr": "Rang",
+    "en": "Rank",
+    "ar": "الترتيب"
+  },
+  "Overall Average": {
+    "fr": "Moyenne Générale",
+    "en": "Overall Average",
+    "ar": "المعدل العام"
+  },
+  "Class Average": {
+    "fr": "Moyenne Classe",
+    "en": "Class Average",
+    "ar": "معدل الفصل"
+  },
+  "Official Comment": {
+    "fr": "Appréciation Officielle",
+    "en": "Official Comment",
+    "ar": "الملاحظة الرسمية"
+  },
+  "No report cards for this class and term. Select Generate / Recalculate.": {
+    "fr": "Aucun bulletin généré pour cette classe et ce trimestre. Cliquez sur \"Générer / Recalculer\".",
+    "en": "No report cards for this class and term. Select Generate / Recalculate.",
+    "ar": "لا توجد كشوف نتائج لهذا الفصل. اختر إنشاء / إعادة الحساب."
+  },
+  "View Report Card": {
+    "fr": "Voir Bulletin",
+    "en": "View Report Card",
+    "ar": "عرض كشف النتائج"
+  },
+  "REPUBLIC OF SENEGAL": {
+    "fr": "RÉPUBLIQUE DU SÉNÉGAL",
+    "en": "REPUBLIC OF SENEGAL",
+    "ar": "جمهورية السنغال"
+  },
+  "Ministry of National Education": {
+    "fr": "Ministère de l'Éducation Nationale",
+    "en": "Ministry of National Education",
+    "ar": "وزارة التربية الوطنية"
+  },
+  "Dakar Education Authority": {
+    "fr": "Inspection d'Académie de Dakar",
+    "en": "Dakar Education Authority",
+    "ar": "إدارة التعليم في داكار"
+  },
+  "AS SAKINA SCHOOL": {
+    "fr": "ÉCOLE AS SAKINA",
+    "en": "AS SAKINA SCHOOL",
+    "ar": "مدرسة السكينة"
+  },
+  "Discipline • Work • Success": {
+    "fr": "Discipline • Travail • Réussite",
+    "en": "Discipline • Work • Success",
+    "ar": "الانضباط • العمل • النجاح"
+  },
+  "BULLETIN DE NOTES": {
+    "fr": "BULLETIN DE NOTES",
+    "en": "REPORT CARD",
+    "ar": "كشف الدرجات"
+  },
+  "Subjects Taught": {
+    "fr": "Matières Enseignées",
+    "en": "Subjects Taught",
+    "ar": "المواد الدراسية"
+  },
+  "Coeff": {
+    "fr": "Coeff",
+    "en": "Coeff",
+    "ar": "المعامل"
+  },
+  "Moyenne / 20": {
+    "fr": "Moyenne / 20",
+    "en": "Average / 20",
+    "ar": "المعدل / 20"
+  },
+  "Points (Note x Coeff)": {
+    "fr": "Points (Note x Coeff)",
+    "en": "Points (Grade × Coefficient)",
+    "ar": "النقاط (الدرجة × المعامل)"
+  },
+  "Teacher Comments": {
+    "fr": "Appréciations du Maître",
+    "en": "Teacher Comments",
+    "ar": "ملاحظات المعلم"
+  },
+  "OVERALL TOTAL": {
+    "fr": "TOTAL GÉNÉRAL",
+    "en": "OVERALL TOTAL",
+    "ar": "الإجمالي العام"
+  },
+  "Student Rank": {
+    "fr": "Rang de l'élève",
+    "en": "Student Rank",
+    "ar": "ترتيب التلميذ"
+  },
+  "Plus Forte Moyenne": {
+    "fr": "Plus Forte Moyenne",
+    "en": "Highest Average",
+    "ar": "أعلى معدل"
+  },
+  "Plus Faible Moyenne": {
+    "fr": "Plus Faible Moyenne",
+    "en": "Lowest Average",
+    "ar": "أدنى معدل"
+  },
+  "Visa de l'Enseignant": {
+    "fr": "Visa de l'Enseignant",
+    "en": "Teacher’s Approval",
+    "ar": "اعتماد المعلم"
+  },
+  "Signature": {
+    "fr": "Signature",
+    "en": "Signature",
+    "ar": "التوقيع"
+  },
+  "Principal’s Approval": {
+    "fr": "Visa du Directeur",
+    "en": "Principal’s Approval",
+    "ar": "اعتماد المدير"
+  },
+  "Cachet & Signature": {
+    "fr": "Cachet & Signature",
+    "en": "Stamp & Signature",
+    "ar": "الختم والتوقيع"
+  },
+  "Parent’s Signature": {
+    "fr": "Signature des Parents",
+    "en": "Parent’s Signature",
+    "ar": "توقيع ولي الأمر"
+  },
+  "Vu et pris connaissance": {
+    "fr": "Vu et pris connaissance",
+    "en": "Read and acknowledged",
+    "ar": "تم الاطلاع"
+  },
+  "Print Report Card": {
+    "fr": "Imprimer le Bulletin",
+    "en": "Print Report Card",
+    "ar": "طباعة كشف النتائج"
+  },
+  "Unable to create the parent": {
+    "fr": "Impossible de créer le parent",
+    "en": "Unable to create the parent",
+    "ar": "تعذر إنشاء ولي الأمر"
+  },
+  "Parents d'Students & Guardians": {
+    "fr": "Parents d'Élèves & Tuteurs",
+    "en": "Parents & Guardians",
+    "ar": "أولياء الأمور والأوصياء"
+  },
+  "Directory of guardians and their children": {
+    "fr": "Annuaire des responsables légaux et suivi des enfants rattachés",
+    "en": "Directory of guardians and their children",
+    "ar": "دليل الأوصياء وأبنائهم"
+  },
+  "Add a Parent": {
+    "fr": "Ajouter un Parent",
+    "en": "Add a Parent",
+    "ar": "إضافة ولي أمر"
+  },
+  "Search by name, phone, or email…": {
+    "fr": "Rechercher par nom, téléphone ou email...",
+    "en": "Search by name, phone, or email…",
+    "ar": "البحث بالاسم أو الهاتف أو البريد الإلكتروني…"
+  },
+  "Total :": {
+    "fr": "Total :",
+    "en": "Total :",
+    "ar": "الإجمالي:"
+  },
+  "parents registered": {
+    "fr": "parents enregistrés",
+    "en": "parents registered",
+    "ar": "أولياء أمور مسجلون"
+  },
+  "Loading parents…": {
+    "fr": "Chargement des parents...",
+    "en": "Loading parents…",
+    "ar": "جارٍ تحميل أولياء الأمور…"
+  },
+  "No parents found.": {
+    "fr": "Aucun parent trouvé.",
+    "en": "No parents found.",
+    "ar": "لا يوجد أولياء أمور."
+  },
+  "Enfants inscrits (": {
+    "fr": "Enfants inscrits (",
+    "en": "Enrolled children (",
+    "ar": "الأبناء المسجلون ("
+  },
+  "No students linked": {
+    "fr": "Aucun élève rattaché",
+    "en": "No students linked",
+    "ar": "لا يوجد تلاميذ مرتبطون"
+  },
+  "Add a Parent / Guardian": {
+    "fr": "Ajouter un Parent / Tuteur",
+    "en": "Add a Parent / Guardian",
+    "ar": "إضافة ولي أمر / وصي"
+  },
+  "First name *": {
+    "fr": "Prénom *",
+    "en": "First name *",
+    "ar": "الاسم الأول *"
+  },
+  "Last name *": {
+    "fr": "Nom *",
+    "en": "Last name *",
+    "ar": "اسم العائلة *"
+  },
+  "Phone *": {
+    "fr": "Téléphone *",
+    "en": "Phone *",
+    "ar": "الهاتف *"
+  },
+  "Email": {
+    "fr": "Email",
+    "en": "Email",
+    "ar": "البريد الإلكتروني"
+  },
+  "Relationship": {
+    "fr": "Lien de parenté",
+    "en": "Relationship",
+    "ar": "صلة القرابة"
+  },
+  "Father": {
+    "fr": "Père",
+    "en": "Father",
+    "ar": "الأب"
+  },
+  "Mother": {
+    "fr": "Mère",
+    "en": "Mother",
+    "ar": "الأم"
+  },
+  "Guardian / Tutrice": {
+    "fr": "Tuteur / Tutrice",
+    "en": "Guardian",
+    "ar": "وصي / وصية"
+  },
+  "Profession": {
+    "fr": "Profession",
+    "en": "Occupation",
+    "ar": "المهنة"
+  },
+  "Ex: Enseignant": {
+    "fr": "Ex: Enseignant",
+    "en": "Example: Teacher",
+    "ar": "مثال: معلم"
+  },
+  "Adresse": {
+    "fr": "Adresse",
+    "en": "Address",
+    "ar": "العنوان"
+  },
+  "The new passwords do not match.": {
+    "fr": "Les nouveaux mots de passe ne correspondent pas.",
+    "en": "The new passwords do not match.",
+    "ar": "كلمتا المرور الجديدتان غير متطابقتين."
+  },
+  "Choose a different new password.": {
+    "fr": "Choisissez un nouveau mot de passe différent.",
+    "en": "Choose a different new password.",
+    "ar": "اختر كلمة مرور جديدة مختلفة."
+  },
+  "Your password has been changed.": {
+    "fr": "Votre mot de passe a été modifié.",
+    "en": "Your password has been changed.",
+    "ar": "تم تغيير كلمة المرور."
+  },
+  "Unable to save changes.": {
+    "fr": "Modification impossible.",
+    "en": "Unable to save changes.",
+    "ar": "تعذر حفظ التغييرات."
+  },
+  "Change my password": {
+    "fr": "Changer mon mot de passe",
+    "en": "Change my password",
+    "ar": "تغيير كلمة المرور"
+  },
+  "Enter your current password to protect your account.": {
+    "fr": "Saisissez votre mot de passe actuel pour protéger votre compte.",
+    "en": "Enter your current password to protect your account.",
+    "ar": "أدخل كلمة المرور الحالية لحماية حسابك."
+  },
+  "Current password": {
+    "fr": "Mot de passe actuel",
+    "en": "Current password",
+    "ar": "كلمة المرور الحالية"
+  },
+  "New password": {
+    "fr": "Nouveau mot de passe",
+    "en": "New password",
+    "ar": "كلمة المرور الجديدة"
+  },
+  "Confirm new password": {
+    "fr": "Confirmer le nouveau mot de passe",
+    "en": "Confirm new password",
+    "ar": "تأكيد كلمة المرور الجديدة"
+  },
+  "Updating…": {
+    "fr": "Modification…",
+    "en": "Updating…",
+    "ar": "جارٍ التحديث…"
+  },
+  "Profile unavailable.": {
+    "fr": "Profil indisponible.",
+    "en": "Profile unavailable.",
+    "ar": "الملف الشخصي غير متاح."
+  },
+  "Profile saved. Sign in again to update your name in the menu.": {
+    "fr": "Profil enregistré. Une nouvelle connexion peut être nécessaire pour actualiser votre nom dans le menu.",
+    "en": "Profile saved. Sign in again to update your name in the menu.",
+    "ar": "تم حفظ الملف الشخصي. سجّل الدخول مجددًا لتحديث اسمك في القائمة."
+  },
+  "Verification email requested. Check your inbox.": {
+    "fr": "E-mail de vérification demandé. Vérifiez votre boîte de réception.",
+    "en": "Verification email requested. Check your inbox.",
+    "ar": "تم طلب رسالة التحقق. راجع بريدك الوارد."
+  },
+  "Unable to send email. SMTP must be configured.": {
+    "fr": "Envoi impossible. Le service SMTP doit être configuré.",
+    "en": "Unable to send email. SMTP must be configured.",
+    "ar": "تعذر إرسال البريد الإلكتروني. يجب إعداد خدمة البريد."
+  },
+  "First name": {
+    "fr": "Prénom",
+    "en": "First name",
+    "ar": "الاسم الأول"
+  },
+  "Last name": {
+    "fr": "Nom",
+    "en": "Last name",
+    "ar": "اسم العائلة"
+  },
+  "Email address": {
+    "fr": "Adresse e-mail",
+    "en": "Email address",
+    "ar": "عنوان البريد الإلكتروني"
+  },
+  "Phone": {
+    "fr": "Téléphone",
+    "en": "Phone",
+    "ar": "الهاتف"
+  },
+  "Email:": {
+    "fr": "E-mail :",
+    "en": "Email:",
+    "ar": "البريد الإلكتروني:"
+  },
+  "verified": {
+    "fr": "vérifié",
+    "en": "verified",
+    "ar": "تم التحقق"
+  },
+  "not verified": {
+    "fr": "non vérifié",
+    "en": "not verified",
+    "ar": "لم يتم التحقق"
+  },
+  "Send verification link": {
+    "fr": "Envoyer un lien de vérification",
+    "en": "Send verification link",
+    "ar": "إرسال رابط التحقق"
+  },
+  "Save profile": {
+    "fr": "Enregistrer mon profil",
+    "en": "Save profile",
+    "ar": "حفظ الملف الشخصي"
+  },
+  "My attendance": {
+    "fr": "Mon pointage",
+    "en": "My attendance",
+    "ar": "سجل حضوري"
+  },
+  "Show this QR code to the attendance officer when you arrive and leave.": {
+    "fr": "Présentez ce QR code au contrôleur à l’arrivée et au départ.",
+    "en": "Show this QR code to the attendance officer when you arrive and leave.",
+    "ar": "اعرض رمزك لمراقب الحضور عند الوصول والمغادرة."
+  },
+  "My attendance QR code": {
+    "fr": "Mon QR code de pointage",
+    "en": "My attendance QR code",
+    "ar": "رمز الحضور الشخصي"
+  },
+  "Present:": {
+    "fr": "Présences :",
+    "en": "Present:",
+    "ar": "الحضور:"
+  },
+  "· Late:": {
+    "fr": "· Retards :",
+    "en": "· Late:",
+    "ar": "· التأخير:"
+  },
+  "· Absent:": {
+    "fr": "· Absences :",
+    "en": "· Absent:",
+    "ar": "· الغياب:"
+  },
+  "· Total lateness:": {
+    "fr": "· Retard cumulé :",
+    "en": "· Total lateness:",
+    "ar": "· إجمالي التأخير:"
+  },
+  "min": {
+    "fr": "min",
+    "en": "min",
+    "ar": "دقيقة"
+  },
+  "Date": {
+    "fr": "Date",
+    "en": "Date",
+    "ar": "التاريخ"
+  },
+  "Departure": {
+    "fr": "Départ",
+    "en": "Departure",
+    "ar": "المغادرة"
+  },
+  "Attendance officer": {
+    "fr": "Contrôleur de présence",
+    "en": "Attendance officer",
+    "ar": "مراقب الحضور"
+  },
+  "An error occurred.": {
+    "fr": "Une erreur est survenue.",
+    "en": "An error occurred.",
+    "ar": "حدث خطأ."
+  },
+  "Arrival recorded": {
+    "fr": "Arrivée enregistrée",
+    "en": "Arrival recorded",
+    "ar": "تم تسجيل الوصول"
+  },
+  "Departure recorded": {
+    "fr": "Départ enregistré",
+    "en": "Departure recorded",
+    "ar": "تم تسجيل المغادرة"
+  },
+  "Attendance already complete": {
+    "fr": "Pointage déjà complet",
+    "en": "Attendance already complete",
+    "ar": "سجل الحضور مكتمل مسبقًا"
+  },
+  " · {0} min late": {
+    "fr": " · {0} min de retard",
+    "en": " · {0} min late",
+    "ar": " · تأخير {0} دقيقة"
+  },
+  "Camera unavailable. You can enter the code manually.": {
+    "fr": "Caméra indisponible. Vous pouvez saisir le code manuellement.",
+    "en": "Camera unavailable. You can enter the code manually.",
+    "ar": "الكاميرا غير متاحة. يمكنك إدخال الرمز يدويًا."
+  },
+  "Mark teachers without a check-in absent on {0} ?": {
+    "fr": "Marquer absents les professeurs non pointés le {0} ?",
+    "en": "Mark teachers without a check-in absent on {0} ?",
+    "ar": "تسجيل المعلمين الذين لم يحضروا كغائبين في {0}؟"
+  },
+  "{0} absence records created.": {
+    "fr": "{0} absence(s) enregistrée(s).",
+    "en": "{0} absence records created.",
+    "ar": "تم تسجيل {0} حالة غياب."
+  },
+  "Calendar saved.": {
+    "fr": "Calendrier enregistré.",
+    "en": "Calendar saved.",
+    "ar": "تم حفظ التقويم."
+  },
+  "Holiday saved.": {
+    "fr": "Jour férié enregistré.",
+    "en": "Holiday saved.",
+    "ar": "تم حفظ العطلة."
+  },
+  "Scan each teacher’s personal QR code on arrival and departure.": {
+    "fr": "Scanner le QR code personnel à l’arrivée puis au départ.",
+    "en": "Scan each teacher’s personal QR code on arrival and departure.",
+    "ar": "امسح رمز المعلم عند الوصول ثم عند المغادرة."
+  },
+  "Scanner": {
+    "fr": "Scanner",
+    "en": "Scanner",
+    "ar": "الماسح"
+  },
+  "Stop": {
+    "fr": "Arrêter",
+    "en": "Stop",
+    "ar": "إيقاف"
+  },
+  "Start": {
+    "fr": "Démarrer",
+    "en": "Start",
+    "ar": "بدء"
+  },
+  "the camera": {
+    "fr": "la caméra",
+    "en": "the camera",
+    "ar": "الكاميرا"
+  },
+  "Teacher code": {
+    "fr": "Code du professeur",
+    "en": "Teacher code",
+    "ar": "رمز المعلم"
+  },
+  "Holiday:": {
+    "fr": "Jour férié :",
+    "en": "Holiday:",
+    "ar": "عطلة:"
+  },
+  "Rest day": {
+    "fr": "Jour de repos",
+    "en": "Rest day",
+    "ar": "يوم راحة"
+  },
+  "Teacher": {
+    "fr": "Professeur",
+    "en": "Teacher",
+    "ar": "المعلم"
+  },
+  "Not checked in": {
+    "fr": "Non pointé",
+    "en": "Not checked in",
+    "ar": "لم يُسجل الحضور"
+  },
+  "Finalize absences": {
+    "fr": "Clôturer les absences",
+    "en": "Finalize absences",
+    "ar": "إغلاق سجل الغياب"
+  },
+  "Work calendar": {
+    "fr": "Calendrier de travail",
+    "en": "Work calendar",
+    "ar": "تقويم العمل"
+  },
+  "Rest days (0=Sunday, 6=Saturday)": {
+    "fr": "Jours de repos (0=dimanche, 6=samedi)",
+    "en": "Rest days (0=Sunday, 6=Saturday)",
+    "ar": "أيام الراحة (0=الأحد، 6=السبت)"
+  },
+  "Start of day": {
+    "fr": "Début de journée",
+    "en": "Start of day",
+    "ar": "بداية اليوم"
+  },
+  "Time zone": {
+    "fr": "Fuseau horaire",
+    "en": "Time zone",
+    "ar": "المنطقة الزمنية"
+  },
+  "Save calendar": {
+    "fr": "Enregistrer le calendrier",
+    "en": "Save calendar",
+    "ar": "حفظ التقويم"
+  },
+  "Holidays and closures": {
+    "fr": "Jours fériés et fermetures",
+    "en": "Holidays and closures",
+    "ar": "العطلات وأيام الإغلاق"
+  },
+  "Holiday name": {
+    "fr": "Nom du jour",
+    "en": "Holiday name",
+    "ar": "اسم العطلة"
+  },
+  "Delete": {
+    "fr": "Supprimer",
+    "en": "Delete",
+    "ar": "حذف"
+  },
+  "Identity photo": {
+    "fr": "Photo d’identité",
+    "en": "Identity photo",
+    "ar": "صورة الهوية"
+  },
+  "Medical certificate": {
+    "fr": "Certificat médical",
+    "en": "Medical certificate",
+    "ar": "شهادة طبية"
+  },
+  "Previous report card": {
+    "fr": "Bulletin précédent",
+    "en": "Previous report card",
+    "ar": "كشف النتائج السابق"
+  },
+  "National identity card": {
+    "fr": "Carte nationale d’identité",
+    "en": "National identity card",
+    "ar": "بطاقة الهوية الوطنية"
+  },
+  "Unable to load student records:": {
+    "fr": "Erreur de chargement des dossiers élèves:",
+    "en": "Unable to load student records:",
+    "ar": "تعذر تحميل ملفات التلاميذ:"
+  },
+  "Unable to open the record: {0}": {
+    "fr": "Impossible d’ouvrir le dossier : {0}",
+    "en": "Unable to open the record: {0}",
+    "ar": "تعذر فتح الملف: {0}"
+  },
+  "Guardian": {
+    "fr": "Tuteur",
+    "en": "Guardian",
+    "ar": "الوصي"
+  },
+  "Unable to update the record: {0}": {
+    "fr": "Impossible de modifier le dossier : {0}",
+    "en": "Unable to update the record: {0}",
+    "ar": "تعذر تحديث الملف: {0}"
+  },
+  "Permanently delete the record for {0} {1} ({2}) ?": {
+    "fr": "Supprimer définitivement le dossier de {0} {1} ({2}) ?",
+    "en": "Permanently delete the record for {0} {1} ({2}) ?",
+    "ar": "حذف ملف {0} {1} ({2}) نهائيًا؟"
+  },
+  "Your session has expired. Sign in again to continue.": {
+    "fr": "Votre session a expiré. Reconnectez-vous pour continuer.",
+    "en": "Your session has expired. Sign in again to continue.",
+    "ar": "انتهت جلستك. سجّل الدخول مجددًا للمتابعة."
+  },
+  "Erreur d’inscription : {0}": {
+    "fr": "Erreur d’inscription : {0}",
+    "en": "Enrollment error: {0}",
+    "ar": "خطأ في التسجيل: {0}"
+  },
+  "Delete the document “{0} » ?": {
+    "fr": "Supprimer le document « {0} » ?",
+    "en": "Delete the document “{0}”?",
+    "ar": "حذف المستند «{0}»؟"
+  },
+  "No files added": {
+    "fr": "Aucun fichier ajouté",
+    "en": "No files added",
+    "ar": "لا توجد ملفات"
+  },
+  "Uploading…": {
+    "fr": "Envoi…",
+    "en": "Uploading…",
+    "ar": "جارٍ الرفع…"
+  },
+  "Add a file": {
+    "fr": "Ajouter un fichier",
+    "en": "Add a file",
+    "ar": "إضافة ملف"
+  },
+  "Mo": {
+    "fr": "Mo",
+    "en": "MB",
+    "ar": "ميغابايت"
+  },
+  "Download": {
+    "fr": "Télécharger",
+    "en": "Download",
+    "ar": "تنزيل"
+  },
+  "Download document": {
+    "fr": "Télécharger le document",
+    "en": "Download document",
+    "ar": "تنزيل المستند"
+  },
+  "Delete document": {
+    "fr": "Supprimer le document",
+    "en": "Delete document",
+    "ar": "حذف المستند"
+  },
+  "Enrollment & Student Records": {
+    "fr": "Inscriptions & Dossiers Élèves",
+    "en": "Enrollment & Student Records",
+    "ar": "التسجيل وملفات التلاميذ"
+  },
+  "Individual records and documents": {
+    "fr": "Suivi individuel et pièces administratives",
+    "en": "Individual records and documents",
+    "ar": "الملفات الفردية والمستندات"
+  },
+  "New enrollment": {
+    "fr": "Nouvelle inscription",
+    "en": "New enrollment",
+    "ar": "تسجيل جديد"
+  },
+  "Search by name or student ID…": {
+    "fr": "Rechercher un nom ou matricule…",
+    "en": "Search by name or student ID…",
+    "ar": "البحث بالاسم أو رقم التلميذ…"
+  },
+  "Gender": {
+    "fr": "Genre",
+    "en": "Gender",
+    "ar": "الجنس"
+  },
+  "Parent / guardian": {
+    "fr": "Parent / tuteur",
+    "en": "Parent / guardian",
+    "ar": "ولي الأمر / الوصي"
+  },
+  "Financial status": {
+    "fr": "Situation financière",
+    "en": "Financial status",
+    "ar": "الحالة المالية"
+  },
+  "Loading records…": {
+    "fr": "Chargement des dossiers…",
+    "en": "Loading records…",
+    "ar": "جارٍ تحميل الملفات…"
+  },
+  "No students found.": {
+    "fr": "Aucun élève trouvé.",
+    "en": "No students found.",
+    "ar": "لا يوجد تلاميذ."
+  },
+  "Unassigned": {
+    "fr": "Non affecté",
+    "en": "Unassigned",
+    "ar": "غير مُعيّن"
+  },
+  "Boy": {
+    "fr": "Garçon",
+    "en": "Boy",
+    "ar": "ذكر"
+  },
+  "Girl": {
+    "fr": "Fille",
+    "en": "Girl",
+    "ar": "أنثى"
+  },
+  "Not provided": {
+    "fr": "Non renseigné",
+    "en": "Not provided",
+    "ar": "غير متوفر"
+  },
+  "Paid up": {
+    "fr": "À jour",
+    "en": "Paid up",
+    "ar": "مسدد"
+  },
+  "Balance:": {
+    "fr": "Solde :",
+    "en": "Balance:",
+    "ar": "الرصيد:"
+  },
+  "Dossier": {
+    "fr": "Dossier",
+    "en": "Record",
+    "ar": "الملف"
+  },
+  "Documents can be added after enrollment.": {
+    "fr": "Les pièces seront ajoutées dans le dossier après l’inscription.",
+    "en": "Documents can be added after enrollment.",
+    "ar": "يمكن إضافة المستندات بعد التسجيل."
+  },
+  "1. Student details": {
+    "fr": "1. État civil de l’élève",
+    "en": "1. Student details",
+    "ar": "1. بيانات التلميذ"
+  },
+  "First name(s) *": {
+    "fr": "Prénom(s) *",
+    "en": "First name(s) *",
+    "ar": "الاسم الأول *"
+  },
+  "Date of birth": {
+    "fr": "Date de naissance",
+    "en": "Date of birth",
+    "ar": "تاريخ الميلاد"
+  },
+  "Place of birth": {
+    "fr": "Lieu de naissance",
+    "en": "Place of birth",
+    "ar": "مكان الميلاد"
+  },
+  "Blood type": {
+    "fr": "Groupe sanguin",
+    "en": "Blood type",
+    "ar": "فصيلة الدم"
+  },
+  "Student address": {
+    "fr": "Adresse de l’élève",
+    "en": "Student address",
+    "ar": "عنوان التلميذ"
+  },
+  "Assigned class *": {
+    "fr": "Classe d’affectation *",
+    "en": "Assigned class *",
+    "ar": "الفصل المعيّن *"
+  },
+  "Choose a class…": {
+    "fr": "Choisir une classe…",
+    "en": "Choose a class…",
+    "ar": "اختر فصلًا…"
+  },
+  "No classes created": {
+    "fr": "Aucune classe créée",
+    "en": "No classes created",
+    "ar": "لم يتم إنشاء فصول"
+  },
+  "— enrollment fee": {
+    "fr": "— inscription",
+    "en": "— enrollment fee",
+    "ar": "— رسوم التسجيل"
+  },
+  "Create a class in": {
+    "fr": "Crée une classe dans",
+    "en": "Create a class in",
+    "ar": "أنشئ فصلًا في"
+  },
+  "2. Parent / legal guardian": {
+    "fr": "2. Parent / tuteur légal",
+    "en": "2. Parent / legal guardian",
+    "ar": "2. ولي الأمر / الوصي القانوني"
+  },
+  "Nouveau parent": {
+    "fr": "Nouveau parent",
+    "en": "New parent",
+    "ar": "ولي أمر جديد"
+  },
+  "Existing parent": {
+    "fr": "Parent existant",
+    "en": "Existing parent",
+    "ar": "ولي أمر موجود"
+  },
+  "Choose a parent": {
+    "fr": "Choisir un parent",
+    "en": "Choose a parent",
+    "ar": "اختر ولي أمر"
+  },
+  "Select…": {
+    "fr": "Sélectionner…",
+    "en": "Select…",
+    "ar": "اختر…"
+  },
+  "Parent’s first name *": {
+    "fr": "Prénom du parent *",
+    "en": "Parent’s first name *",
+    "ar": "الاسم الأول لولي الأمر *"
+  },
+  "Parent’s last name": {
+    "fr": "Nom du parent",
+    "en": "Parent’s last name",
+    "ar": "اسم عائلة ولي الأمر"
+  },
+  "Parent’s email": {
+    "fr": "E-mail du parent",
+    "en": "Parent’s email",
+    "ar": "بريد ولي الأمر"
+  },
+  "Parent’s address": {
+    "fr": "Adresse du parent",
+    "en": "Parent’s address",
+    "ar": "عنوان ولي الأمر"
+  },
+  "Automatically create the enrollment fee invoice": {
+    "fr": "Générer automatiquement la facture des frais d’inscription",
+    "en": "Automatically create the enrollment fee invoice",
+    "ar": "إنشاء فاتورة رسوم التسجيل تلقائيًا"
+  },
+  "Confirm enrollment": {
+    "fr": "Confirmer l’inscription",
+    "en": "Confirm enrollment",
+    "ar": "تأكيد التسجيل"
+  },
+  "Close record": {
+    "fr": "Fermer le dossier",
+    "en": "Close record",
+    "ar": "إغلاق الملف"
+  },
+  "Informations": {
+    "fr": "Informations",
+    "en": "Information",
+    "ar": "المعلومات"
+  },
+  "Documents": {
+    "fr": "Pièces du dossier",
+    "en": "Documents",
+    "ar": "المستندات"
+  },
+  "Student information": {
+    "fr": "Informations de l’élève",
+    "en": "Student information",
+    "ar": "معلومات التلميذ"
+  },
+  "First name(s)": {
+    "fr": "Prénom(s)",
+    "en": "First name(s)",
+    "ar": "الاسم الأول"
+  },
+  "Current class": {
+    "fr": "Classe actuelle",
+    "en": "Current class",
+    "ar": "الفصل الحالي"
+  },
+  "Keep unchanged": {
+    "fr": "Ne pas changer",
+    "en": "Keep unchanged",
+    "ar": "الإبقاء دون تغيير"
+  },
+  "Save changes": {
+    "fr": "Enregistrer les modifications",
+    "en": "Save changes",
+    "ar": "حفظ التغييرات"
+  },
+  "Born": {
+    "fr": "Naissance",
+    "en": "Born",
+    "ar": "الميلاد"
+  },
+  "Place": {
+    "fr": "Lieu",
+    "en": "Place",
+    "ar": "المكان"
+  },
+  "Created by:": {
+    "fr": "Inscrit par :",
+    "en": "Created by:",
+    "ar": "سجّله:"
+  },
+  "History unavailable": {
+    "fr": "Historique indisponible",
+    "en": "History unavailable",
+    "ar": "السجل غير متاح"
+  },
+  "Class assigned by:": {
+    "fr": "Affectation de classe par :",
+    "en": "Class assigned by:",
+    "ar": "عيّن الفصل:"
+  },
+  "Last updated by:": {
+    "fr": "Dernière modification par :",
+    "en": "Last updated by:",
+    "ar": "آخر تحديث بواسطة:"
+  },
+  "Parent / legal guardian": {
+    "fr": "Parent / responsable légal",
+    "en": "Parent / legal guardian",
+    "ar": "ولي الأمر / الوصي القانوني"
+  },
+  "Occupation not provided": {
+    "fr": "Profession non renseignée",
+    "en": "Occupation not provided",
+    "ar": "المهنة غير متوفرة"
+  },
+  "Student card": {
+    "fr": "Carte de l’élève",
+    "en": "Student card",
+    "ar": "بطاقة التلميذ"
+  },
+  "No class assigned": {
+    "fr": "Classe non affectée",
+    "en": "No class assigned",
+    "ar": "لم يُعيّن فصل"
+  },
+  "Add an identity photo": {
+    "fr": "Ajouter sa photo d’identité",
+    "en": "Add an identity photo",
+    "ar": "إضافة صورة هوية"
+  },
+  "Attendance QR code": {
+    "fr": "QR de présence",
+    "en": "Attendance QR code",
+    "ar": "رمز الحضور"
+  },
+  "Download QR code": {
+    "fr": "Télécharger le QR",
+    "en": "Download QR code",
+    "ar": "تنزيل الرمز"
+  },
+  "Attendance summary —": {
+    "fr": "Bilan de présence —",
+    "en": "Attendance summary —",
+    "ar": "ملخص الحضور —"
+  },
+  "days": {
+    "fr": "jour(s)",
+    "en": "days",
+    "ar": "أيام"
+  },
+  "Absences": {
+    "fr": "Absences",
+    "en": "Absences",
+    "ar": "الغياب"
+  },
+  "Notes & bulletins": {
+    "fr": "Notes & bulletins",
+    "en": "Grades & report cards",
+    "ar": "الدرجات وكشوف النتائج"
+  },
+  "· moyenne": {
+    "fr": "· moyenne",
+    "en": "· average",
+    "ar": "· المعدل"
+  },
+  "No grades recorded": {
+    "fr": "Aucune note enregistrée",
+    "en": "No grades recorded",
+    "ar": "لم تُسجل درجات"
+  },
+  "Attendance history": {
+    "fr": "Historique des présences & absences",
+    "en": "Attendance history",
+    "ar": "سجل الحضور"
+  },
+  "No attendance recorded": {
+    "fr": "Aucun pointage enregistré",
+    "en": "No attendance recorded",
+    "ar": "لم يُسجل حضور"
+  },
+  " · excused": {
+    "fr": " · justifiée",
+    "en": " · excused",
+    "ar": " · بعذر"
+  },
+  " · arrived at ": {
+    "fr": " · arrivée à ",
+    "en": " · arrived at ",
+    "ar": " · وصل في "
+  },
+  "Financial history & invoices": {
+    "fr": "Historique financier & factures",
+    "en": "Financial history & invoices",
+    "ar": "السجل المالي والفواتير"
+  },
+  "No invoices recorded": {
+    "fr": "Aucune facture enregistrée",
+    "en": "No invoices recorded",
+    "ar": "لم تُسجل فواتير"
+  },
+  "· Due:": {
+    "fr": "· Échéance :",
+    "en": "· Due:",
+    "ar": "· الاستحقاق:"
+  },
+  "Balance: {0} F": {
+    "fr": "Reste : {0} F",
+    "en": "Balance: {0} F",
+    "ar": "الرصيد: {0} F"
+  },
+  "Student documents": {
+    "fr": "Pièces de l’élève",
+    "en": "Student documents",
+    "ar": "مستندات التلميذ"
+  },
+  "Parent documents —": {
+    "fr": "Pièces du parent —",
+    "en": "Parent documents —",
+    "ar": "مستندات ولي الأمر —"
+  },
+  "Formats: PDF, JPG, PNG, WEBP · 10 MB maximum per file. Files are stored in the application’s private storage.": {
+    "fr": "Formats : PDF, JPG, PNG, WEBP · 10 Mo maximum par fichier. Les fichiers sont stockés dans le volume privé de l’application.",
+    "en": "Formats: PDF, JPG, PNG, WEBP · 10 MB maximum per file. Files are stored in the application’s private storage.",
+    "ar": "الصيغ: PDF، JPG، PNG، WEBP · الحد الأقصى 10 ميغابايت لكل ملف. تُحفظ الملفات في تخزين خاص بالتطبيق."
+  },
+  "Administrateur": {
+    "fr": "Administrateur",
+    "en": "Administrator",
+    "ar": "المسؤول"
+  },
+  "Directeur": {
+    "fr": "Directeur",
+    "en": "Principal",
+    "ar": "المدير"
+  },
+  "Comptable": {
+    "fr": "Comptable",
+    "en": "Accountant",
+    "ar": "المحاسب"
+  },
+  "Enseignant": {
+    "fr": "Enseignant",
+    "en": "Teacher",
+    "ar": "المعلم"
+  },
+  "Account created. Ask the user to change the temporary password after signing in.": {
+    "fr": "Compte créé. Demandez à l’utilisateur de changer son mot de passe après connexion.",
+    "en": "Account created. Ask the user to change the temporary password after signing in.",
+    "ar": "تم إنشاء الحساب. اطلب من المستخدم تغيير كلمة المرور بعد تسجيل الدخول."
+  },
+  "The account {0} is now {1}.": {
+    "fr": "Le compte {0} est maintenant {1}.",
+    "en": "The account {0} is now {1}.",
+    "ar": "حساب {0} الآن {1}."
+  },
+  "disabled": {
+    "fr": "désactivé",
+    "en": "disabled",
+    "ar": "معطل"
+  },
+  "enabled": {
+    "fr": "activé",
+    "en": "enabled",
+    "ar": "مفعل"
+  },
+  "Permanently delete the account for {0}?": {
+    "fr": "Supprimer définitivement le compte de {0} ?",
+    "en": "Permanently delete the account for {0}?",
+    "ar": "حذف حساب {0} نهائيًا؟"
+  },
+  "The account {0} was deleted.": {
+    "fr": "Le compte {0} a été supprimé.",
+    "en": "The account {0} was deleted.",
+    "ar": "تم حذف حساب {0}."
+  },
+  "A new password was set for {0}. Ask the user to change it after signing in.": {
+    "fr": "Un nouveau mot de passe a été défini pour {0}. L’utilisateur doit le changer après connexion.",
+    "en": "A new password was set for {0}. Ask the user to change it after signing in.",
+    "ar": "تم تعيين كلمة مرور جديدة لـ {0}. يجب تغييرها بعد تسجيل الدخول."
+  },
+  "The account {0} was updated.": {
+    "fr": "Le compte {0} a été modifié.",
+    "en": "The account {0} was updated.",
+    "ar": "تم تحديث حساب {0}."
+  },
+  "Manage user accounts and roles": {
+    "fr": "Gestion des comptes et des rôles",
+    "en": "Manage user accounts and roles",
+    "ar": "إدارة الحسابات والأدوار"
+  },
+  "Refresh": {
+    "fr": "Actualiser",
+    "en": "Refresh",
+    "ar": "تحديث"
+  },
+  "Create a user": {
+    "fr": "Créer un utilisateur",
+    "en": "Create a user",
+    "ar": "إنشاء مستخدم"
+  },
+  "User accounts": {
+    "fr": "Comptes utilisateurs",
+    "en": "User accounts",
+    "ar": "حسابات المستخدمين"
+  },
+  "user(s)": {
+    "fr": "utilisateur(s)",
+    "en": "user(s)",
+    "ar": "مستخدمين"
+  },
+  "User": {
+    "fr": "Utilisateur",
+    "en": "User",
+    "ar": "المستخدم"
+  },
+  "E-mail": {
+    "fr": "E-mail",
+    "en": "E-mail",
+    "ar": "البريد الإلكتروني"
+  },
+  "Role(s)": {
+    "fr": "Rôle(s)",
+    "en": "Role(s)",
+    "ar": "الأدوار"
+  },
+  "Loading accounts…": {
+    "fr": "Chargement des comptes…",
+    "en": "Loading accounts…",
+    "ar": "جارٍ تحميل الحسابات…"
+  },
+  "No users found.": {
+    "fr": "Aucun utilisateur trouvé.",
+    "en": "No users found.",
+    "ar": "لا يوجد مستخدمون."
+  },
+  " · You": {
+    "fr": " · Vous",
+    "en": " · You",
+    "ar": " · أنت"
+  },
+  "Verified email": {
+    "fr": "Adresse vérifiée",
+    "en": "Verified email",
+    "ar": "بريد مؤكد"
+  },
+  "Unverified email": {
+    "fr": "Adresse non vérifiée",
+    "en": "Unverified email",
+    "ar": "بريد غير مؤكد"
+  },
+  "No application role": {
+    "fr": "Aucun rôle applicatif",
+    "en": "No application role",
+    "ar": "بدون دور في التطبيق"
+  },
+  "Disabled": {
+    "fr": "Désactivé",
+    "en": "Disabled",
+    "ar": "معطل"
+  },
+  "Edit account": {
+    "fr": "Modifier le compte",
+    "en": "Edit account",
+    "ar": "تعديل الحساب"
+  },
+  "Edit {0}": {
+    "fr": "Modifier {0}",
+    "en": "Edit {0}",
+    "ar": "تعديل {0}"
+  },
+  "Set a temporary password": {
+    "fr": "Définir un mot de passe provisoire",
+    "en": "Set a temporary password",
+    "ar": "تعيين كلمة مرور مؤقتة"
+  },
+  "Reset password for {0}": {
+    "fr": "Réinitialiser le mot de passe de {0}",
+    "en": "Reset password for {0}",
+    "ar": "إعادة تعيين كلمة مرور {0}"
+  },
+  "Disable": {
+    "fr": "Désactiver",
+    "en": "Disable",
+    "ar": "تعطيل"
+  },
+  "Enable": {
+    "fr": "Activer",
+    "en": "Enable",
+    "ar": "تفعيل"
+  },
+  "Delete {0}": {
+    "fr": "Supprimer {0}",
+    "en": "Delete {0}",
+    "ar": "حذف {0}"
+  },
+  "Password for": {
+    "fr": "Mot de passe de",
+    "en": "Password for",
+    "ar": "كلمة مرور"
+  },
+  "Give the new password to the user and ask them to change it after signing in.": {
+    "fr": "Transmettez le mot de passe à l’utilisateur et demandez-lui de le changer après connexion.",
+    "en": "Give the new password to the user and ask them to change it after signing in.",
+    "ar": "أعطِ كلمة المرور الجديدة للمستخدم واطلب منه تغييرها بعد تسجيل الدخول."
+  },
+  "Temporary password": {
+    "fr": "Mot de passe provisoire",
+    "en": "Temporary password",
+    "ar": "كلمة مرور مؤقتة"
+  },
+  "Role": {
+    "fr": "Rôle",
+    "en": "Role",
+    "ar": "الدور"
+  },
+  "The account will be created for the school.": {
+    "fr": "Le compte sera créé pour l’école.",
+    "en": "The account will be created for the school.",
+    "ar": "سيُنشأ الحساب للمدرسة."
+  },
+  "Username *": {
+    "fr": "Identifiant *",
+    "en": "Username *",
+    "ar": "اسم المستخدم *"
+  },
+  "Email address *": {
+    "fr": "Adresse e-mail *",
+    "en": "Email address *",
+    "ar": "عنوان البريد الإلكتروني *"
+  },
+  "Role *": {
+    "fr": "Rôle *",
+    "en": "Role *",
+    "ar": "الدور *"
+  },
+  "Password *": {
+    "fr": "Mot de passe *",
+    "en": "Password *",
+    "ar": "كلمة المرور *"
+  },
+  "At least 8 characters": {
+    "fr": "8 caractères minimum",
+    "en": "At least 8 characters",
+    "ar": "8 أحرف على الأقل"
+  },
+  "Creating…": {
+    "fr": "Création…",
+    "en": "Creating…",
+    "ar": "جارٍ الإنشاء…"
+  },
+  "Create account": {
+    "fr": "Créer le compte",
+    "en": "Create account",
+    "ar": "إنشاء الحساب"
+  },
+  "Username": {
+    "fr": "Identifiant",
+    "en": "Username",
+    "ar": "اسم المستخدم"
+  },
+  "Your username": {
+    "fr": "Votre identifiant",
+    "en": "Your username",
+    "ar": "اسم المستخدم"
+  },
+  "Password": {
+    "fr": "Mot de passe",
+    "en": "Password",
+    "ar": "كلمة المرور"
+  },
+  "Your password": {
+    "fr": "Votre mot de passe",
+    "en": "Your password",
+    "ar": "كلمة المرور"
+  },
+  "Signing in…": {
+    "fr": "Connexion en cours…",
+    "en": "Signing in…",
+    "ar": "جارٍ تسجيل الدخول…"
+  },
+  "Sign in": {
+    "fr": "Se connecter",
+    "en": "Sign in",
+    "ar": "تسجيل الدخول"
+  },
+  "Sign-in failed.": {
+    "fr": "La connexion a échoué.",
+    "en": "Sign-in failed.",
+    "ar": "فشل تسجيل الدخول."
+  },
+  "Secure School Management Platform": {
+    "fr": "Plateforme de gestion scolaire sécurisée",
+    "en": "Secure School Management Platform",
+    "ar": "منصة آمنة لإدارة المدرسة"
+  },
+  "First sign-in: change your temporary password in your profile after signing in.": {
+    "fr": "Première connexion : changez votre mot de passe provisoire dans votre profil après connexion.",
+    "en": "First sign-in: change your temporary password in your profile after signing in.",
+    "ar": "عند أول تسجيل دخول: غيّر كلمة المرور المؤقتة من ملفك الشخصي بعد تسجيل الدخول."
+  },
+  "Your temporary password must be changed. Please contact an administrator.": {
+    "fr": "Votre mot de passe provisoire doit être changé. Contactez un administrateur.",
+    "en": "Your temporary password must be changed. Please contact an administrator.",
+    "ar": "يجب تغيير كلمة المرور المؤقتة. اتصل بالمسؤول."
+  },
+  "Parent": {
+    "fr": "Parent",
+    "en": "Parent",
+    "ar": "ولي الأمر"
+  },
+  "Primary education · Dakar, Senegal": {
+    "fr": "Enseignement élémentaire · Dakar, Sénégal",
+    "en": "Primary education · Dakar, Senegal",
+    "ar": "التعليم الابتدائي · داكار، السنغال"
+  },
+  "Receipt number": {
+    "fr": "Numéro du reçu",
+    "en": "Receipt number",
+    "ar": "رقم الإيصال"
+  },
+  "Payment date": {
+    "fr": "Date du paiement",
+    "en": "Payment date",
+    "ar": "تاريخ الدفع"
+  },
+  "Student ID": {
+    "fr": "Matricule",
+    "en": "Student ID",
+    "ar": "رقم التلميذ"
+  },
+  "Parent / payer": {
+    "fr": "Parent / payeur",
+    "en": "Parent / payer",
+    "ar": "ولي الأمر / الدافع"
+  },
+  "Invoice": {
+    "fr": "Facture",
+    "en": "Invoice",
+    "ar": "الفاتورة"
+  },
+  "Payment method": {
+    "fr": "Mode de paiement",
+    "en": "Payment method",
+    "ar": "طريقة الدفع"
+  },
+  "Payment recorded by": {
+    "fr": "Paiement enregistré par",
+    "en": "Payment recorded by",
+    "ar": "سجّل الدفع"
+  },
+  "Amount received": {
+    "fr": "Montant encaissé",
+    "en": "Amount received",
+    "ar": "المبلغ المحصل"
+  },
+  "Invoice amount": {
+    "fr": "Montant de la facture",
+    "en": "Invoice amount",
+    "ar": "مبلغ الفاتورة"
+  },
+  "Total paid": {
+    "fr": "Total payé",
+    "en": "Total paid",
+    "ar": "إجمالي المدفوع"
+  },
+  "Invoice status": {
+    "fr": "Statut de la facture",
+    "en": "Invoice status",
+    "ar": "حالة الفاتورة"
+  },
+  "Parent / payer signature": {
+    "fr": "Signature du parent / payeur",
+    "en": "Parent / payer signature",
+    "ar": "توقيع ولي الأمر / الدافع"
+  },
+  "School office stamp and signature": {
+    "fr": "Cachet et signature de la caisse",
+    "en": "School office stamp and signature",
+    "ar": "ختم وتوقيع مكتب المدرسة"
+  },
+  "Please keep this receipt as proof of payment.": {
+    "fr": "Merci de conserver ce reçu comme preuve de paiement.",
+    "en": "Please keep this receipt as proof of payment.",
+    "ar": "يرجى الاحتفاظ بهذا الإيصال كإثبات للدفع."
+  },
+  "Cash": {
+    "fr": "Espèces",
+    "en": "Cash",
+    "ar": "نقدًا"
+  },
+  "Bank transfer": {
+    "fr": "Virement bancaire",
+    "en": "Bank transfer",
+    "ar": "تحويل بنكي"
+  },
+  "Partially paid": {
+    "fr": "Partiellement payée",
+    "en": "Partially paid",
+    "ar": "مدفوعة جزئيًا"
+  },
+  "Allow pop-ups to print the receipt.": {
+    "fr": "Autorisez les fenêtres contextuelles pour imprimer le reçu.",
+    "en": "Allow pop-ups to print the receipt.",
+    "ar": "اسمح بالنوافذ المنبثقة لطباعة الإيصال."
+  },
+  "The sign-in service is unavailable.": {
+    "fr": "Le service de connexion est indisponible.",
+    "en": "The sign-in service is unavailable.",
+    "ar": "خدمة تسجيل الدخول غير متاحة."
+  },
+  "The sign-in service is unavailable. Try again later.": {
+    "fr": "Le service de connexion est indisponible. Réessayez plus tard.",
+    "en": "The sign-in service is unavailable. Try again later.",
+    "ar": "خدمة تسجيل الدخول غير متاحة. حاول لاحقًا."
+  },
+  "Invalid username or password.": {
+    "fr": "Identifiant ou mot de passe incorrect.",
+    "en": "Invalid username or password.",
+    "ar": "اسم المستخدم أو كلمة المرور غير صحيحة."
+  },
+  "Session missing or expired. Sign in again.": {
+    "fr": "Session manquante ou expirée. Reconnectez-vous.",
+    "en": "Session missing or expired. Sign in again.",
+    "ar": "الجلسة مفقودة أو منتهية. سجّل الدخول مجددًا."
+  },
+  "Change your temporary password to continue.": {
+    "fr": "Changez votre mot de passe provisoire pour continuer.",
+    "en": "Change your temporary password to continue.",
+    "ar": "غيّر كلمة المرور المؤقتة للمتابعة."
+  },
+  "Your account needs an update. Contact an administrator to reset your password.": {
+    "fr": "Votre compte nécessite une mise à jour. Contactez un administrateur pour réinitialiser le mot de passe.",
+    "en": "Your account needs an update. Contact an administrator to reset your password.",
+    "ar": "يحتاج حسابك إلى تحديث. اتصل بالمسؤول لإعادة تعيين كلمة المرور."
+  },
+  "You do not have permission to access this resource.": {
+    "fr": "Permissions insuffisantes pour cette ressource.",
+    "en": "You do not have permission to access this resource.",
+    "ar": "ليس لديك إذن للوصول إلى هذا المورد."
+  },
+  "The password must contain at least 8 characters.": {
+    "fr": "Le mot de passe doit contenir au moins 8 caractères.",
+    "en": "The password must contain at least 8 characters.",
+    "ar": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل."
+  },
+  "Your current password and a new password of at least 8 characters are required.": {
+    "fr": "Le mot de passe actuel et un nouveau mot de passe de 8 caractères minimum sont obligatoires.",
+    "en": "Your current password and a new password of at least 8 characters are required.",
+    "ar": "أدخل كلمة المرور الحالية وكلمة مرور جديدة من 8 أحرف على الأقل."
+  },
+  "Invalid user.": {
+    "fr": "Utilisateur invalide.",
+    "en": "Invalid user.",
+    "ar": "مستخدم غير صالح."
+  },
+  "A valid first name, last name, and email address are required.": {
+    "fr": "Prénom, nom et adresse e-mail valides sont obligatoires.",
+    "en": "A valid first name, last name, and email address are required.",
+    "ar": "الاسم الأول واسم العائلة والبريد الإلكتروني الصحيح مطلوبة."
+  },
+  "Username, email address, first name, and last name are required.": {
+    "fr": "Le nom d’utilisateur, l’adresse e-mail, le prénom et le nom sont obligatoires.",
+    "en": "Username, email address, first name, and last name are required.",
+    "ar": "اسم المستخدم والبريد الإلكتروني والاسم الأول واسم العائلة مطلوبة."
+  },
+  "Invalid phone number.": {
+    "fr": "Numéro de téléphone invalide.",
+    "en": "Invalid phone number.",
+    "ar": "رقم هاتف غير صالح."
+  },
+  "This email address is already in use.": {
+    "fr": "Cette adresse e-mail est déjà utilisée.",
+    "en": "This email address is already in use.",
+    "ar": "عنوان البريد الإلكتروني مستخدم بالفعل."
+  },
+  "Invalid email address.": {
+    "fr": "Adresse e-mail invalide.",
+    "en": "Invalid email address.",
+    "ar": "عنوان بريد إلكتروني غير صالح."
+  },
+  "A valid email address, first name, and last name are required.": {
+    "fr": "Adresse e-mail, prénom et nom valides sont obligatoires.",
+    "en": "A valid email address, first name, and last name are required.",
+    "ar": "البريد الإلكتروني الصحيح والاسم الأول واسم العائلة مطلوبة."
+  },
+  "The selected role is invalid.": {
+    "fr": "Le rôle sélectionné est invalide.",
+    "en": "The selected role is invalid.",
+    "ar": "الدور المحدد غير صالح."
+  },
+  "Invalid role.": {
+    "fr": "Rôle invalide.",
+    "en": "Invalid role.",
+    "ar": "دور غير صالح."
+  },
+  "You cannot remove your own administrator role.": {
+    "fr": "Vous ne pouvez pas retirer votre propre rôle administrateur.",
+    "en": "You cannot remove your own administrator role.",
+    "ar": "لا يمكنك إزالة دور المسؤول من حسابك."
+  },
+  "You cannot disable your own account.": {
+    "fr": "Vous ne pouvez pas désactiver votre propre compte.",
+    "en": "You cannot disable your own account.",
+    "ar": "لا يمكنك تعطيل حسابك."
+  },
+  "You cannot delete your own account.": {
+    "fr": "Vous ne pouvez pas supprimer votre propre compte.",
+    "en": "You cannot delete your own account.",
+    "ar": "لا يمكنك حذف حسابك."
+  },
+  "Invalid date (YYYY-MM-DD).": {
+    "fr": "Date invalide (AAAA-MM-JJ).",
+    "en": "Invalid date (YYYY-MM-DD).",
+    "ar": "تاريخ غير صالح (سنة-شهر-يوم)."
+  },
+  "Invalid date.": {
+    "fr": "Date invalide.",
+    "en": "Invalid date.",
+    "ar": "تاريخ غير صالح."
+  },
+  "This is a rest day.": {
+    "fr": "Ce jour est un jour de repos.",
+    "en": "This is a rest day.",
+    "ar": "هذا يوم راحة."
+  },
+  "This card is for teachers only.": {
+    "fr": "Carte réservée aux professeurs.",
+    "en": "This card is for teachers only.",
+    "ar": "هذه البطاقة مخصصة للمعلمين فقط."
+  },
+  "Invalid teacher QR code.": {
+    "fr": "QR code de professeur invalide.",
+    "en": "Invalid teacher QR code.",
+    "ar": "رمز المعلم غير صالح."
+  },
+  "Teacher not found.": {
+    "fr": "Professeur introuvable.",
+    "en": "Teacher not found.",
+    "ar": "لم يُعثر على المعلم."
+  },
+  "This history is for teachers only.": {
+    "fr": "Historique réservé aux professeurs.",
+    "en": "This history is for teachers only.",
+    "ar": "هذا السجل مخصص للمعلمين فقط."
+  },
+  "A future date cannot be finalized.": {
+    "fr": "Impossible de clôturer une date future.",
+    "en": "A future date cannot be finalized.",
+    "ar": "لا يمكن إغلاق تاريخ مستقبلي."
+  },
+  "Invalid rest days or start time.": {
+    "fr": "Jours de repos ou heure de début invalides.",
+    "en": "Invalid rest days or start time.",
+    "ar": "أيام الراحة أو وقت البداية غير صالحة."
+  },
+  "Invalid time zone.": {
+    "fr": "Fuseau horaire invalide.",
+    "en": "Invalid time zone.",
+    "ar": "منطقة زمنية غير صالحة."
+  },
+  "Invalid holiday name.": {
+    "fr": "Nom du jour férié invalide.",
+    "en": "Invalid holiday name.",
+    "ar": "اسم العطلة غير صالح."
+  },
+  "Unknown business table.": {
+    "fr": "Table métier inconnue.",
+    "en": "Unknown business table.",
+    "ar": "جدول بيانات غير معروف."
+  },
+  "An XLSX or CSV format is required.": {
+    "fr": "Format xlsx ou csv requis.",
+    "en": "An XLSX or CSV format is required.",
+    "ar": "يجب استخدام صيغة XLSX أو CSV."
+  },
+  "Choose a table for the CSV file.": {
+    "fr": "Choisissez une table pour le CSV.",
+    "en": "Choose a table for the CSV file.",
+    "ar": "اختر جدولًا لملف CSV."
+  },
+  "Choose the CSV table.": {
+    "fr": "Choisissez la table du CSV.",
+    "en": "Choose the CSV table.",
+    "ar": "اختر جدول CSV."
+  },
+  "The file is missing or exceeds 10 MB.": {
+    "fr": "Fichier absent ou supérieur à 10 Mo.",
+    "en": "The file is missing or exceeds 10 MB.",
+    "ar": "الملف مفقود أو يتجاوز 10 ميغابايت."
+  },
+  "Only .xlsx and .csv files are accepted.": {
+    "fr": "Seuls les fichiers .xlsx et .csv sont acceptés.",
+    "en": "Only .xlsx and .csv files are accepted.",
+    "ar": "تُقبل ملفات .xlsx و.csv فقط."
+  },
+  "No business data sheets were found.": {
+    "fr": "Aucune feuille métier trouvée.",
+    "en": "No business data sheets were found.",
+    "ar": "لم يُعثر على أوراق بيانات."
+  },
+  "Account management is not configured. Contact the administrator.": {
+    "fr": "La gestion des comptes n’est pas configurée. Contactez l’administrateur.",
+    "en": "Account management is not configured. Contact the administrator.",
+    "ar": "إدارة الحسابات غير مُعدّة. اتصل بالمسؤول."
+  },
+  "Unable to connect to the account service. Contact the administrator.": {
+    "fr": "La connexion au service des comptes a échoué. Contactez l’administrateur.",
+    "en": "Unable to connect to the account service. Contact the administrator.",
+    "ar": "تعذر الاتصال بخدمة الحسابات. اتصل بالمسؤول."
+  },
+  "The account service rejected the request.": {
+    "fr": "Le service des comptes a refusé la demande.",
+    "en": "The account service rejected the request.",
+    "ar": "رفضت خدمة الحسابات الطلب."
+  },
+  "Sign-out failed.": {
+    "fr": "La déconnexion a échoué.",
+    "en": "Sign-out failed.",
+    "ar": "فشل تسجيل الخروج."
+  },
+  "Unable to renew the session.": {
+    "fr": "Impossible de renouveler la session.",
+    "en": "Unable to renew the session.",
+    "ar": "تعذر تجديد الجلسة."
+  },
+  "School years": {
+    "fr": "Années scolaires",
+    "en": "School years",
+    "ar": "السنوات الدراسية"
+  },
+  "Parents": {
+    "fr": "Parents",
+    "en": "Parents",
+    "ar": "أولياء الأمور"
+  },
+  "Subjects": {
+    "fr": "Matières",
+    "en": "Subjects",
+    "ar": "المواد"
+  },
+  "Enrollments": {
+    "fr": "Inscriptions",
+    "en": "Enrollments",
+    "ar": "التسجيلات"
+  },
+  "Grades": {
+    "fr": "Notes",
+    "en": "Grades",
+    "ar": "الدرجات"
+  },
+  "Report cards": {
+    "fr": "Bulletins",
+    "en": "Report cards",
+    "ar": "كشوف النتائج"
+  },
+  "Invoices": {
+    "fr": "Factures",
+    "en": "Invoices",
+    "ar": "الفواتير"
+  },
+  "Payments": {
+    "fr": "Paiements",
+    "en": "Payments",
+    "ar": "المدفوعات"
+  },
+  "Student attendance": {
+    "fr": "Présences des élèves",
+    "en": "Student attendance",
+    "ar": "حضور التلاميذ"
+  },
+  "Holidays": {
+    "fr": "Jours fériés",
+    "en": "Holidays",
+    "ar": "العطلات"
+  },
+  "Calendar settings": {
+    "fr": "Paramètres du calendrier",
+    "en": "Calendar settings",
+    "ar": "إعدادات التقويم"
+  },
+  "Parent documents": {
+    "fr": "Pièces des parents",
+    "en": "Parent documents",
+    "ar": "مستندات أولياء الأمور"
+  },
+  "Choose a file": {
+    "fr": "Choisir un fichier",
+    "en": "Choose a file",
+    "ar": "اختر ملفًا"
+  },
+  "No file selected": {
+    "fr": "Aucun fichier choisi",
+    "en": "No file selected",
+    "ar": "لم يُحدد ملف"
+  },
+  "Overdue": {
+    "fr": "En retard de paiement",
+    "en": "Overdue",
+    "ar": "متأخرة عن الاستحقاق"
+  }
+}

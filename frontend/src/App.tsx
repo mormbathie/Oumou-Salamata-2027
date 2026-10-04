@@ -1,5 +1,6 @@
+import { t } from "./i18n/index";
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { Layout } from './components/Layout';
 import { DashboardPage } from './pages/DashboardPage';
@@ -19,8 +20,10 @@ import { DataTransferPage } from './pages/DataTransferPage';
 const AttendanceScanPage = lazy(() => import('./pages/AttendanceScanPage').then((module) => ({ default: module.AttendanceScanPage })));
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { authenticated, initializing } = useAuth();
-  if (initializing) return <div className="grid min-h-screen place-items-center text-slate-500">Vérification de la session…</div>;
+  const { authenticated, initializing, user } = useAuth();
+  const location = useLocation();
+  if (initializing) return <div className="grid min-h-screen place-items-center text-slate-500">{t("Checking your session…")}</div>;
+  if (authenticated && user?.mustChangePassword && location.pathname !== '/password') return <Navigate to="/password" replace />;
   return authenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
@@ -48,7 +51,7 @@ export const App: React.FC = () => (
           <Route path="finances" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><FinancesPage /></RequireRoles>} />
           <Route path="grades" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'ENSEIGNANT']}><GradesPage /></RequireRoles>} />
           <Route path="attendance" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'ENSEIGNANT']}><AttendancePage /></RequireRoles>} />
-          <Route path="attendance/scan" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE']}><Suspense fallback={<div className="p-8 text-sm text-slate-500">Chargement du scanner…</div>}><AttendanceScanPage /></Suspense></RequireRoles>} />
+          <Route path="attendance/scan" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE']}><Suspense fallback={<div className="p-8 text-sm text-slate-500">{t("Chargement du scanner…")}</div>}><AttendanceScanPage /></Suspense></RequireRoles>} />
           <Route path="classes" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT']}><ClassesPage /></RequireRoles>} />
           <Route path="users" element={<RequireRoles roles={['ADMIN']}><UsersPage /></RequireRoles>} />
           <Route path="password" element={<PasswordPage />} />

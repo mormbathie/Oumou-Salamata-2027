@@ -90,7 +90,7 @@ for name in backend frontend; do
   fi
 done
 
-app_url=https://oumou-salamat.57.131.160.254.sslip.io
+app_url=https://assakina-school.com
 curl --fail --silent --show-error --retry 5 --retry-delay 2 "$app_url/api/health" > /dev/null
 frontend_id=$("${compose[@]}" ps -q frontend)
 served_html=$(mktemp)

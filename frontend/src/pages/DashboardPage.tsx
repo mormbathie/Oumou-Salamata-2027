@@ -1,3 +1,4 @@
+import { t, locale } from "../i18n/index";
 import React, { useEffect, useState } from 'react';
 import {
   Users,
@@ -51,23 +52,21 @@ export const DashboardPage: React.FC = () => {
         <div className="relative z-10 max-w-2xl">
           <div className="inline-flex items-center space-x-2 bg-emerald-500/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-200 mb-3 border border-emerald-400/30">
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>Gestion Scolaire Intégrée & Sécurisée</span>
+            <span>{t("Integrated and Secure School Management")}</span>
           </div>
           <h2 className="text-2xl font-bold tracking-tight">
-            Bienvenue sur le portail de l'École As Sakina
-          </h2>
+            {t("Welcome to the As Sakina School portal")}</h2>
           <p className="text-emerald-100 text-sm mt-1">
-            Année scolaire active : <span className="font-semibold text-white">{data?.academicYear}</span>. Suivi des inscriptions, de la facturation, des notes et du registre des présences en temps réel.
-          </p>
+            {t("Current school year:")}<span className="font-semibold text-white">{data?.academicYear}</span>{t(". Track enrollment, billing, grades, and attendance in real time.")}</p>
         </div>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Élèves */}
+        {/* Students */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Effectif Total</span>
+            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">{t("Total Students")}</span>
             <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <Users className="w-5 h-5" />
             </div>
@@ -75,9 +74,9 @@ export const DashboardPage: React.FC = () => {
           <div className="mt-3">
             <div className="text-3xl font-bold text-slate-800">{counts.totalStudents || 0}</div>
             <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-              <span>👦 {counts.maleStudents || 0} Garçons</span>
+              <span>👦 {counts.maleStudents || 0} {t("Boys")}</span>
               <span>•</span>
-              <span>👧 {counts.femaleStudents || 0} Filles</span>
+              <span>👧 {counts.femaleStudents || 0} {t("Girls")}</span>
             </div>
           </div>
         </div>
@@ -85,44 +84,43 @@ export const DashboardPage: React.FC = () => {
         {/* Recouvrement Financier */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Encaissé</span>
+            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">{t("Collected")}</span>
             <div className="w-10 h-10 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center">
               <CreditCard className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3">
             <div className="text-3xl font-bold text-slate-800">
-              {(finances.totalCollected || 0).toLocaleString()} <span className="text-sm font-normal text-slate-400">FCFA</span>
+              {(finances.totalCollected || 0).toLocaleString()} <span className="text-sm font-normal text-slate-400">{t("FCFA")}</span>
             </div>
             <div className="flex items-center space-x-1.5 text-xs text-emerald-600 font-medium mt-1">
               <TrendingUp className="w-3.5 h-3.5" />
-              <span>Taux de recouvrement : {finances.recoveryRate || 0}%</span>
+              <span>{t("Taux de recouvrement :")}{finances.recoveryRate || 0}%</span>
             </div>
           </div>
         </div>
 
-        {/* Reste à recouvrer */}
+        {/* Outstanding Balance */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Reste à payer</span>
+            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">{t("Balance due")}</span>
             <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
               <AlertCircle className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3">
             <div className="text-3xl font-bold text-slate-800">
-              {(finances.totalBalance || 0).toLocaleString()} <span className="text-sm font-normal text-slate-400">FCFA</span>
+              {(finances.totalBalance || 0).toLocaleString()} <span className="text-sm font-normal text-slate-400">{t("FCFA")}</span>
             </div>
             <div className="text-xs text-amber-600 font-medium mt-1">
-              {finances.unpaidInvoicesCount || 0} facture(s) en attente de solde
-            </div>
+              {finances.unpaidInvoicesCount || 0} {t("invoices with an outstanding balance")}</div>
           </div>
         </div>
 
         {/* Taux d'assiduité */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Assiduité du jour</span>
+            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">{t("Today's attendance")}</span>
             <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
               <CalendarCheck className="w-5 h-5" />
             </div>
@@ -131,7 +129,7 @@ export const DashboardPage: React.FC = () => {
             <div className="text-3xl font-bold text-slate-800">{attendance.rate || 96}%</div>
             <div className="flex items-center space-x-1 text-xs text-slate-500 mt-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Pointage du jour validé</span>
+              <span>{t("Today's attendance recorded")}</span>
             </div>
           </div>
         </div>
@@ -143,12 +141,11 @@ export const DashboardPage: React.FC = () => {
         <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-bold text-base text-slate-800">Répartition des effectifs par classe</h3>
-              <p className="text-xs text-slate-400">Taux de remplissage des classes (du CI au CM2)</p>
+              <h3 className="font-bold text-base text-slate-800">{t("Students by class")}</h3>
+              <p className="text-xs text-slate-400">{t("Class occupancy rates (CI to CM2)")}</p>
             </div>
             <span className="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
-              {classesDistribution.length} Classes
-            </span>
+              {classesDistribution.length} {t("Classes")}</span>
           </div>
 
           <div className="space-y-4">
@@ -157,7 +154,7 @@ export const DashboardPage: React.FC = () => {
                 <div className="flex items-center justify-between text-xs font-medium">
                   <span className="text-slate-700 font-semibold">{c.name}</span>
                   <span className="text-slate-500">
-                    <span className="text-emerald-700 font-bold">{c.studentsCount}</span> / {c.capacity} élèves ({c.occupancyRate}%)
+                    <span className="text-emerald-700 font-bold">{c.studentsCount}</span> / {c.capacity} {t("students (")}{c.occupancyRate}%)
                   </span>
                 </div>
                 <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
@@ -174,13 +171,13 @@ export const DashboardPage: React.FC = () => {
         {/* Derniers règlements reçus */}
         <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-base text-slate-800">Derniers Encaissements</h3>
-            <span className="text-xs text-slate-400">Reçus récents</span>
+            <h3 className="font-bold text-base text-slate-800">{t("Derniers Encaissements")}</h3>
+            <span className="text-xs text-slate-400">{t("Recent receipts")}</span>
           </div>
 
           <div className="flex-1 space-y-3">
             {recentPayments.length === 0 ? (
-              <div className="text-center py-8 text-xs text-slate-400">Aucun paiement récent</div>
+              <div className="text-center py-8 text-xs text-slate-400">{t("No recent payments")}</div>
             ) : (
               recentPayments.map((p: any) => (
                 <div key={p.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
@@ -190,15 +187,15 @@ export const DashboardPage: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-xs font-semibold text-slate-800">
-                        {p.invoice?.student ? `${p.invoice.student.firstName} ${p.invoice.student.lastName}` : 'Élève'}
+                        {p.invoice?.student ? `${p.invoice.student.firstName} ${p.invoice.student.lastName}` : t("Student")}
                       </p>
                       <p className="text-[11px] text-slate-400">{p.paymentNumber} • {p.paymentMethod}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs font-bold text-emerald-600">+{p.amount.toLocaleString()} F</p>
+                    <p className="text-xs font-bold text-emerald-600">+{p.amount.toLocaleString()} {t("F")}</p>
                     <p className="text-[10px] text-slate-400">
-                      {new Date(p.paymentDate).toLocaleDateString('fr-FR')}
+                      {new Date(p.paymentDate).toLocaleDateString(locale())}
                     </p>
                   </div>
                 </div>

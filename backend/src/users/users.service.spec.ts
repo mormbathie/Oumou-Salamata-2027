@@ -5,12 +5,12 @@ jest.mock('@nestjs/config', () => ({ ConfigService: class {} }));
 
 describe('UsersService password changes', () => {
   const config: any = { get: () => undefined };
-  const prisma: any = {};
+  const prisma: any = { user: { updateMany: jest.fn().mockResolvedValue({ count: 1 }) } };
   const auth: any = { directLogin: jest.fn().mockResolvedValue({ access_token: 'valid' }) };
 
   afterEach(() => jest.clearAllMocks());
 
-  it('sets an administrator reset as a temporary password', async () => {
+  it('lets an administrator reset a password without forcing an external password page', async () => {
     const service = new UsersService(config, prisma, auth);
     const request = jest.spyOn(service as any, 'request').mockResolvedValue(null);
 
@@ -18,7 +18,18 @@ describe('UsersService password changes', () => {
 
     expect(request).toHaveBeenCalledWith('/users/user-id/reset-password', {
       method: 'PUT',
-      body: JSON.stringify({ type: 'password', value: 'new-password', temporary: true }),
+      body: JSON.stringify({ type: 'password', value: 'new-password', temporary: false }),
+    });
+    expect(prisma.user.updateMany).toHaveBeenCalledWith({ where: { keycloakId: 'user-id' }, data: { mustChangePassword: true } });
+  });
+
+  it('removes only the external password action on an administrator reset', async () => {
+    const service = new UsersService(config, prisma, auth);
+    const request = jest.spyOn(service as any, 'request').mockImplementation(async (path: string, init?: RequestInit) =>
+      path === '/users/user-id' && !init ? { requiredActions: ['UPDATE_PASSWORD', 'VERIFY_EMAIL'] } : null);
+    await service.resetPassword('user-id', 'new-password');
+    expect(request).toHaveBeenCalledWith('/users/user-id', {
+      method: 'PUT', body: JSON.stringify({ id: 'user-id', requiredActions: ['VERIFY_EMAIL'] }),
     });
   });
 
@@ -33,6 +44,7 @@ describe('UsersService password changes', () => {
       method: 'PUT',
       body: JSON.stringify({ type: 'password', value: 'new-password', temporary: false }),
     });
+    expect(prisma.user.updateMany).toHaveBeenCalledWith({ where: { keycloakId: 'my-id' }, data: { mustChangePassword: false } });
   });
 
   it('rejects reuse of the current password', async () => {
