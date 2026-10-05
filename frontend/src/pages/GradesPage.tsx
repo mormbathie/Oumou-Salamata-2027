@@ -1,3 +1,5 @@
+import { printSchoolDocument, escapeHtml } from '../utils/schoolDocuments';
+import { SchoolHeader } from '../components/SchoolHeader';
 import { t } from "../i18n/index";
 import React, { useEffect, useState } from 'react';
 import {
@@ -439,30 +441,7 @@ export const GradesPage: React.FC = () => {
             {/* Header / Printable Document */}
             <div id="school-report-card" className="p-8 space-y-6">
               {/* Republic & School Header */}
-              <div className="border-b-2 border-slate-800 pb-4">
-                <div className="flex items-center justify-between text-center">
-                  <div className="text-left">
-                    <p className="text-[10px] font-bold uppercase text-slate-600">{t("REPUBLIC OF SENEGAL")}</p>
-                    <p className="text-[9px] text-slate-500">{t("Ministry of National Education")}</p>
-                    <p className="text-[9px] text-slate-500">{t("Dakar Education Authority")}</p>
-                  </div>
-                  <div className="text-center">
-                    <h2 className="text-base font-black uppercase text-slate-900 tracking-wider">
-                      {t("AS SAKINA SCHOOL")}</h2>
-                    <p className="text-[10px] text-slate-500">{t("Discipline • Work • Success")}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-bold text-slate-700">{selectedReportCard.academicYear?.name || '2026-2027'}</p>
-                    <span className="text-[10px] bg-slate-100 text-slate-800 px-2 py-0.5 rounded font-bold uppercase">
-                      {selectedReportCard.term.replace('_', ' ')}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-4 text-center">
-                  <h3 className="text-lg font-black tracking-widest uppercase bg-slate-900 text-white py-1 rounded-lg">
-                    {t("BULLETIN DE NOTES")}</h3>
-                </div>
-              </div>
+              <SchoolHeader title={t('BULLETIN DE NOTES')} year={selectedReportCard.academicYear?.name || '2026/2027'} />
 
               {/* Student Details Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
@@ -483,7 +462,7 @@ export const GradesPage: React.FC = () => {
                 <div>
                   <span className="text-[10px] text-slate-400 uppercase font-semibold block">{t("Class teacher:")}</span>
                   <span className="font-medium text-slate-700">
-                    {selectedReportCard.classroom?.teacher?.firstName ? `${selectedReportCard.classroom.teacher.firstName} ${selectedReportCard.classroom.teacher.lastName}` : 'M. Sow'}
+                    {selectedReportCard.classroom?.teacher?.firstName ? `${selectedReportCard.classroom.teacher.firstName} ${selectedReportCard.classroom.teacher.lastName}` : '—'}
                   </span>
                 </div>
               </div>
@@ -575,7 +554,7 @@ export const GradesPage: React.FC = () => {
                 {t("Close")}</button>
               <button
                 type="button"
-                onClick={() => window.print()}
+                onClick={() => printSchoolDocument(t("Print Report Card"), `<h3>${escapeHtml(selectedReportCard.student?.firstName)} ${escapeHtml(selectedReportCard.student?.lastName)}</h3><p>${escapeHtml(t("Matricule"))}: ${escapeHtml(selectedReportCard.student?.matricule)} · ${escapeHtml(t("Class"))}: ${escapeHtml(selectedReportCard.classroom?.name)}</p><table><thead><tr><th>${escapeHtml(t("Subject"))}</th><th>${escapeHtml(t("Coefficient"))}</th><th>${escapeHtml(t("Average"))}</th><th>${escapeHtml(t("Appreciation"))}</th></tr></thead><tbody>${(selectedReportCard.subjectBreakdown || []).map((s:any)=>`<tr><td>${escapeHtml(s.subjectName)}</td><td>${escapeHtml(s.coefficient)}</td><td>${escapeHtml(s.average)}</td><td>${escapeHtml(s.appreciation)}</td></tr>`).join('')}</tbody></table><p>${escapeHtml(t("Average"))}: ${escapeHtml(selectedReportCard.overallAverage)} / 20</p><p>${escapeHtml(t("Student Rank"))}: ${escapeHtml(selectedReportCard.rank ?? '-')}</p><p>${escapeHtml(t("Class Average"))}: ${escapeHtml(selectedReportCard.classAverage ?? '—')}</p><p>${escapeHtml(selectedReportCard.appreciation)}</p><div class="signatures"><span>${escapeHtml(t("Teacher"))}</span><span>${escapeHtml(t("Principal’s Approval"))}</span><span>${escapeHtml(t("Parent’s Signature"))}</span></div>`, selectedReportCard.academicYear?.name || '2026/2027') }
                 className="inline-flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-md"
               >
                 <Printer className="w-3.5 h-3.5" />

@@ -1,0 +1,19 @@
+import { t } from '../i18n';
+import { itemLabels, money, programs, transportFees, type SchoolProgram } from '../config/school';
+export type SchoolOptionsValue = { transportZone?: number|null; karate?:boolean; eveningClasses?:boolean; emergencyContactName?:string|null; emergencyContactPhone?:string|null; healthNotes?:string|null; schoolItemsProvided?:string|null };
+export function SchoolOptions({value, onChange, program = programs[1], disabled=false}: {value:SchoolOptionsValue;onChange:(v:SchoolOptionsValue)=>void;program?:SchoolProgram;disabled?:boolean}) {
+  const change = (key:keyof SchoolOptionsValue,v:unknown) => onChange({...value,[key]:v});
+  const checked=(value.schoolItemsProvided || '').split(',').filter(Boolean);
+  return <section className="space-y-4 rounded-xl border border-emerald-100 bg-emerald-50/40 p-4">
+    <h4 className="text-sm font-bold text-emerald-950">{t('School options and information')}</h4>
+    <div className="grid gap-3 sm:grid-cols-2">
+      <label className="text-xs font-medium">{t('Transport zone')}<select disabled={disabled} value={value.transportZone || ''} onChange={e=>change('transportZone',e.target.value ? Number(e.target.value):null)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-2.5"><option value="">{t('No transport')}</option>{[1,2,3].map(z=><option key={z} value={z}>{t('Zone')} {z} · {money(transportFees[z])}/{t('month')}</option>)}</select></label>
+      <div className="space-y-2 pt-2 text-xs"><label className="flex items-center gap-2"><input type="checkbox" disabled={disabled} checked={Boolean(value.karate)} onChange={e=>change('karate',e.target.checked)}/>{t('Karate')} · 2 000 F/{t('month')} ({t('Kimono')}: 6 000 F)</label><label className="flex items-center gap-2"><input type="checkbox" disabled={disabled} checked={Boolean(value.eveningClasses)} onChange={e=>change('eveningClasses',e.target.checked)}/>{t('Evening classes')} · 5 000 F/{t('month')}</label></div>
+      <label className="text-xs font-medium">{t('Emergency contact')}<input disabled={disabled} value={value.emergencyContactName || ''} onChange={e=>change('emergencyContactName',e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-2.5"/></label>
+      <label className="text-xs font-medium">{t('Emergency telephone')}<input disabled={disabled} type="tel" value={value.emergencyContactPhone || ''} onChange={e=>change('emergencyContactPhone',e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-2.5"/></label>
+      <label className="text-xs font-medium sm:col-span-2">{t('Health information and allergies')}<textarea disabled={disabled} maxLength={2000} value={value.healthNotes || ''} onChange={e=>change('healthNotes',e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-2.5"/></label>
+    </div>
+    <p className="text-xs text-emerald-900">{t('Additional monthly options')}: {money((transportFees[value.transportZone || 0] || 0)+(value.karate ? 2000:0)+(value.eveningClasses ? 5000:0))}. {t('Options are billed separately from tuition.')}</p>
+    <div className="space-y-2 border-t border-emerald-100 pt-3"><h5 className="text-xs font-bold">{t('Items already provided')} · {t(program.label)}</h5>{[...program.requiredItems,...(program.id==='PRESCHOOL' ? ['DIAPERS']:[])].map(item=><label key={item} className="flex items-center gap-2 text-xs"><input disabled={disabled} type="checkbox" checked={checked.includes(item)} onChange={e=>change('schoolItemsProvided',(e.target.checked ? [...checked,item]:checked.filter(i=>i!==item)).join(','))}/>{t(itemLabels[item])}</label>)}</div>
+  </section>;
+}

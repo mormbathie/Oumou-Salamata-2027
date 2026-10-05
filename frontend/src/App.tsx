@@ -1,3 +1,4 @@
+import { SchoolInformationPage } from './pages/SchoolInformationPage';
 import { t } from "./i18n/index";
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
@@ -54,6 +55,7 @@ export const App: React.FC = () => (
           <Route path="attendance/scan" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE']}><Suspense fallback={<div className="p-8 text-sm text-slate-500">{t("Chargement du scanner…")}</div>}><AttendanceScanPage /></Suspense></RequireRoles>} />
           <Route path="classes" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT']}><ClassesPage /></RequireRoles>} />
           <Route path="users" element={<RequireRoles roles={['ADMIN']}><UsersPage /></RequireRoles>} />
+          <Route path="school-information" element={<SchoolInformationPage />} />
           <Route path="password" element={<PasswordPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="staff-attendance" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE']}><StaffAttendancePage /></RequireRoles>} />

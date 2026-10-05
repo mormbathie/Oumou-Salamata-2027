@@ -1,3 +1,4 @@
+import { programs, programFor } from '../config/school';
 import { t } from "../i18n/index";
 import React, { useEffect, useState } from 'react';
 import {
@@ -27,9 +28,10 @@ export const ClassesPage: React.FC = () => {
     name: '',
     level: 'CI',
     capacity: 30,
-    monthlyTuition: 25000,
-    registrationFee: 50000,
+    monthlyTuition: 15000,
+    registrationFee: 40500,
     teacherId: '',
+    program: 'ELEMENTARY',
   });
 
   // Subject Modal
@@ -109,9 +111,10 @@ export const ClassesPage: React.FC = () => {
         name: '',
         level: 'CI',
         capacity: 30,
-        monthlyTuition: 25000,
-        registrationFee: 50000,
+        monthlyTuition: 15000,
+        registrationFee: 40500,
         teacherId: '',
+        program: 'ELEMENTARY',
       });
       await loadData();
     } catch (err: any) {
@@ -123,7 +126,7 @@ export const ClassesPage: React.FC = () => {
 
   const editClass = (classroom: any) => {
     setEditingClassId(classroom.id);
-    setClassForm({ name: classroom.name, level: classroom.level, capacity: classroom.capacity, monthlyTuition: classroom.monthlyTuition, registrationFee: classroom.registrationFee, teacherId: classroom.teacherId || '' });
+    setClassForm({ name: classroom.name, level: classroom.level, capacity: classroom.capacity, monthlyTuition: classroom.monthlyTuition, registrationFee: classroom.registrationFee, teacherId: classroom.teacherId || '', program: classroom.program || programFor(classroom).id });
     setShowClassModal(true);
   };
 
@@ -146,7 +149,7 @@ export const ClassesPage: React.FC = () => {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {canManage && <button
-            onClick={() => { setEditingClassId(null); setClassForm({ name: '', level: 'CI', capacity: 30, monthlyTuition: 25000, registrationFee: 50000, teacherId: '' }); setShowClassModal(true); }}
+            onClick={() => { setEditingClassId(null); setClassForm({ name: '', level: 'CI', capacity: 30, monthlyTuition: 15000, registrationFee: 40500, teacherId: '', program: 'ELEMENTARY' }); setShowClassModal(true); }}
             className="inline-flex items-center space-x-2 bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2.5 rounded-xl font-medium text-sm transition"
           >
             <School className="w-4 h-4" />
@@ -206,7 +209,7 @@ export const ClassesPage: React.FC = () => {
 
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 text-xs space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">{t("Frais d'inscription :")}</span>
+                  <span className="text-slate-500">{t("Initial amount:")}</span>
                   <span className="font-bold text-slate-800">{c.registrationFee.toLocaleString()} {t("FCFA")}</span>
                 </div>
                 <div className="flex justify-between">
@@ -283,6 +286,7 @@ export const ClassesPage: React.FC = () => {
                   />
                 </div>
 
+                <div className="sm:col-span-2"><label className="mb-1 block font-medium text-slate-700">{t('School programme')}</label><select value={classForm.program} onChange={e=>{ const plan=programs.find(p=>p.id===e.target.value)!; setClassForm(prev=>({...prev,program:plan.id,level:plan.levels.includes(prev.level)?prev.level:plan.levels[0],registrationFee:plan.registrationFee,monthlyTuition:plan.monthlyTuition})); }} className="w-full rounded-lg border border-slate-200 bg-white p-2.5">{programs.map(p=><option key={p.id} value={p.id}>{t(p.label)} · {t(p.hours)}</option>)}</select><p className="mt-1 text-xs text-slate-500">{t('Selecting a programme fills in its published fees. You may adjust them before saving.')}</p></div>
                 <div>
                   <label className="font-medium text-slate-700 block mb-1">{t("Niveau *")}</label>
                   <select
@@ -291,6 +295,7 @@ export const ClassesPage: React.FC = () => {
                     onChange={(e) => setClassForm((prev) => ({ ...prev, level: e.target.value }))}
                     className="w-full p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
                   >
+                    <option value="TPS">{t('Très petite section')}</option><option value="PS">{t('Petite section')}</option><option value="MS">{t('Moyenne section')}</option><option value="GS">{t('Grande section')}</option><option value="DAARA">{t('Daara')}</option>
                     <option value="CI">{t("CI")}</option>
                     <option value="CP">{t("CP")}</option>
                     <option value="CE1">{t("CE1")}</option>
@@ -322,7 +327,7 @@ export const ClassesPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="font-medium text-slate-700 block mb-1">{t("Frais d'inscription (FCFA)")}</label>
+                  <label className="font-medium text-slate-700 block mb-1">{t("Initial amount to invoice (FCFA)")}</label>
                   <input
                     type="number"
                     min="0"

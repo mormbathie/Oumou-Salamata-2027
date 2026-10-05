@@ -1,3 +1,4 @@
+import { school } from '../config/school';
 import { t, locale, getLanguage, roleLabel } from "../i18n";
 type ReceiptRecord = {
   payment: {
@@ -96,8 +97,8 @@ export const printPaymentReceipt = (receipt: ReceiptRecord) => {
     'footer{margin-top:26px;color:#64748b;text-align:center;font-size:10px}',
     '@media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}',
     '</style></head><body><main>',
-    '<header><div class="mark">AS</div><h1>' + escapeHtml(t("As Sakina School")) + '</h1>',
-    '<p>' + escapeHtml(t("Primary education \u00b7 Dakar, Senegal")) + '</p>',
+    '<header><img src="' + escapeHtml(new URL(school.logo, window.location.origin).href) + '" alt="" style="width:120px;height:110px;object-fit:contain"><h1>' + escapeHtml(school.name) + '</h1>',
+    '<p>' + escapeHtml(school.address) + '</p><p>' + escapeHtml(school.phones.join(' / ')) + '</p><p>' + escapeHtml(school.email) + '</p>',
     '<div class="badge">' + escapeHtml(t("SCHOOL PAYMENT RECEIPT")) + '</div></header>',
     '<section class="meta"><div><span class="label">' + escapeHtml(t("Receipt number")) + '</span><span class="value mono">',
     escapeHtml(payment.paymentNumber), '</span></div><div style="text-align:right">',

@@ -1,3 +1,6 @@
+import { SchoolOptions } from '../components/SchoolOptions';
+import { programFor } from '../config/school';
+import { printStudentInformation } from '../utils/schoolDocuments';
 import { t, locale, roleLabel } from "../i18n/index";
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -60,6 +63,7 @@ export const StudentsPage: React.FC = () => {
     parentChoice: 'new', parentId: '', parentFirstName: '', parentLastName: '',
     parentPhone: '', parentEmail: '', parentAddress: '', parentProfession: '',
     parentRelation: 'Father', generateInvoice: true,
+    transportZone: null as number|null, karate:false, eveningClasses:false, emergencyContactName:'', emergencyContactPhone:'', healthNotes:'', schoolItemsProvided:'',
   });
 
   const loadData = async () => {
@@ -146,6 +150,7 @@ export const StudentsPage: React.FC = () => {
       bloodGroup: selectedStudent.bloodGroup || '',
       address: selectedStudent.address || '',
       classroomId: selectedStudent.enrollments?.[0]?.classroomId || '',
+      transportZone: selectedStudent.transportZone || null, karate: selectedStudent.karate || false, eveningClasses: selectedStudent.eveningClasses || false, emergencyContactName: selectedStudent.emergencyContactName || '', emergencyContactPhone: selectedStudent.emergencyContactPhone || '', healthNotes: selectedStudent.healthNotes || '', schoolItemsProvided: selectedStudent.schoolItemsProvided || '',
       parentData: {
         firstName: parent.firstName || '', lastName: parent.lastName || '',
         phone: parent.phone || '', email: parent.email || '', address: parent.address || '',
@@ -193,6 +198,7 @@ export const StudentsPage: React.FC = () => {
         placeOfBirth: formData.placeOfBirth, bloodGroup: formData.bloodGroup,
         address: formData.address, classroomId: formData.classroomId,
         generateInvoice: formData.generateInvoice,
+        transportZone: formData.transportZone, karate: formData.karate, eveningClasses: formData.eveningClasses, emergencyContactName: formData.emergencyContactName, emergencyContactPhone: formData.emergencyContactPhone, healthNotes: formData.healthNotes, schoolItemsProvided: formData.schoolItemsProvided,
       };
       if (formData.parentChoice === 'existing' && formData.parentId) {
         payload.parentId = formData.parentId;
@@ -208,7 +214,7 @@ export const StudentsPage: React.FC = () => {
       }
       const created = await studentsApi.create(payload);
       setShowAddModal(false);
-      setFormData((previous) => ({ ...previous, firstName: '', lastName: '', parentFirstName: '', parentLastName: '', parentPhone: '', parentEmail: '', parentAddress: '', parentProfession: '' }));
+      setFormData((previous) => ({ ...previous, firstName: '', lastName: '', parentFirstName: '', parentLastName: '', parentPhone: '', parentEmail: '', parentAddress: '', parentProfession: '', transportZone: null, karate: false, eveningClasses: false, emergencyContactName: '', emergencyContactPhone: '', healthNotes: '', schoolItemsProvided: '', placeOfBirth: '', address: '', bloodGroup: '' }));
       await loadData();
       await handleOpenDetails(created.id, manager ? 'documents' : 'overview');
     } catch (error: any) {
@@ -367,11 +373,12 @@ export const StudentsPage: React.FC = () => {
                 <label className="text-xs font-medium text-slate-700">{t("Place of birth")}<input value={formData.placeOfBirth} onChange={(e) => setFormData({ ...formData, placeOfBirth: e.target.value })} className={inputClass} /></label>
                 <label className="text-xs font-medium text-slate-700">{t("Blood type")}<select value={formData.bloodGroup} onChange={(e) => setFormData({ ...formData, bloodGroup: e.target.value })} className={inputClass}><option value="">{t("Not provided")}</option>{['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((group) => <option key={group}>{group}</option>)}</select></label>
                 <label className="text-xs font-medium text-slate-700 sm:col-span-2">{t("Student address")}<input value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} className={inputClass} /></label>
-                <label className="text-xs font-medium text-slate-700 sm:col-span-2">{t("Assigned class *")}<select required value={formData.classroomId} onChange={(e) => setFormData({ ...formData, classroomId: e.target.value })} disabled={!classes.length} className={inputClass}><option value="">{classes.length ? t("Choose a class…") : t("No classes created")}</option>{classes.map((classroom) => <option key={classroom.id} value={classroom.id}>{classroom.name} {t("— enrollment fee")}{classroom.registrationFee?.toLocaleString()} {t("F")}</option>)}</select>{!classes.length && <span className="mt-1 block text-amber-700">{t("Create a class in")}<Link className="underline" to="/classes">{t("Classes & Subjects")}</Link>.</span>}</label>
+                <label className="text-xs font-medium text-slate-700 sm:col-span-2">{t("Assigned class *")}<select required value={formData.classroomId} onChange={(e) => setFormData({ ...formData, classroomId: e.target.value })} disabled={!classes.length} className={inputClass}><option value="">{classes.length ? t("Choose a class…") : t("No classes created")}</option>{classes.map((classroom) => <option key={classroom.id} value={classroom.id}>{classroom.name} {t("— initial amount")}{classroom.registrationFee?.toLocaleString()} {t("F")}</option>)}</select>{!classes.length && <span className="mt-1 block text-amber-700">{t("Create a class in")}<Link className="underline" to="/classes">{t("Classes & Subjects")}</Link>.</span>}</label>
               </div></section>
 
               <section className="border-t border-slate-100 pt-5"><h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-emerald-700">{t("2. Parent / legal guardian")}</h4><div className="mb-4 flex flex-wrap gap-4 text-xs">
-                <label className="flex items-center gap-2"><input type="radio" name="parentChoice" checked={formData.parentChoice === 'new'} onChange={() => setFormData({ ...formData, parentChoice: 'new' })} />{t("Nouveau parent")}</label>
+                <SchoolOptions value={formData} program={programFor(classes.find(c=>c.id===formData.classroomId))} onChange={v=>setFormData(prev=>({...prev,...v, emergencyContactName:v.emergencyContactName || '',emergencyContactPhone:v.emergencyContactPhone || '',healthNotes:v.healthNotes || '',schoolItemsProvided:v.schoolItemsProvided || ''}))}/>
+              <label className="flex items-center gap-2"><input type="radio" name="parentChoice" checked={formData.parentChoice === 'new'} onChange={() => setFormData({ ...formData, parentChoice: 'new' })} />{t("Nouveau parent")}</label>
                 <label className="flex items-center gap-2"><input type="radio" name="parentChoice" checked={formData.parentChoice === 'existing'} onChange={() => setFormData({ ...formData, parentChoice: 'existing' })} />{t("Existing parent")}</label>
               </div>
               {formData.parentChoice === 'existing' ? <label className="text-xs font-medium text-slate-700">{t("Choose a parent")}<select value={formData.parentId} onChange={(e) => setFormData({ ...formData, parentId: e.target.value })} className={inputClass}><option value="">{t("Select…")}</option>{parents.map((parent) => <option key={parent.id} value={parent.id}>{parent.firstName} {parent.lastName} — {parent.phone}</option>)}</select></label> : <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -385,7 +392,7 @@ export const StudentsPage: React.FC = () => {
               </div>}</section>
 
               <label className="flex items-start gap-2 border-t border-slate-100 pt-4 text-xs text-slate-700"><input type="checkbox" checked={formData.generateInvoice} onChange={(e) => setFormData({ ...formData, generateInvoice: e.target.checked })} className="mt-0.5 rounded text-emerald-600" />{t("Automatically create the enrollment fee invoice")}</label>
-              <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end"><button type="button" onClick={() => setShowAddModal(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-600">{t("Cancel")}</button><button type="submit" disabled={!classes.length} className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50">{t("Confirm enrollment")}</button></div>
+              <SchoolOptions value={editData} program={programFor(classes.find(c=>c.id===editData.classroomId) || selectedStudent.enrollments?.[0]?.classroom)} onChange={v=>setEditData((prev:any)=>({...prev,...v}))}/><div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end"><button type="button" onClick={() => setShowAddModal(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-600">{t("Cancel")}</button><button type="submit" disabled={!classes.length} className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50">{t("Confirm enrollment")}</button></div>
             </form>
           </div>
         </div>
@@ -411,12 +418,14 @@ export const StudentsPage: React.FC = () => {
                 <section className="border-t border-slate-100 pt-4"><h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-emerald-700">{t("Parent / guardian")}</h4><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {(['firstName', 'lastName', 'phone', 'email', 'relation', 'profession', 'address'] as const).map((field) => <label key={field} className="text-xs font-medium capitalize text-slate-700">{{firstName:t("First name"),lastName:t("Last name"),phone:t("Phone"),email:'E-mail',relation:'Relationship',profession:t("Profession"),address:t("Adresse")}[field]}<input type={field === 'email' ? 'email' : 'text'} value={editData.parentData[field]} onChange={(e) => setEditData({ ...editData, parentData: { ...editData.parentData, [field]: e.target.value } })} required={['firstName', 'lastName', 'phone'].includes(field)} className={inputClass} /></label>)}
                 </div></section>
-                <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end"><button type="button" onClick={() => setEditingDetails(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-600">{t("Cancel")}</button><button type="submit" disabled={savingDetails} className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><Save className="h-4 w-4" />{savingDetails ? t("Saving…") : t("Save changes")}</button></div>
+                <SchoolOptions value={editData} program={programFor(classes.find(c=>c.id===editData.classroomId) || selectedStudent.enrollments?.[0]?.classroom)} onChange={v=>setEditData((prev:any)=>({...prev,...v}))}/><div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end"><button type="button" onClick={() => setEditingDetails(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-600">{t("Cancel")}</button><button type="submit" disabled={savingDetails} className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><Save className="h-4 w-4" />{savingDetails ? t("Saving…") : t("Save changes")}</button></div>
               </form> : <>
                 <div className="grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-4 text-xs sm:grid-cols-4"><div><span className="block text-slate-400">{t("Born")}</span><b className="text-slate-800">{new Date(selectedStudent.dateOfBirth).toLocaleDateString(locale())}</b></div><div><span className="block text-slate-400">{t("Place")}</span><b className="text-slate-800">{selectedStudent.placeOfBirth || t("Not provided")}</b></div><div><span className="block text-slate-400">{t("Class")}</span><b className="text-emerald-700">{selectedStudent.enrollments?.[0]?.classroom?.name || t("Unassigned")}</b></div><div><span className="block text-slate-400">{t("Blood type")}</span><b className="text-slate-800">{selectedStudent.bloodGroup || t("Not provided")}</b></div></div>
                 {manager && <div className="rounded-xl border border-slate-200 p-3 text-xs text-slate-600"><p>{t("Created by:")}<strong>{selectedStudent.createdByName || t("History unavailable")}</strong>{selectedStudent.createdByRole ? ` · ${roleLabel(selectedStudent.createdByRole)}` : ''}</p><p className="mt-1">{t("Class assigned by:")}<strong>{selectedStudent.enrollments?.[0]?.registeredByName || t("History unavailable")}</strong></p>{selectedStudent.updatedByName && <p className="mt-1">{t("Last updated by:")}<strong>{selectedStudent.updatedByName}</strong></p>}</div>}
                 {selectedStudent.parent && <div className="rounded-xl border border-slate-200 p-4"><h4 className="mb-2 text-xs font-bold uppercase text-slate-500">{t("Parent / legal guardian")}</h4><div className="flex flex-col gap-2 text-xs sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold text-slate-800">{selectedStudent.parent.firstName} {selectedStudent.parent.lastName} · {selectedStudent.parent.relation || 'Parent'}</p><p className="text-slate-500">{selectedStudent.parent.profession || t("Occupation not provided")}</p><p className="text-slate-500">{selectedStudent.parent.email || ''}</p></div><span className="inline-flex items-center gap-1 text-slate-600"><Phone className="h-3.5 w-3.5 text-emerald-600" />{selectedStudent.parent.phone}</span></div></div>}
               </>}
+              <button type="button" onClick={()=>printStudentInformation(selectedStudent)} className="rounded-lg bg-emerald-700 px-4 py-2 text-xs font-semibold text-white">{t('Print student information sheet')}</button>
+              {!editingDetails && <SchoolOptions value={selectedStudent} disabled program={programFor(selectedStudent.enrollments?.[0]?.classroom)} onChange={()=>{}}/>}
               <section className="grid gap-4 rounded-xl border border-slate-200 p-4 sm:grid-cols-[minmax(0,1fr)_190px]">
                 <div className="flex min-w-0 items-center gap-4">
                   {studentPhoto ? <img src={studentPhoto} alt={"Photo de " + selectedStudent.firstName + ' ' + selectedStudent.lastName} className="h-28 w-24 shrink-0 rounded-xl border border-slate-200 object-cover" /> : <div className="grid h-28 w-24 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-400"><Users className="h-9 w-9" /></div>}

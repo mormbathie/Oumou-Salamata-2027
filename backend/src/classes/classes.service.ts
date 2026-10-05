@@ -1,3 +1,4 @@
+import { PROGRAMS, LEVELS } from '../school/school-options';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
@@ -101,7 +102,12 @@ export class ClassesService {
     registrationFee?: number;
     academicYearId?: string;
     teacherId?: string;
+    program?: string;
   }) {
+    if (typeof data.name !== 'string' || !data.name.trim()) throw new BadRequestException('Le nom de la classe est obligatoire.');
+    if (!LEVELS.includes(data.level)) throw new BadRequestException('Niveau invalide.');
+    if (data.program && !PROGRAMS.includes(data.program)) throw new BadRequestException('Formule scolaire invalide.');
+    for (const field of ['capacity','monthlyTuition','registrationFee'] as const) if (data[field] !== undefined && (!Number.isFinite(data[field]) || data[field]! < (field === 'capacity' ? 1 : 0) || (field === 'capacity' && !Number.isInteger(data[field])))) throw new BadRequestException('Tarif ou effectif invalide.');
     const academicYear = data.academicYearId
       ? await this.prisma.academicYear.findUnique({ where: { id: data.academicYearId } })
       : await this.getOrCreateCurrentAcademicYear();
@@ -114,6 +120,7 @@ export class ClassesService {
       data: {
         name: data.name.trim(),
         level: data.level,
+        program: data.program || null,
         capacity: data.capacity ?? 30,
         monthlyTuition: data.monthlyTuition ?? 25000,
         registrationFee: data.registrationFee ?? 50000,
@@ -159,7 +166,7 @@ export class ClassesService {
       update.name = data.name.trim();
     }
     if (data.level !== undefined) {
-      if (!['CI', 'CP', 'CE1', 'CE2', 'CM1', 'CM2'].includes(data.level)) throw new BadRequestException('Niveau invalide.');
+      if (!LEVELS.includes(data.level)) throw new BadRequestException('Niveau invalide.');
       update.level = data.level;
     }
     for (const field of ['capacity', 'monthlyTuition', 'registrationFee'] as const) {
@@ -170,6 +177,10 @@ export class ClassesService {
         }
         update[field] = value;
       }
+    }
+    if (data.program !== undefined) {
+      if (data.program !== null && !PROGRAMS.includes(data.program)) throw new BadRequestException('Formule scolaire invalide.');
+      update.program = data.program;
     }
     if (data.teacherId !== undefined) {
       if (data.teacherId) {

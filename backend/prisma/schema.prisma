@@ -144,6 +144,7 @@ model Classroom {
   name            String        // e.g. "CI A", "CP B", "CM2"
   level           String        // "CI", "CP", "CE1", "CE2", "CM1", "CM2"
   capacity        Int           @default(30)
+  program         String?
   monthlyTuition  Float         @default(25000)
   registrationFee Float         @default(50000)
   academicYearId  String
@@ -184,6 +185,13 @@ model Student {
   placeOfBirth  String?
   gender        Gender
   address       String?
+  transportZone Int?
+  karate        Boolean       @default(false)
+  eveningClasses Boolean      @default(false)
+  emergencyContactName String?
+  emergencyContactPhone String?
+  healthNotes String?
+  schoolItemsProvided String?
   bloodGroup    String?
   photoUrl      String?
   status        StudentStatus @default(ACTIVE)

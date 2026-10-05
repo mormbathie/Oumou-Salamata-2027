@@ -1,3 +1,4 @@
+import { school } from '../config/school';
 import { t } from "../i18n/index";
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
@@ -29,6 +30,7 @@ export const Layout: React.FC = () => {
     { to: '/users', label: t("User Management"), icon: UserCog, roles: ['ADMIN'] },
     { to: '/staff-attendance', label: t("Teacher Attendance"), icon: CalendarCheck, roles: ['ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE'] },
     { to: '/data-transfer', label: t("Import / Export"), icon: Download, roles: ['ADMIN'] },
+    { to: '/school-information', label: t('School information and fees'), icon: School, roles: roleNames },
     { to: '/profile', label: t("My Profile"), icon: UserRound, roles: roleNames },
     { to: '/password', label: t("My Password"), icon: KeyRound, roles: roleNames },
   ].filter((item) => hasRole(item.roles));
@@ -43,7 +45,7 @@ export const Layout: React.FC = () => {
       {mobileMenuOpen && <button aria-label={t("Close menu")} onClick={() => setMobileMenuOpen(false)} className="fixed inset-0 z-30 bg-slate-950/50 md:hidden" />}
       <aside className={`fixed inset-y-0 left-0 z-40 flex w-72 max-w-[85vw] flex-col bg-slate-900 text-white shadow-xl transition-transform md:static md:z-20 md:w-64 md:max-w-none md:translate-x-0 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center justify-between border-b border-slate-800 p-4 sm:p-5">
-          <div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-lg"><School className="h-6 w-6" /></div><div><h1 className="text-base font-bold leading-tight">{t("As Sakina")}</h1><p className="text-xs font-medium uppercase tracking-wider text-emerald-400">{t("Primary School")}</p></div></div>
+          <div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-lg"><img src={school.logo} alt="" className="h-10 w-10 rounded-lg bg-white object-contain" /></div><div><h1 className="text-base font-bold leading-tight">{school.shortName}</h1><p className="text-xs font-medium uppercase tracking-wider text-emerald-400">{t("School group")}</p></div></div>
           <button onClick={() => setMobileMenuOpen(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 md:hidden" aria-label={t("Close")}><X className="h-5 w-5" /></button>
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">

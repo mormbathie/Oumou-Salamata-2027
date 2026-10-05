@@ -3233,5 +3233,375 @@
     "fr": "Veuillez patienter avant de demander un nouveau lien.",
     "en": "Veuillez patienter avant de demander un nouveau lien.",
     "ar": "يرجى الانتظار قبل طلب رابط جديد."
+  },
+  "School programme": {
+    "fr": "Formule scolaire",
+    "en": "School programme",
+    "ar": "البرنامج الدراسي"
+  },
+  "School group": {
+    "fr": "Groupe scolaire",
+    "en": "School group",
+    "ar": "المجموعة المدرسية"
+  },
+  "School information and fees": {
+    "fr": "Renseignements et tarifs de l’école",
+    "en": "School information and fees",
+    "ar": "معلومات المدرسة والرسوم"
+  },
+  "Print school information": {
+    "fr": "Imprimer la fiche de renseignements",
+    "en": "Print school information",
+    "ar": "طباعة معلومات المدرسة"
+  },
+  "School options and information": {
+    "fr": "Options et renseignements scolaires",
+    "en": "School options and information",
+    "ar": "الخيارات والمعلومات المدرسية"
+  },
+  "Transport zone": {
+    "fr": "Zone de transport",
+    "en": "Transport zone",
+    "ar": "منطقة النقل"
+  },
+  "No transport": {
+    "fr": "Sans transport",
+    "en": "No transport",
+    "ar": "بدون نقل"
+  },
+  "Zone": {
+    "fr": "Zone",
+    "en": "Zone",
+    "ar": "المنطقة"
+  },
+  "month": {
+    "fr": "mois",
+    "en": "month",
+    "ar": "شهر"
+  },
+  "Karate": {
+    "fr": "Karaté",
+    "en": "Karate",
+    "ar": "الكاراتيه"
+  },
+  "Kimono": {
+    "fr": "Kimono",
+    "en": "Kimono",
+    "ar": "زي الكاراتيه"
+  },
+  "Evening classes": {
+    "fr": "Cours du soir",
+    "en": "Evening classes",
+    "ar": "الدروس المسائية"
+  },
+  "Emergency contact": {
+    "fr": "Personne à contacter en urgence",
+    "en": "Emergency contact",
+    "ar": "جهة الاتصال في حالات الطوارئ"
+  },
+  "Emergency telephone": {
+    "fr": "Téléphone d’urgence",
+    "en": "Emergency telephone",
+    "ar": "هاتف الطوارئ"
+  },
+  "Health information and allergies": {
+    "fr": "Informations de santé et allergies",
+    "en": "Health information and allergies",
+    "ar": "المعلومات الصحية والحساسية"
+  },
+  "Additional monthly options": {
+    "fr": "Options mensuelles supplémentaires",
+    "en": "Additional monthly options",
+    "ar": "الخيارات الشهرية الإضافية"
+  },
+  "Options are billed separately from tuition.": {
+    "fr": "Ces options font l’objet de factures séparées de la scolarité.",
+    "en": "Options are billed separately from tuition.",
+    "ar": "تُفوتر هذه الخيارات بشكل منفصل عن الرسوم الدراسية."
+  },
+  "Items already provided": {
+    "fr": "Pièces et affaires déjà fournies",
+    "en": "Items already provided",
+    "ar": "المستندات والمستلزمات المقدمة"
+  },
+  "Initial amount": {
+    "fr": "Montant initial",
+    "en": "Initial amount",
+    "ar": "المبلغ الأولي"
+  },
+  "Monthly tuition": {
+    "fr": "Mensualité",
+    "en": "Monthly tuition",
+    "ar": "الرسوم الشهرية"
+  },
+  "Initial amount breakdown": {
+    "fr": "Détail du montant initial",
+    "en": "Initial amount breakdown",
+    "ar": "تفاصيل المبلغ الأولي"
+  },
+  "Elementary supplies are charged in addition to the initial amount.": {
+    "fr": "Les fournitures élémentaires sont à payer en plus du montant initial.",
+    "en": "Elementary supplies are charged in addition to the initial amount.",
+    "ar": "تُدفع مستلزمات المرحلة الابتدائية بالإضافة إلى المبلغ الأولي."
+  },
+  "Required items": {
+    "fr": "Dossier et affaires à fournir",
+    "en": "Required items",
+    "ar": "المستندات والمستلزمات المطلوبة"
+  },
+  "Additional options": {
+    "fr": "Options supplémentaires",
+    "en": "Additional options",
+    "ar": "الخيارات الإضافية"
+  },
+  "Important information": {
+    "fr": "Informations importantes",
+    "en": "Important information",
+    "ar": "معلومات مهمة"
+  },
+  "Student information sheet": {
+    "fr": "Fiche de renseignements de l’élève",
+    "en": "Student information sheet",
+    "ar": "استمارة معلومات التلميذ"
+  },
+  "Print student information sheet": {
+    "fr": "Imprimer la fiche de l’élève",
+    "en": "Print student information sheet",
+    "ar": "طباعة استمارة التلميذ"
+  },
+  "Print invoice": {
+    "fr": "Imprimer la facture",
+    "en": "Print invoice",
+    "ar": "طباعة الفاتورة"
+  },
+  "From six years old": {
+    "fr": "À partir de six ans",
+    "en": "From six years old",
+    "ar": "ابتداءً من ست سنوات"
+  },
+  "Selecting a programme fills in its published fees. You may adjust them before saving.": {
+    "fr": "Choisir une formule renseigne ses tarifs. Vous pouvez les ajuster avant d’enregistrer.",
+    "en": "Selecting a programme fills in its published fees. You may adjust them before saving.",
+    "ar": "اختيار البرنامج يملأ الرسوم. يمكنك تعديلها قبل الحفظ."
+  },
+  "Two diapers are required for children aged two.": {
+    "fr": "Deux couches sont demandées pour les enfants de deux ans.",
+    "en": "Two diapers are required for children aged two.",
+    "ar": "تُطلب حفاضتان للأطفال بعمر سنتين."
+  },
+  "Supplies are available from the school office.": {
+    "fr": "Les fournitures sont disponibles auprès de la direction.",
+    "en": "Supplies are available from the school office.",
+    "ar": "المستلزمات متوفرة لدى إدارة المدرسة."
+  },
+  "July is part of the school year and is included in enrolment.": {
+    "fr": "Le mois de juillet fait partie de l’année scolaire et est inclus dans l’inscription.",
+    "en": "July is part of the school year and is included in enrolment.",
+    "ar": "شهر يوليو جزء من السنة الدراسية ومشمول في التسجيل."
+  },
+  "June is paid in advance and spread over the other months.": {
+    "fr": "Le mois de juin est payé d’avance et étalé sur les autres mois.",
+    "en": "June is paid in advance and spread over the other months.",
+    "ar": "يُدفع شهر يونيو مسبقًا ويُوزع على الأشهر الأخرى."
+  },
+  "Teaching: 50% Arabic (Islamic and language education), 50% French plus English.": {
+    "fr": "Enseignement : 50 % arabe (éducation islamique et langagière), 50 % français, avec anglais.",
+    "en": "Teaching: 50% Arabic (Islamic and language education), 50% French plus English.",
+    "ar": "التعليم: ٥٠٪ عربية (التربية الإسلامية واللغوية)، و٥٠٪ فرنسية مع الإنجليزية."
+  },
+  "Très petite section": {
+    "fr": "Très petite section",
+    "en": "Early nursery",
+    "ar": "قسم الحضانة المبكر"
+  },
+  "Petite section": {
+    "fr": "Petite section",
+    "en": "Nursery",
+    "ar": "القسم الصغير"
+  },
+  "Moyenne section": {
+    "fr": "Moyenne section",
+    "en": "Middle nursery",
+    "ar": "القسم المتوسط"
+  },
+  "Grande section": {
+    "fr": "Grande section",
+    "en": "Kindergarten",
+    "ar": "القسم الكبير"
+  },
+  "Maternelle": {
+    "fr": "Maternelle",
+    "en": "Preschool",
+    "ar": "رياض الأطفال"
+  },
+  "Élémentaire": {
+    "fr": "Élémentaire",
+    "en": "Elementary",
+    "ar": "المرحلة الابتدائية"
+  },
+  "Journée continue": {
+    "fr": "Journée continue",
+    "en": "Full day",
+    "ar": "اليوم الدراسي الكامل"
+  },
+  "Daara externat": {
+    "fr": "Daara externat",
+    "en": "Day daara",
+    "ar": "الدار القرآنية النهارية"
+  },
+  "Daara internat": {
+    "fr": "Daara internat",
+    "en": "Boarding daara",
+    "ar": "الدار القرآنية الداخلية"
+  },
+  "Internat franco-arabe": {
+    "fr": "Internat franco-arabe",
+    "en": "French-Arabic boarding",
+    "ar": "الداخلية الفرنسية العربية"
+  },
+  "Daara": {
+    "fr": "Daara",
+    "en": "Daara",
+    "ar": "الدار القرآنية"
+  },
+  "Internat": {
+    "fr": "Internat",
+    "en": "Boarding",
+    "ar": "الداخلية"
+  },
+  "8h–13h": {
+    "fr": "8h–13h",
+    "en": "8 am–1 pm",
+    "ar": "٨:٠٠–١٣:٠٠"
+  },
+  "8h–17h": {
+    "fr": "8h–17h",
+    "en": "8 am–5 pm",
+    "ar": "٨:٠٠–١٧:٠٠"
+  },
+  "Extrait de naissance": {
+    "fr": "Extrait de naissance",
+    "en": "Birth certificate",
+    "ar": "شهادة الميلاد"
+  },
+  "Livre IDJI": {
+    "fr": "Livre IDJI",
+    "en": "IDJI book",
+    "ar": "كتاب IDJI"
+  },
+  "Coran par Juzz": {
+    "fr": "Coran par Juzz",
+    "en": "Quran in Juzz",
+    "ar": "القرآن حسب الأجزاء"
+  },
+  "Matelas et quatre draps": {
+    "fr": "Matelas et quatre draps",
+    "en": "Mattress and four sheets",
+    "ar": "مرتبة وأربعة أغطية سرير"
+  },
+  "Valise, trousseau et effets de toilette": {
+    "fr": "Valise, trousseau et effets de toilette",
+    "en": "Suitcase, clothing and toiletries",
+    "ar": "حقيبة ومستلزمات شخصية وأدوات نظافة"
+  },
+  "Fournitures scolaires": {
+    "fr": "Fournitures scolaires",
+    "en": "School supplies",
+    "ar": "المستلزمات المدرسية"
+  },
+  "Deux couches pour les enfants de deux ans": {
+    "fr": "Deux couches pour les enfants de deux ans",
+    "en": "Two diapers for children aged two",
+    "ar": "حفاضتان للأطفال بعمر سنتين"
+  },
+  "Inscription": {
+    "fr": "Inscription",
+    "en": "Registration",
+    "ar": "التسجيل"
+  },
+  "Mensualité": {
+    "fr": "Mensualité",
+    "en": "Monthly tuition",
+    "ar": "الرسوم الشهرية"
+  },
+  "Fournitures": {
+    "fr": "Fournitures",
+    "en": "Supplies",
+    "ar": "المستلزمات"
+  },
+  "Blouse et blouson": {
+    "fr": "Blouse et blouson",
+    "en": "Smock and jacket",
+    "ar": "المئزر والسترة"
+  },
+  "Infirmerie": {
+    "fr": "Infirmerie",
+    "en": "School infirmary",
+    "ar": "العيادة المدرسية"
+  },
+  "APE": {
+    "fr": "APE",
+    "en": "APE",
+    "ar": "جمعية أولياء التلاميذ"
+  },
+  "Badge": {
+    "fr": "Badge",
+    "en": "Badge",
+    "ar": "البطاقة"
+  },
+  "Social": {
+    "fr": "Social",
+    "en": "Social contribution",
+    "ar": "الخدمات الاجتماعية"
+  },
+  "Mouchoirs": {
+    "fr": "Mouchoirs",
+    "en": "Tissues",
+    "ar": "المناديل"
+  },
+  "Livre": {
+    "fr": "Livre",
+    "en": "Book",
+    "ar": "الكتاب"
+  },
+  "Tenue": {
+    "fr": "Tenue",
+    "en": "Uniform",
+    "ar": "الزي المدرسي"
+  },
+  "Rame de papier": {
+    "fr": "Rame de papier",
+    "en": "Ream of paper",
+    "ar": "رزمة الورق"
+  },
+  "Hours": {
+    "fr": "Horaires",
+    "en": "Hours",
+    "ar": "المواعيد"
+  },
+  "Purpose": {
+    "fr": "Objet",
+    "en": "Purpose",
+    "ar": "الغرض"
+  },
+  "Initial amount to invoice (FCFA)": {
+    "fr": "Montant initial à facturer (FCFA)",
+    "en": "Initial amount to invoice (FCFA)",
+    "ar": "المبلغ الأولي للفوترة (فرنك إفريقي)"
+  },
+  "Initial amount:": {
+    "fr": "Montant initial :",
+    "en": "Initial amount:",
+    "ar": "المبلغ الأولي:"
+  },
+  "— initial amount": {
+    "fr": "— montant initial : ",
+    "en": "— initial amount: ",
+    "ar": "— المبلغ الأولي: "
+  },
+  "The preschool and elementary initial packages include one monthly tuition payment.": {
+    "fr": "Les forfaits initiaux de maternelle et d’élémentaire incluent une mensualité.",
+    "en": "The preschool and elementary initial packages include one monthly tuition payment.",
+    "ar": "تشمل الباقات الأولية للروضة والابتدائي قسطاً شهرياً واحداً."
   }
 }

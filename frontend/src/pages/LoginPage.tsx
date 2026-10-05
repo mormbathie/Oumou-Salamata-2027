@@ -1,6 +1,7 @@
+import { school } from '../config/school';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { School, KeyRound } from 'lucide-react';
+import { KeyRound } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 import { t } from '../i18n';
 import { LanguageSelector } from '../components/LanguageSelector';
@@ -51,7 +52,7 @@ export const LoginPage: React.FC = () => {
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100">
         <div className="bg-gradient-to-r from-emerald-600 to-teal-700 p-8 text-center text-white">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 border border-white/20 mb-3 shadow-lg">
-            <School className="w-8 h-8" />
+            <img src={school.logo} alt={school.name} className="w-16 h-16 rounded-xl object-contain bg-white" />
           </div>
           <div className="mb-4 flex justify-end"><LanguageSelector /></div>
           <h1 className="text-xl font-bold tracking-tight">{t('As Sakina School')}</h1>

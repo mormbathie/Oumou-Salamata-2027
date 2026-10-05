@@ -1,3 +1,4 @@
+import { schoolOptions, validateProgramAge } from '../school/school-options';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DocumentsService } from '../documents/documents.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -188,8 +189,19 @@ export class StudentsService {
       profession?: string;
     };
     generateInvoice?: boolean;
+    transportZone?: number | null;
+    karate?: boolean;
+    eveningClasses?: boolean;
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    healthNotes?: string;
+    schoolItemsProvided?: string;
   }, actor: ActingUser) {
     const author = actorStamp(actor);
+    const options = schoolOptions(data as any);
+    const selectedClass = data.classroomId ? await this.prisma.classroom.findUnique({ where: { id: data.classroomId }, select: { id: true, program: true } }) : null;
+    if (data.classroomId && !selectedClass) throw new BadRequestException('Classe sélectionnée introuvable.');
+    validateProgramAge(selectedClass?.program, data.dateOfBirth);
     // Generate matricule
     const count = await this.prisma.student.count();
     const currentYear = new Date().getFullYear();
@@ -208,6 +220,7 @@ export class StudentsService {
     // Create student
     const student = await this.prisma.student.create({
       data: {
+        ...options,
         matricule,
         firstName: data.firstName,
         lastName: data.lastName,
@@ -261,7 +274,7 @@ export class StudentsService {
                 invoiceNumber: `FAC-${currentYear}-${String(invoiceCount + 1).padStart(4, '0')}`,
                 studentId: student.id,
                 academicYearId,
-                title: `Frais d'inscription - ${classroom.name}`,
+                title: `${['PRESCHOOL', 'ELEMENTARY'].includes(classroom.program || '') ? 'Forfait initial (une mensualité incluse)' : 'Inscription'} - ${classroom.name}`,
                 type: InvoiceType.REGISTRATION,
                 amount: classroom.registrationFee,
                 paidAmount: 0,
@@ -283,10 +296,13 @@ export class StudentsService {
 
   async update(id: string, data: any, actor: ActingUser) {
     const author = actorStamp(actor);
-    const existing = await this.prisma.student.findUnique({ where: { id }, select: { id: true, parentId: true } });
+    const existing = await this.prisma.student.findUnique({ where: { id }, select: { id: true, parentId: true, dateOfBirth: true, enrollments: { where: { academicYear: { isCurrent: true } }, take: 1, select: { classroom: { select: { program: true } } } } } });
     if (!existing) throw new NotFoundException(`Élève avec l'ID ${id} non trouvé`);
 
-    const studentData: any = {};
+    const nextClass = data.classroomId ? await this.prisma.classroom.findUnique({ where: { id: data.classroomId }, select: { program: true } }) : null;
+    if (data.classroomId && !nextClass) throw new BadRequestException('Classe sélectionnée introuvable.');
+    validateProgramAge(nextClass?.program || existing.enrollments[0]?.classroom?.program, data.dateOfBirth || existing.dateOfBirth);
+    const studentData: any = schoolOptions(data);
     studentData.updatedById = author.id;
     studentData.updatedByName = author.name;
     for (const field of ['firstName', 'lastName', 'gender', 'placeOfBirth', 'address', 'bloodGroup', 'status', 'photoUrl']) {
@@ -331,6 +347,12 @@ export class StudentsService {
 
   async enroll(data: { studentId: string; classroomId: string; academicYearId: string }, actor: ActingUser) {
     const author = actorStamp(actor);
+    const [student, classroom] = await Promise.all([
+      this.prisma.student.findUnique({ where: { id: data.studentId }, select: { dateOfBirth: true } }),
+      this.prisma.classroom.findUnique({ where: { id: data.classroomId }, select: { program: true } }),
+    ]);
+    if (!student || !classroom) throw new NotFoundException('Élève ou classe introuvable.');
+    validateProgramAge(classroom.program, student.dateOfBirth);
     const existing = await this.prisma.enrollment.findUnique({
       where: {
         studentId_academicYearId: {

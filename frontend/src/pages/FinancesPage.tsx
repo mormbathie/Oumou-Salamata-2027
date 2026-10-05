@@ -1,3 +1,5 @@
+import { printInvoice } from '../utils/schoolDocuments';
+import { SchoolHeader } from '../components/SchoolHeader';
 import { t, locale, roleLabel } from "../i18n/index";
 import React, { useEffect, useState } from 'react';
 import {
@@ -313,6 +315,7 @@ export const FinancesPage: React.FC = () => {
                             <span>{t("Pay")}</span>
                           </button>
                         )}
+                          <button onClick={() => printInvoice(inv)} className="rounded-lg p-2 text-emerald-700 hover:bg-emerald-50" title={t('Print invoice')}><Printer className="h-4 w-4" /></button>
                         {inv.payments && inv.payments.length > 0 && (
                           <button
                             onClick={() => handleViewReceipt(inv, inv.payments[0])}
@@ -511,20 +514,7 @@ export const FinancesPage: React.FC = () => {
             {/* Printable Receipt Box */}
             <div id="school-receipt" className="p-8 space-y-6">
               {/* Header */}
-              <div className="border-b-2 border-dashed border-slate-200 pb-5 text-center relative">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-600 text-white font-bold mb-2 shadow-md">
-                  <School className="w-6 h-6" />
-                </div>
-                <h2 className="text-lg font-black tracking-wide uppercase text-slate-800">
-                  {t("As Sakina School")}</h2>
-                <p className="text-xs text-slate-500">{t("Primary education - Dakar, Senegal")}</p>
-                <p className="text-[11px] text-slate-400">{t("Phone: +221 33 800 00 00")}</p>
-
-                <div className="mt-4 bg-emerald-50 border border-emerald-200 py-1.5 px-4 rounded-lg inline-block">
-                  <span className="text-xs font-black text-emerald-800 tracking-wider uppercase">
-                    {t("SCHOOL PAYMENT RECEIPT")}</span>
-                </div>
-              </div>
+              <SchoolHeader title={t('SCHOOL PAYMENT RECEIPT')} />
 
               {/* Receipt Info */}
               <div className="grid grid-cols-2 gap-4 text-xs">
