@@ -392,7 +392,7 @@ export const StudentsPage: React.FC = () => {
               </div>}</section>
 
               <label className="flex items-start gap-2 border-t border-slate-100 pt-4 text-xs text-slate-700"><input type="checkbox" checked={formData.generateInvoice} onChange={(e) => setFormData({ ...formData, generateInvoice: e.target.checked })} className="mt-0.5 rounded text-emerald-600" />{t("Automatically create the enrollment fee invoice")}</label>
-              <SchoolOptions value={editData} program={programFor(classes.find(c=>c.id===editData.classroomId) || selectedStudent.enrollments?.[0]?.classroom)} onChange={v=>setEditData((prev:any)=>({...prev,...v}))}/><div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end"><button type="button" onClick={() => setShowAddModal(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-600">{t("Cancel")}</button><button type="submit" disabled={!classes.length} className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50">{t("Confirm enrollment")}</button></div>
+              <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end"><button type="button" onClick={() => setShowAddModal(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-600">{t("Cancel")}</button><button type="submit" disabled={!classes.length} className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50">{t("Confirm enrollment")}</button></div>
             </form>
           </div>
         </div>
