@@ -10,7 +10,13 @@ Elle donne une inscription de 65 000 FCFA et une mensualité de 35 000 FCFA.
 La classe et les élèves sans cette option conservent leurs propres tarifs.
 L'option est enregistrée sur la fiche élève et prise en compte lors de la
 création de sa facture initiale et de futures factures mensuelles collectives.
-Une activation ou désactivation ne recalcule jamais les factures déjà créées.
+À l’enregistrement de l’option, la facture d’inscription standard de l’année
+courante est ajustée si elle est entièrement impayée et sans aucun paiement.
+L’activation remplace 50 000 F par 65 000 F pour une classe à ce tarif initial ;
+la désactivation rétablit le tarif de la classe. Les factures partiellement ou
+entièrement payées, les montants personnalisés et les mensualités déjà créées
+sont conservés. L’option et cet ajustement sont enregistrés dans une transaction.
+Le contrôle des paiements protège aussi contre un encaissement simultané.
 
 Le déploiement ajoute uniquement `Student.fullDay`, booléen désactivé par défaut.
 Il ne rejoue aucun seed, ne supprime aucun volume et ne met à jour aucun ancien

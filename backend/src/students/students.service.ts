@@ -297,7 +297,7 @@ export class StudentsService {
 
   async update(id: string, data: any, actor: ActingUser) {
     const author = actorStamp(actor);
-    const existing = await this.prisma.student.findUnique({ where: { id }, select: { id: true, parentId: true, dateOfBirth: true, enrollments: { where: { academicYear: { isCurrent: true } }, take: 1, select: { classroom: { select: { program: true } } } } } });
+    const existing = await this.prisma.student.findUnique({ where: { id }, select: { id: true, parentId: true, dateOfBirth: true, enrollments: { where: { academicYear: { isCurrent: true } }, take: 1, select: { academicYearId: true, classroom: { select: { id: true, name: true, level: true, program: true, registrationFee: true, monthlyTuition: true } } } } } });
     if (!existing) throw new NotFoundException(`Élève avec l'ID ${id} non trouvé`);
 
     const nextClass = data.classroomId ? await this.prisma.classroom.findUnique({ where: { id: data.classroomId }, select: { program: true } }) : null;
@@ -331,7 +331,30 @@ export class StudentsService {
     }
 
     if (Object.keys(studentData).length > 0) {
-      await this.prisma.student.update({ where: { id }, data: studentData });
+      await this.prisma.$transaction(async (tx) => {
+        await tx.student.update({ where: { id }, data: studentData });
+        const enrollment = existing.enrollments[0];
+        const classroom = enrollment?.classroom;
+        // Only standard, completely unpaid registration invoices may follow this option.
+        // The guarded update also protects a payment recorded concurrently.
+        if (data.fullDay !== undefined && classroom &&
+            (!data.classroomId || data.classroomId === classroom.id) &&
+            (classroom.program === 'PRESCHOOL' || ['TPS', 'PS', 'MS', 'GS'].includes(classroom.level))) {
+          const amount = schoolFees({ fullDay: studentData.fullDay }, classroom).registrationFee;
+          await tx.invoice.updateMany({
+            where: {
+              studentId: id, academicYearId: enrollment.academicYearId,
+              type: InvoiceType.REGISTRATION, status: InvoiceStatus.UNPAID,
+              paidAmount: 0, payments: { none: {} },
+              amount: { in: [classroom.registrationFee, 65000], not: amount },
+            },
+            data: {
+              amount, balance: amount,
+              title: `${!studentData.fullDay && classroom.program === 'PRESCHOOL' ? 'Forfait initial (une mensualité incluse)' : 'Inscription'} - ${classroom.name}`,
+            },
+          });
+        }
+      });
     }
 
     if (data.classroomId !== undefined && data.classroomId) {

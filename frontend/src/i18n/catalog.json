@@ -3619,9 +3619,9 @@
     "en": "Below the recommended minimum age; enrolment is permitted.",
     "ar": "العمر أقل من الحد الأدنى الموصى به؛ التسجيل مسموح استثناءً."
   },
-  "Changes affect future invoices only. Existing invoices are retained.": {
-    "fr": "Les changements concernent uniquement les prochaines factures. Les factures existantes sont conservées.",
-    "en": "Changes affect future invoices only. Existing invoices are retained.",
-    "ar": "تؤثر التغييرات على الفواتير المستقبلية فقط. تُحفظ الفواتير الحالية."
+  "Unpaid registration invoices are adjusted. Invoices with payments are retained.": {
+    "fr": "La facture d’inscription entièrement impayée est ajustée. Les factures ayant reçu un paiement sont conservées.",
+    "en": "Unpaid registration invoices are adjusted. Invoices with payments are retained.",
+    "ar": "يتم تعديل فاتورة التسجيل غير المدفوعة بالكامل. تُحفظ الفواتير التي تلقت دفعات."
   }
 }
