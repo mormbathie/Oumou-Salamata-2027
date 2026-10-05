@@ -25,7 +25,7 @@ Les fournitures élémentaires de 37 500 F sont en supplément des 40 500 F.
 
 Le dossier élève comprend maintenant la zone de transport, le karaté, les cours
 du soir, le contact d'urgence, les informations de santé et les pièces fournies.
-Le Daara et les internats accueillent les enfants à partir de six ans.
+L’âge recommandé pour le Daara et les internats est de six ans ; une dérogation permet l’inscription sans blocage.
 Les options affichent leur coût mensuel estimé. Leur facturation est séparée :
 créer les factures correspondantes depuis **Factures et paiements**.
 Les règles de juin et juillet sont rappelées comme consignes, sans automatisme.

@@ -21,3 +21,18 @@ export const itemLabels: Record<string,string> = { BIRTH_CERTIFICATE: 'Extrait d
 export const transportFees: Record<number,number> = { 1: 10000, 2: 15000, 3: 20000 };
 export const programFor = (classroom?: {program?:string;level?:string}) => programs.find(p => p.id === classroom?.program) || programs.find(p => p.id === (['TPS','PS','MS','GS'].includes(classroom?.level || '') ? 'PRESCHOOL' : 'ELEMENTARY'))!;
 export const money = (n: number) => new Intl.NumberFormat('fr-SN').format(n) + ' F CFA';
+
+export function ageWarning(birth: string | Date, classroom?: {program?:string; level?:string}) {
+  const min = programFor(classroom).minimumAge;
+  if (!min || !birth) return false;
+  const cutoff = new Date(); cutoff.setFullYear(cutoff.getFullYear() - min);
+  return new Date(birth) > cutoff;
+}
+export const effectiveFees = (student: {fullDay?:boolean}, classroom?: {program?:string;level?:string;registrationFee?:number;monthlyTuition?:number}) => {
+  const plan = programFor(classroom);
+  return student.fullDay && (plan.id==='PRESCHOOL' || ['TPS','PS','MS','GS'].includes(classroom?.level || ''))
+    ? {registrationFee:65000,monthlyTuition:35000}
+    : {registrationFee:classroom?.registrationFee ?? plan.registrationFee,monthlyTuition:classroom?.monthlyTuition ?? plan.monthlyTuition};
+};
+
+export const isPreschool = (classroom?: {program?:string;level?:string}) => classroom?.program==='PRESCHOOL' || ['TPS','PS','MS','GS'].includes(classroom?.level || '');

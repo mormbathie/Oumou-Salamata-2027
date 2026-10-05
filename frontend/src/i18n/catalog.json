@@ -3603,5 +3603,25 @@
     "fr": "Les forfaits initiaux de maternelle et d’élémentaire incluent une mensualité.",
     "en": "The preschool and elementary initial packages include one monthly tuition payment.",
     "ar": "تشمل الباقات الأولية للروضة والابتدائي قسطاً شهرياً واحداً."
+  },
+  "Full-day option": {
+    "fr": "Journée continue",
+    "en": "Full-day option",
+    "ar": "خيار اليوم الكامل"
+  },
+  "Registration: 65,000 FCFA; monthly tuition: 35,000 FCFA.": {
+    "fr": "Inscription : 65 000 FCFA ; mensualité : 35 000 FCFA.",
+    "en": "Registration: 65,000 FCFA; monthly tuition: 35,000 FCFA.",
+    "ar": "التسجيل: 65000 فرنك إفريقي؛ القسط الشهري: 35000 فرنك إفريقي."
+  },
+  "Below the recommended minimum age; enrolment is permitted.": {
+    "fr": "Âge inférieur au minimum recommandé : inscription autorisée par dérogation.",
+    "en": "Below the recommended minimum age; enrolment is permitted.",
+    "ar": "العمر أقل من الحد الأدنى الموصى به؛ التسجيل مسموح استثناءً."
+  },
+  "Changes affect future invoices only. Existing invoices are retained.": {
+    "fr": "Les changements concernent uniquement les prochaines factures. Les factures existantes sont conservées.",
+    "en": "Changes affect future invoices only. Existing invoices are retained.",
+    "ar": "تؤثر التغييرات على الفواتير المستقبلية فقط. تُحفظ الفواتير الحالية."
   }
 }

@@ -186,6 +186,7 @@ model Student {
   gender        Gender
   address       String?
   transportZone Int?
+  fullDay       Boolean       @default(false)
   karate        Boolean       @default(false)
   eveningClasses Boolean      @default(false)
   emergencyContactName String?

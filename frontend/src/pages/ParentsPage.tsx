@@ -129,7 +129,7 @@ export const ParentsPage: React.FC = () => {
                         {p.firstName} {p.lastName}
                       </h3>
                       <span className="text-[11px] bg-emerald-50 text-emerald-700 font-medium px-2 py-0.5 rounded-full inline-block">
-                        {p.relation || 'Parent'}
+                        {t(p.relation || 'Parent')}
                       </span>
                     </div>
                   </div>

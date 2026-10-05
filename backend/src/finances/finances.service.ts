@@ -1,3 +1,4 @@
+import { schoolFees } from '../school/school-options';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { InvoiceStatus, InvoiceType, PaymentMethod } from '@prisma/client';
@@ -256,9 +257,9 @@ export class FinancesService {
             academicYearId,
             title,
             type: InvoiceType.TUITION,
-            amount: classroom.monthlyTuition,
+            amount: schoolFees(enrollment.student, classroom).monthlyTuition,
             paidAmount: 0,
-            balance: classroom.monthlyTuition,
+            balance: schoolFees(enrollment.student, classroom).monthlyTuition,
             dueDate: new Date(data.dueDate),
             status: InvoiceStatus.UNPAID,
             createdById: author.id,

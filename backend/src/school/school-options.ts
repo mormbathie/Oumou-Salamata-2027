@@ -8,7 +8,7 @@ export function schoolOptions(data: Record<string, unknown>) {
     if (data.transportZone !== null && ![1,2,3].includes(data.transportZone as number)) throw new BadRequestException('Zone de transport invalide.');
     result.transportZone = data.transportZone;
   }
-  for (const key of ['karate','eveningClasses']) if (data[key] !== undefined) {
+  for (const key of ['karate','eveningClasses','fullDay']) if (data[key] !== undefined) {
     if (typeof data[key] !== 'boolean') throw new BadRequestException('Option scolaire invalide.');
     result[key] = data[key];
   }
@@ -21,11 +21,13 @@ export function schoolOptions(data: Record<string, unknown>) {
   }
   return result;
 }
-export function validateProgramAge(program: string | null | undefined, birth: string | Date) {
+export function validateProgramAge(_program: string | null | undefined, birth: string | Date) {
   const date = new Date(birth);
   if (!Number.isFinite(date.getTime()) || date > new Date()) throw new BadRequestException('Date de naissance invalide.');
-  if (['DAARA_DAY','DAARA_BOARDING','FRANCO_ARAB_BOARDING'].includes(program || '')) {
-    const latestBirth = new Date(); latestBirth.setFullYear(latestBirth.getFullYear()-6);
-    if (date > latestBirth) throw new BadRequestException('Cette formule accueille les enfants à partir de six ans.');
-  }
+}
+export function schoolFees(student: { fullDay?: boolean }, classroom: { level?: string; program?: string | null; registrationFee: number; monthlyTuition: number }) {
+  const preschool = classroom.program === 'PRESCHOOL' || ['TPS','PS','MS','GS'].includes(classroom.level || '');
+  return student.fullDay && preschool
+    ? { registrationFee: 65000, monthlyTuition: 35000 }
+    : { registrationFee: classroom.registrationFee, monthlyTuition: classroom.monthlyTuition };
 }

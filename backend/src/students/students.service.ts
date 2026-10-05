@@ -1,4 +1,4 @@
-import { schoolOptions, validateProgramAge } from '../school/school-options';
+import { schoolFees, schoolOptions, validateProgramAge } from '../school/school-options';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DocumentsService } from '../documents/documents.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -189,6 +189,7 @@ export class StudentsService {
       profession?: string;
     };
     generateInvoice?: boolean;
+    fullDay?: boolean;
     transportZone?: number | null;
     karate?: boolean;
     eveningClasses?: boolean;
@@ -274,11 +275,11 @@ export class StudentsService {
                 invoiceNumber: `FAC-${currentYear}-${String(invoiceCount + 1).padStart(4, '0')}`,
                 studentId: student.id,
                 academicYearId,
-                title: `${['PRESCHOOL', 'ELEMENTARY'].includes(classroom.program || '') ? 'Forfait initial (une mensualité incluse)' : 'Inscription'} - ${classroom.name}`,
+                title: `${!student.fullDay && ['PRESCHOOL', 'ELEMENTARY'].includes(classroom.program || '') ? 'Forfait initial (une mensualité incluse)' : 'Inscription'} - ${classroom.name}`,
                 type: InvoiceType.REGISTRATION,
-                amount: classroom.registrationFee,
+                amount: schoolFees(student, classroom).registrationFee,
                 paidAmount: 0,
-                balance: classroom.registrationFee,
+                balance: schoolFees(student, classroom).registrationFee,
                 dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // in 15 days
                 status: InvoiceStatus.UNPAID,
                 createdById: author.id,
