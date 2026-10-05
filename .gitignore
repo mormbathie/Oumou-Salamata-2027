@@ -36,3 +36,6 @@ uploads/
 # Python bytecode generated during local deployment checks.
 __pycache__/
 *.py[cod]
+
+# Recorded VPS rollback state (private server runtime file).
+/deploy/last-release.json

@@ -48,3 +48,25 @@ Le résultat doit être validé visuellement par l'école avant diffusion défin
 Prompt utilisé :
 
 > Use case: precise-object-edit. Edit target: the last attached image, the official school logo on grey. Prepare this SAME logo for printed document letterheads. Keep the white circular arc, stylized white tree/person and green open book shapes, proportions, and exact wording unchanged: GROUPE SCOLAIRE ISLAMIQUE / ABOU OUBAYDA AS SAKINA. Only replace the grey background with pure white and change white emblem and lettering to dark charcoal so they are legible on white paper. Keep green book green. Square canvas, tightly fit complete logo with modest whitespace. No new elements, no reinterpretation, no additional text. This is a faithful document logo adaptation.
+
+## Vérification avant publication — 5 octobre 2026
+
+- Compilations frontend et backend réussies ; schéma Prisma valide ; 34 tests
+  backend et quatre scénarios simulés de déploiement/retour arrière réussis.
+- Six inscriptions avec tarifs et agents vérifiés, modification/relecture des
+  options, refus d'une zone invalide et d'un enfant trop jeune pour le Daara.
+- Paiement partiel et solde, refus du dépassement, attribution au comptable,
+  scan direct d'un élève avec récupération de sa classe et refus d'un QR invalide.
+- Matière créée/modifiée, note et bulletin calculé ; pièce jointe téléchargée
+  à l'identique puis supprimée ; CSV et classeur Excel exportés puis réimportés.
+- Professeur pointé à l'arrivée et au départ, historique personnel consulté,
+  refus de clôturer les absences un jour férié ; accès interdits selon les rôles.
+- Première connexion avec changement obligatoire du mot de passe, reconnexion,
+  modification de rôle, désactivation/réactivation et réinitialisation administrative.
+- 14 écrans parcourus dans chacune des trois langues sans erreur JavaScript
+  ni réponse API 5xx ; formulaire d'inscription et affichage mobile vérifiés.
+- Fiche élève, facture et reçu imprimables vérifiés avec le logo chargé.
+
+Ces vérifications utilisent des comptes et dossiers temporaires sur la base
+locale isolée. Elles ne couvrent pas tous les appareils physiques ; la caméra
+réelle et la réception d'e-mails doivent aussi être vérifiées par l'école.

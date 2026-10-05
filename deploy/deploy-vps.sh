@@ -59,6 +59,10 @@ if ! find "$backup_root" -mindepth 2 -maxdepth 2 -name .complete -type f -newer 
   exit 1
 fi
 
+backup_path=$(find "$backup_root" -mindepth 2 -maxdepth 2 -name .complete -type f -newer "$marker" -printf '%h\n' | sort | tail -n 1)
+gzip -t "$backup_path/postgres.sql.gz" "$backup_path/keycloak.sql.gz"
+tar -tzf "$backup_path/school-documents.tar.gz" >/dev/null
+
 for name in backend frontend; do
   image="mormbathie/oumou-salamat-$name:$APP_VERSION"
   docker pull "$image"
@@ -68,6 +72,42 @@ for name in backend frontend; do
     exit 1
   fi
 done
+
+# Record the exact currently running image IDs, independently of the new manifest.
+python3 - "$backup_path" <<'PYROLLBACK'
+import datetime, json, re, subprocess, sys
+from pathlib import Path
+images = {}
+versions = []
+for name in ('backend', 'frontend'):
+    info = json.loads(subprocess.check_output(['docker', 'inspect', 'oumou_salamat_' + name]))[0]
+    images[name] = info['Image']
+    revision = subprocess.check_output(['docker', 'image', 'inspect', '-f', '{{index .Config.Labels "org.opencontainers.image.revision"}}', info['Image']], text=True).strip()
+    if not re.fullmatch('[0-9a-f]{40}', revision):
+        raise SystemExit('Previous image has no valid source revision; deployment stopped.')
+    versions.append(revision)
+if versions[0] != versions[1]:
+    raise SystemExit('Previous application images differ in revision; deployment stopped.')
+state = {'version': versions[0], 'images': images, 'backup': sys.argv[1], 'recorded_at': datetime.datetime.now(datetime.timezone.utc).isoformat()}
+Path('deploy/last-release.json').write_text(json.dumps(state, indent=2) + '\n')
+PYROLLBACK
+rollback_armed=true
+served_html=''
+finish_deployment() {
+  result=$?
+  trap - EXIT
+  if (( result != 0 )) && [[ "$rollback_armed" == true ]]; then
+    printf 'Deployment failed; restoring previous application images.\n' >&2
+    if bash "$project_root/deploy/rollback-vps.sh"; then
+      printf 'Previous release restored and checked. Deployment remains failed.\n' >&2
+    else
+      printf 'ROLLBACK FAILED: manual intervention required; state is in deploy/last-release.json.\n' >&2
+    fi
+  fi
+  rm -f -- "$marker" "${served_html:-}"
+  exit "$result"
+}
+trap finish_deployment EXIT
 
 # Only application containers are eligible for recreation; databases, auth and Caddy stay in place.
 if ! "${compose[@]}" up -d --no-build --no-deps --wait --wait-timeout 300 backend frontend; then
@@ -100,16 +140,17 @@ app_url=https://assakina-school.com
 curl --fail --silent --show-error --retry 5 --retry-delay 2 "$app_url/api/health" > /dev/null
 frontend_id=$("${compose[@]}" ps -q frontend)
 served_html=$(mktemp)
-trap 'rm -f -- "$marker" "$served_html"' EXIT
+
 curl --fail --silent --show-error --header 'Cache-Control: no-cache' "$app_url/?deploy=$APP_VERSION" > "$served_html"
 if ! docker exec "$frontend_id" cat /usr/share/nginx/html/index.html | cmp -s - "$served_html"; then
   printf 'Public frontend HTML differs from the running image.\n' >&2
   exit 1
 fi
 "${compose[@]}" logs --tail=50 backend frontend keycloak caddy
+rollback_armed=false
 printf 'Production application is healthy at Git SHA %s.\n' "$APP_VERSION"
 
 # Observability is optional and independent from school data. Refresh replaced log paths.
 if [[ -f /opt/assakina-observability/agent.compose.yaml ]]; then
-  python3 "$PWD/deploy/observability/refresh-agent.py"
+  python3 "$PWD/deploy/observability/refresh-agent.py" || printf 'Telemetry refresh requires attention.\n' >&2
 fi

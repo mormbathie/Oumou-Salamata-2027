@@ -253,3 +253,34 @@ quinze minutes, en mémoire du processus. Le deuxième facteur est conservé lor
 de la récupération du mot de passe. En cas de téléphone perdu, une récupération
 d’identité par l’administration est nécessaire ; aucun retrait automatique du
 facteur n’est proposé. Les paramètres OTP natifs du realm doivent être conservés.
+
+## Retour arrière en cas d'échec
+
+Avant de remplacer les conteneurs, le script enregistre les IDs exacts des deux
+images exécutées et le chemin de la nouvelle sauvegarde complète dans
+`deploy/last-release.json`, privé et exclu de Git. Un échec du démarrage, d'un
+healthcheck ou des contrôles HTTPS déclenche automatiquement le retour aux
+images précédentes. Le pipeline reste en échec, même si le retour arrière réussit.
+
+Le retour arrière vérifie les labels SHA et les IDs des anciennes images, attend
+leurs healthchecks et contrôle les accès publics. Il conserve les bases et les
+documents. Le backend ancien démarre directement, sans `prisma db push`, pour
+préserver les nouvelles colonnes. Cette livraison ajoute uniquement des colonnes
+facultatives ou munies de valeurs par défaut ; elle reste compatible avec l'ancien
+backend. Une migration destructive future doit faire l'objet d'une autre stratégie.
+
+Pour déclencher manuellement le même retour arrière :
+
+```bash
+cd /opt/oumou-salamat
+sudo bash deploy/rollback-vps.sh
+```
+
+Ne pas restaurer automatiquement une base après que des utilisateurs ont saisi
+des données : cela ferait perdre leurs nouvelles actions. La sauvegarde reste
+disponible pour une restauration examinée séparément. Après un retour arrière,
+ne pas recréer l'ancien backend avec le Compose seul : relancer le script de
+retour arrière (qui préserve le schéma) ou publier une version corrigée.
+
+Quatre scénarios sont vérifiés dans la CI avec des services simulés : démarrage
+échoué, healthcheck échoué, contrôle public échoué et déploiement réussi.

@@ -52,6 +52,9 @@ jobs:
       - run: npx --no-install prisma validate
       - run: npm run build
       - run: npm test -- --runInBand
+      - name: Verify deployment rollback scenarios
+        working-directory: .
+        run: python3 -m unittest discover -s deploy/tests -v
 
   publish_images:
     name: Publish production images to Docker Hub
