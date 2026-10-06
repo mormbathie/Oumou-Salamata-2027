@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @layer base {
   body {
     @apply bg-slate-50 text-slate-900 font-sans antialiased;
