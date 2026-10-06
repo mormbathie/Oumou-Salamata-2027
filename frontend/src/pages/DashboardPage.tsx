@@ -17,21 +17,28 @@ import { dashboardApi } from '../services/api';
 export const DashboardPage: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState({mode:'today',start:new Date().toISOString().slice(0,10),end:new Date().toISOString().slice(0,10)});
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    let active = true; setLoading(true); setError('');
     dashboardApi
-      .getSummary()
+      .getSummary(filter)
       .then((res) => {
+        if (!active) return;
         setData(res);
         setLoading(false);
       })
       .catch((err) => {
+        if (!active) return;
+        setError(err.response?.data?.message || t('Unable to load dashboard'));
         console.error('Failed to load dashboard:', err);
         setLoading(false);
       });
-  }, []);
+    return () => {active=false;};
+  }, [filter.mode,filter.start,filter.end]);
 
-  if (loading) {
+  if (loading && !data) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
@@ -61,6 +68,7 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
+      <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4"><h3 className="font-bold">{t('Actual receipts')}</h3><p className="text-xs text-slate-500">{t('Payment dates follow Dakar time. Amounts due are not receipts.')}</p><div className="flex flex-wrap gap-3"><label>{t('Period')}<select className="ml-2 rounded-lg border p-2" value={filter.mode} onChange={e=>setFilter({...filter,mode:e.target.value})}><option value="today">{t('Today')}</option><option value="date">{t('Specific date')}</option><option value="range">{t('Date range')}</option><option value="all">{t('All / global')}</option></select></label>{['date','range'].includes(filter.mode)&&<label>{t('Start date')}<input className="ml-2 rounded-lg border p-2" type="date" value={filter.start} onChange={e=>setFilter({...filter,start:e.target.value})}/></label>}{filter.mode==='range'&&<label>{t('End date')}<input className="ml-2 rounded-lg border p-2" type="date" value={filter.end} onChange={e=>setFilter({...filter,end:e.target.value})}/></label>}</div>{loading&&<p aria-live="polite" className="text-sm">{t('Loading…')}</p>}{error&&<p role="alert" className="text-rose-700">{error}</p>}<div className="flex flex-wrap gap-4 text-sm">{Object.entries(data?.collection?.byCategory || {}).map(([category,total])=><p key={category}><span className="font-semibold">{t(category)}</span> : {Number(total).toLocaleString(locale())} FCFA</p>)}</div><p className="text-xs text-slate-500">{t('Global collected')}: {(finances.totalCollected || 0).toLocaleString(locale())} FCFA · {t('Payments in selected period')}: {data?.collection?.count || 0}</p></section>
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Students */}
@@ -84,14 +92,14 @@ export const DashboardPage: React.FC = () => {
         {/* Recouvrement Financier */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">{t("Collected")}</span>
+            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider">{t("Actual receipts")}</span>
             <div className="w-10 h-10 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center">
               <CreditCard className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3">
             <div className="text-3xl font-bold text-slate-800">
-              {(finances.totalCollected || 0).toLocaleString()} <span className="text-sm font-normal text-slate-400">{t("FCFA")}</span>
+              {(data?.collection?.total || 0).toLocaleString(locale())} <span className="text-sm font-normal text-slate-400">{t("FCFA")}</span>
             </div>
             <div className="flex items-center space-x-1.5 text-xs text-emerald-600 font-medium mt-1">
               <TrendingUp className="w-3.5 h-3.5" />

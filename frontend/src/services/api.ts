@@ -79,11 +79,12 @@ export const dataTransferApi = {
 };
 
 export const dashboardApi = {
-  getSummary: () => api.get('/dashboard/summary').then((r) => r.data),
+  getSummary: (params?: {mode?:string;start?:string;end?:string}) => api.get('/dashboard/summary', {params}).then((r) => r.data),
 };
 
 export const studentsApi = {
-  getAll: (params?: { classId?: string; search?: string; status?: string }) =>
+  quote: (data: any) => api.post('/students/fee-quote', data).then(r=>r.data),
+  getAll: (params?: { classId?: string; search?: string; status?: string; fullDay?: string }) =>
     api.get('/students', { params }).then((r) => r.data),
   getOne: (id: string) => api.get(`/students/${id}`).then((r) => r.data),
   getPhoto: (id: string) => api.get(`/students/${id}/photo`, { responseType: 'blob' }).then((r) => r.data),
@@ -133,6 +134,7 @@ export const classesApi = {
 };
 
 export const financesApi = {
+  activityInvoice: (data: any) => api.post('/finances/activities/invoices', data).then(r=>r.data),
   getStats: (academicYearId?: string) =>
     api.get('/finances/stats', { params: { academicYearId } }).then((r) => r.data),
   getInvoices: (params?: any) => api.get('/finances/invoices', { params }).then((r) => r.data),

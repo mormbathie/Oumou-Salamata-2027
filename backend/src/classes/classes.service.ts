@@ -1,4 +1,4 @@
-import { PROGRAMS, LEVELS } from '../school/school-options';
+import { PROGRAMS, LEVELS, schoolFees, optionTariffs } from '../school/school-options';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
@@ -24,7 +24,7 @@ export class ClassesService {
     }
     if (roles.includes('ENSEIGNANT') && !managesAll) {
       if (!requester.email) return [];
-      return this.prisma.classroom.findMany({
+      const assignedClasses = await this.prisma.classroom.findMany({
         where: { teacher: { is: { email: requester.email } } },
         include: {
           academicYear: true,
@@ -33,8 +33,9 @@ export class ClassesService {
         },
         orderBy: { level: 'asc' },
       });
+      return assignedClasses.map(classroom => ({ ...classroom, effectiveRegistrationFee: schoolFees({}, classroom).registrationFee }));
     }
-    return this.prisma.classroom.findMany({
+    const classrooms = await this.prisma.classroom.findMany({
       include: {
         academicYear: true,
         teacher: {
@@ -46,6 +47,7 @@ export class ClassesService {
       },
       orderBy: { level: 'asc' },
     });
+    return classrooms.map(classroom => ({ ...classroom, effectiveRegistrationFee: schoolFees({}, classroom).registrationFee }));
   }
 
   async findOne(id: string, requester?: any) {
@@ -77,7 +79,7 @@ export class ClassesService {
       throw new NotFoundException(`Classe avec l'ID ${id} non trouvée`);
     }
 
-    return classroom;
+    return { ...classroom, effectiveRegistrationFee: schoolFees({}, classroom).registrationFee };
   }
 
   async getTeachers() {
@@ -123,7 +125,7 @@ export class ClassesService {
         program: data.program || null,
         capacity: data.capacity ?? 30,
         monthlyTuition: data.monthlyTuition ?? 25000,
-        registrationFee: data.registrationFee ?? 50000,
+        registrationFee: data.registrationFee ?? (data.level === 'CI' ? optionTariffs.elementaryRegistration : 50000),
         academicYearId: academicYear.id,
         teacherId: data.teacherId,
       },

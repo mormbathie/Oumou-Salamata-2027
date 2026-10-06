@@ -29,7 +29,7 @@ export const ClassesPage: React.FC = () => {
     level: 'CI',
     capacity: 30,
     monthlyTuition: 15000,
-    registrationFee: 40500,
+    registrationFee: programs.find(p=>p.id==='ELEMENTARY')!.registrationFee,
     teacherId: '',
     program: 'ELEMENTARY',
   });
@@ -112,7 +112,7 @@ export const ClassesPage: React.FC = () => {
         level: 'CI',
         capacity: 30,
         monthlyTuition: 15000,
-        registrationFee: 40500,
+        registrationFee: programs.find(p=>p.id==='ELEMENTARY')!.registrationFee,
         teacherId: '',
         program: 'ELEMENTARY',
       });
@@ -126,7 +126,7 @@ export const ClassesPage: React.FC = () => {
 
   const editClass = (classroom: any) => {
     setEditingClassId(classroom.id);
-    setClassForm({ name: classroom.name, level: classroom.level, capacity: classroom.capacity, monthlyTuition: classroom.monthlyTuition, registrationFee: classroom.registrationFee, teacherId: classroom.teacherId || '', program: classroom.program || programFor(classroom).id });
+    setClassForm({ name: classroom.name, level: classroom.level, capacity: classroom.capacity, monthlyTuition: classroom.monthlyTuition, registrationFee: classroom.effectiveRegistrationFee ?? classroom.registrationFee, teacherId: classroom.teacherId || '', program: classroom.program || programFor(classroom).id });
     setShowClassModal(true);
   };
 
@@ -149,7 +149,7 @@ export const ClassesPage: React.FC = () => {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {canManage && <button
-            onClick={() => { setEditingClassId(null); setClassForm({ name: '', level: 'CI', capacity: 30, monthlyTuition: 15000, registrationFee: 40500, teacherId: '', program: 'ELEMENTARY' }); setShowClassModal(true); }}
+            onClick={() => { setEditingClassId(null); setClassForm({ name: '', level: 'CI', capacity: 30, monthlyTuition: 15000, registrationFee: programs.find(p=>p.id==='ELEMENTARY')!.registrationFee, teacherId: '', program: 'ELEMENTARY' }); setShowClassModal(true); }}
             className="inline-flex items-center space-x-2 bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2.5 rounded-xl font-medium text-sm transition"
           >
             <School className="w-4 h-4" />
@@ -210,7 +210,7 @@ export const ClassesPage: React.FC = () => {
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 text-xs space-y-1">
                 <div className="flex justify-between">
                   <span className="text-slate-500">{t("Initial amount:")}</span>
-                  <span className="font-bold text-slate-800">{c.registrationFee.toLocaleString()} {t("FCFA")}</span>
+                  <span className="font-bold text-slate-800">{(c.effectiveRegistrationFee ?? c.registrationFee).toLocaleString()} {t("FCFA")}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">{t("Monthly tuition:")}</span>

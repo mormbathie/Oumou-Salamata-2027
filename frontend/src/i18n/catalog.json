@@ -3623,5 +3623,295 @@
     "fr": "La facture d’inscription entièrement impayée est ajustée. Les factures ayant reçu un paiement sont conservées.",
     "en": "Unpaid registration invoices are adjusted. Invoices with payments are retained.",
     "ar": "يتم تعديل فاتورة التسجيل غير المدفوعة بالكامل. تُحفظ الفواتير التي تلقت دفعات."
+  },
+  "Kimono sales": {
+    "fr": "Ventes de Kimono",
+    "en": "Kimono sales",
+    "ar": "مبيعات الكيمونو"
+  },
+  "Monthly karate payments": {
+    "fr": "Mensualités Karaté",
+    "en": "Monthly karate payments",
+    "ar": "دفعات الكاراتيه الشهرية"
+  },
+  "Kimono is billed separately from registration. One sale per pupil and school year.": {
+    "fr": "Le Kimono est facturé séparément de l’inscription. Une vente par élève et par année scolaire.",
+    "en": "Kimono is billed separately from registration. One sale per pupil and school year.",
+    "ar": "تُصدر فاتورة الكيمونو بشكل منفصل عن التسجيل. بيع واحد لكل تلميذ في السنة الدراسية."
+  },
+  "Only eligible pupils with active karate are shown. One invoice per pupil and month.": {
+    "fr": "Seuls les élèves éligibles inscrits au Karaté sont proposés. Une facture par élève et par mois.",
+    "en": "Only eligible pupils with active karate are shown. One invoice per pupil and month.",
+    "ar": "تظهر فقط أسماء التلاميذ المؤهلين والمسجلين في الكاراتيه. فاتورة واحدة لكل تلميذ شهرياً."
+  },
+  "Unable to load payments": {
+    "fr": "Impossible de charger les paiements.",
+    "en": "Unable to load payments",
+    "ar": "تعذر تحميل الدفعات."
+  },
+  "This invoice already has a payment.": {
+    "fr": "Cette facture a déjà reçu un paiement.",
+    "en": "This invoice already has a payment.",
+    "ar": "سبق أن تلقت هذه الفاتورة دفعة."
+  },
+  "Invoice ready. Record the payment below.": {
+    "fr": "Facture prête. Enregistrez le paiement ci-dessous.",
+    "en": "Invoice ready. Record the payment below.",
+    "ar": "الفاتورة جاهزة. سجل الدفعة أدناه."
+  },
+  "Unable to create invoice": {
+    "fr": "Impossible de créer la facture.",
+    "en": "Unable to create invoice",
+    "ar": "تعذر إنشاء الفاتورة."
+  },
+  "Unable to record payment": {
+    "fr": "Impossible d’enregistrer le paiement.",
+    "en": "Unable to record payment",
+    "ar": "تعذر تسجيل الدفعة."
+  },
+  "Payment recorded": {
+    "fr": "Paiement enregistré.",
+    "en": "Payment recorded",
+    "ar": "تم تسجيل الدفعة."
+  },
+  "Choose a student": {
+    "fr": "Choisir un élève",
+    "en": "Choose a student",
+    "ar": "اختر تلميذاً"
+  },
+  "Not eligible": {
+    "fr": "Non éligible",
+    "en": "Not eligible",
+    "ar": "غير مؤهل"
+  },
+  "Eligible": {
+    "fr": "Éligible",
+    "en": "Eligible",
+    "ar": "مؤهل"
+  },
+  "Select a pupil to check eligibility": {
+    "fr": "Choisissez un élève pour vérifier son éligibilité.",
+    "en": "Select a pupil to check eligibility",
+    "ar": "اختر تلميذاً للتحقق من أهليته."
+  },
+  "Create or retrieve invoice": {
+    "fr": "Créer ou retrouver la facture",
+    "en": "Create or retrieve invoice",
+    "ar": "إنشاء الفاتورة أو استرجاعها"
+  },
+  "Payment details": {
+    "fr": "Informations du paiement",
+    "en": "Payment details",
+    "ar": "بيانات الدفع"
+  },
+  "All pupils": {
+    "fr": "Tous les élèves",
+    "en": "All pupils",
+    "ar": "جميع التلاميذ"
+  },
+  "Filter by month": {
+    "fr": "Filtrer par mois",
+    "en": "Filter by month",
+    "ar": "تصفية حسب الشهر"
+  },
+  "No invoices": {
+    "fr": "Aucune facture.",
+    "en": "No invoices",
+    "ar": "لا توجد فواتير."
+  },
+  "Unable to calculate fees": {
+    "fr": "Impossible de calculer les frais.",
+    "en": "Unable to calculate fees",
+    "ar": "تعذر حساب الرسوم."
+  },
+  "Kimono is billed separately. Recorded payments are retained.": {
+    "fr": "Le Kimono est facturé séparément. Les paiements encaissés sont conservés.",
+    "en": "Kimono is billed separately. Recorded payments are retained.",
+    "ar": "يُفوتر الكيمونو بشكل منفصل. تُحفظ جميع الدفعات المستلمة."
+  },
+  "Choose a class to calculate fees": {
+    "fr": "Choisissez une classe pour calculer les frais.",
+    "en": "Choose a class to calculate fees",
+    "ar": "اختر صفاً لحساب الرسوم."
+  },
+  "Registration totals are adjusted; recorded payments are retained.": {
+    "fr": "Le montant dû est ajusté ; les paiements encaissés sont conservés.",
+    "en": "Registration totals are adjusted; recorded payments are retained.",
+    "ar": "يُعدّل المبلغ المستحق وتُحفظ الدفعات المستلمة."
+  },
+  "School supplies option": {
+    "fr": "Option Fournitures",
+    "en": "School supplies option",
+    "ar": "خيار اللوازم المدرسية"
+  },
+  "Ajustement du forfait": {
+    "fr": "Ajustement du forfait",
+    "en": "Ajustement du forfait",
+    "ar": "تعديل المبلغ الإجمالي"
+  },
+  "Actual receipts": {
+    "fr": "Encaissements réels",
+    "en": "Actual receipts",
+    "ar": "المبالغ المحصلة فعلياً"
+  },
+  "Payment dates follow Dakar time. Amounts due are not receipts.": {
+    "fr": "Les dates suivent l’heure de Dakar. Les montants dus ne sont pas des encaissements.",
+    "en": "Payment dates follow Dakar time. Amounts due are not receipts.",
+    "ar": "تُحتسب التواريخ بتوقيت داكار. المبالغ المستحقة ليست مبالغ محصلة."
+  },
+  "Period": {
+    "fr": "Période",
+    "en": "Period",
+    "ar": "الفترة"
+  },
+  "Today": {
+    "fr": "Aujourd’hui",
+    "en": "Today",
+    "ar": "اليوم"
+  },
+  "Specific date": {
+    "fr": "Date précise",
+    "en": "Specific date",
+    "ar": "تاريخ محدد"
+  },
+  "Date range": {
+    "fr": "Plage de dates",
+    "en": "Date range",
+    "ar": "نطاق التواريخ"
+  },
+  "All / global": {
+    "fr": "Tout / global",
+    "en": "All / global",
+    "ar": "الكل / الإجمالي"
+  },
+  "Start date": {
+    "fr": "Date de début",
+    "en": "Start date",
+    "ar": "تاريخ البداية"
+  },
+  "End date": {
+    "fr": "Date de fin",
+    "en": "End date",
+    "ar": "تاريخ النهاية"
+  },
+  "Global collected": {
+    "fr": "Total encaissé de l’année scolaire",
+    "en": "Global collected",
+    "ar": "إجمالي المحصل للسنة الدراسية"
+  },
+  "Payments in selected period": {
+    "fr": "Versements sur la période sélectionnée",
+    "en": "Payments in selected period",
+    "ar": "الدفعات خلال الفترة المحددة"
+  },
+  "Unable to load dashboard": {
+    "fr": "Impossible de charger le tableau de bord.",
+    "en": "Unable to load dashboard",
+    "ar": "تعذر تحميل لوحة المعلومات."
+  },
+  "KIMONO": {
+    "fr": "Kimono",
+    "en": "KIMONO",
+    "ar": "الكيمونو"
+  },
+  "KARATE": {
+    "fr": "Karaté",
+    "en": "KARATE",
+    "ar": "الكاراتيه"
+  },
+  "REGISTRATION": {
+    "fr": "Inscriptions",
+    "en": "REGISTRATION",
+    "ar": "التسجيل"
+  },
+  "TUITION": {
+    "fr": "Scolarité",
+    "en": "TUITION",
+    "ar": "الدراسة"
+  },
+  "TRANSPORT": {
+    "fr": "Transport",
+    "en": "TRANSPORT",
+    "ar": "النقل"
+  },
+  "CANTEEN": {
+    "fr": "Cantine",
+    "en": "CANTEEN",
+    "ar": "المطعم"
+  },
+  "UNIFORM": {
+    "fr": "Tenues",
+    "en": "UNIFORM",
+    "ar": "الزي"
+  },
+  "OTHER": {
+    "fr": "Autres recettes",
+    "en": "OTHER",
+    "ar": "إيرادات أخرى"
+  },
+  "PAID": {
+    "fr": "Payée",
+    "en": "PAID",
+    "ar": "مدفوعة"
+  },
+  "PARTIAL": {
+    "fr": "Partiellement payée",
+    "en": "PARTIAL",
+    "ar": "مدفوعة جزئياً"
+  },
+  "UNPAID": {
+    "fr": "Impayée",
+    "en": "UNPAID",
+    "ar": "غير مدفوعة"
+  },
+  "OVERDUE": {
+    "fr": "En retard",
+    "en": "OVERDUE",
+    "ar": "متأخرة"
+  },
+  "CASH": {
+    "fr": "Espèces",
+    "en": "CASH",
+    "ar": "نقداً"
+  },
+  "WAVE": {
+    "fr": "Wave",
+    "en": "WAVE",
+    "ar": "Wave"
+  },
+  "ORANGE_MONEY": {
+    "fr": "Orange Money",
+    "en": "ORANGE_MONEY",
+    "ar": "Orange Money"
+  },
+  "BANK_TRANSFER": {
+    "fr": "Virement bancaire",
+    "en": "BANK_TRANSFER",
+    "ar": "تحويل بنكي"
+  },
+  "CHECK": {
+    "fr": "Chèque",
+    "en": "CHECK",
+    "ar": "شيك"
+  },
+  "Registration": {
+    "fr": "Inscription",
+    "en": "Registration",
+    "ar": "التسجيل"
+  },
+  "Month": {
+    "fr": "Mois",
+    "en": "Month",
+    "ar": "الشهر"
+  },
+  "History": {
+    "fr": "Historique",
+    "en": "History",
+    "ar": "السجل"
+  },
+  "Reference": {
+    "fr": "Référence",
+    "en": "Reference",
+    "ar": "المرجع"
   }
 }

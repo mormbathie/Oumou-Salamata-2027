@@ -22,6 +22,8 @@ export const Layout: React.FC = () => {
     { to: '/', label: t("Dashboard"), icon: LayoutDashboard, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/students', label: t("Enrollment & Students"), icon: Users, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT'] },
     { to: '/parents', label: t("Parents & Guardians"), icon: UserCheck, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
+    { to: '/kimono', label: t('Kimono sales'), icon: CreditCard, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
+    { to: '/karate', label: t('Monthly karate payments'), icon: CreditCard, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
     { to: '/finances', label: t("Invoices & Payments"), icon: CreditCard, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/grades', label: t("Grades & Report Cards"), icon: FileSpreadsheet, roles: ['ADMIN', 'DIRECTEUR', 'ENSEIGNANT'] },
     { to: '/attendance', label: t("Attendance & Absences"), icon: CalendarCheck, roles: ['ADMIN', 'DIRECTEUR', 'ENSEIGNANT'] },

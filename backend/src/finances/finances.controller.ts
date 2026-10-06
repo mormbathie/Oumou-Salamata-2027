@@ -36,6 +36,7 @@ export class FinancesController {
     @Query('status') status?: string,
     @Query('type') type?: string,
     @Query('academicYearId') academicYearId?: string,
+    @Query('category') category?: string,
   ) {
     return this.financesService.getInvoices({
       studentId,
@@ -43,6 +44,7 @@ export class FinancesController {
       status,
       type,
       academicYearId,
+      category,
     });
   }
 
@@ -85,6 +87,12 @@ export class FinancesController {
     @CurrentUser() actor: any,
   ) {
     return this.financesService.generateTuitionInvoicesForClass(body, actor);
+  }
+
+  @Post('activities/invoices')
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
+  async activityInvoice(@Body() body: { studentId: string; category: string; month?: string }, @CurrentUser() actor: any) {
+    return this.financesService.createActivityInvoice(body, actor);
   }
 
   @Post('payments')

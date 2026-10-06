@@ -1,8 +1,8 @@
-import { schoolFees, schoolOptions, validateProgramAge } from '../school/school-options';
+import { schoolFees, schoolOptions, validateProgramAge, validateOptionsForClass, registrationAdjustment, registrationSnapshot } from '../school/school-options';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DocumentsService } from '../documents/documents.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { Gender, StudentStatus, InvoiceType, InvoiceStatus } from '@prisma/client';
+import { Prisma, Gender, StudentStatus, InvoiceType, InvoiceStatus } from '@prisma/client';
 import { ActingUser, actorStamp } from '../audit/actor';
 import { normalizeEmail } from '../common/email';
 
@@ -10,10 +10,14 @@ import { normalizeEmail } from '../common/email';
 export class StudentsService {
   constructor(private prisma: PrismaService, private readonly documents: DocumentsService) {}
 
-  async findAll(params: { classId?: string; search?: string; status?: string }, requester: any) {
-    const { classId, search, status } = params;
+  async findAll(params: { classId?: string; search?: string; status?: string; fullDay?: string }, requester: any) {
+    const { classId, search, status, fullDay } = params;
 
     const where: any = {};
+    if (fullDay !== undefined) {
+      if (!['true', 'false'].includes(fullDay)) throw new BadRequestException('Filtre journée continue invalide.');
+      where.fullDay = fullDay === 'true';
+    }
 
     if (status) {
       where.status = status as StudentStatus;
@@ -134,7 +138,7 @@ export class StudentsService {
       late: attendanceGroups.find((group) => group.status === 'LATE')?._count._all || 0,
       excused: attendanceGroups.find((group) => group.status === 'EXCUSED')?._count._all || 0,
     };
-    return { ...student, attendanceSummary };
+    return { ...student, attendanceSummary, calculatedFees: student.enrollments[0] ? schoolFees(student, student.enrollments[0].classroom) : null };
   }
 
   async getPhoto(id: string, requester: any) {
@@ -189,6 +193,7 @@ export class StudentsService {
       profession?: string;
     };
     generateInvoice?: boolean;
+    supplies?: boolean;
     fullDay?: boolean;
     transportZone?: number | null;
     karate?: boolean;
@@ -200,9 +205,10 @@ export class StudentsService {
   }, actor: ActingUser) {
     const author = actorStamp(actor);
     const options = schoolOptions(data as any);
-    const selectedClass = data.classroomId ? await this.prisma.classroom.findUnique({ where: { id: data.classroomId }, select: { id: true, program: true } }) : null;
+    const selectedClass = data.classroomId ? await this.prisma.classroom.findUnique({ where: { id: data.classroomId }, }) : null;
     if (data.classroomId && !selectedClass) throw new BadRequestException('Classe sélectionnée introuvable.');
     validateProgramAge(selectedClass?.program, data.dateOfBirth);
+    validateOptionsForClass(options, selectedClass);
     // Generate matricule
     const count = await this.prisma.student.count();
     const currentYear = new Date().getFullYear();
@@ -277,6 +283,7 @@ export class StudentsService {
                 academicYearId,
                 title: `${!student.fullDay && ['PRESCHOOL', 'ELEMENTARY'].includes(classroom.program || '') ? 'Forfait initial (une mensualité incluse)' : 'Inscription'} - ${classroom.name}`,
                 type: InvoiceType.REGISTRATION,
+                registrationOptions: registrationSnapshot(student),
                 amount: schoolFees(student, classroom).registrationFee,
                 paidAmount: 0,
                 balance: schoolFees(student, classroom).registrationFee,
@@ -295,6 +302,27 @@ export class StudentsService {
     return this.findOne(student.id, { roles: ['ADMIN', 'DIRECTEUR'] });
   }
 
+  async quote(data: any) {
+    const classroom = await this.prisma.classroom.findUnique({ where: { id: data.classroomId || '' } });
+    if (!classroom) throw new BadRequestException('Choisissez une classe.');
+    const options = schoolOptions(data);
+    validateOptionsForClass(options, classroom);
+    const fees = schoolFees(options, classroom);
+    if (!data.studentId) return fees;
+    const current = await this.prisma.student.findUnique({ where: { id: data.studentId }, include: {
+      enrollments: { where: { academicYear: { isCurrent: true } }, take: 1, include: { classroom: true } },
+    } });
+    if (!current) throw new NotFoundException('Élève introuvable.');
+    const enrollment = current.enrollments[0];
+    const invoices = enrollment ? await this.prisma.invoice.findMany({ where: { studentId: current.id, academicYearId: enrollment.academicYearId, type: InvoiceType.REGISTRATION } }) : [];
+    if (invoices.length > 1) throw new BadRequestException('Plusieurs factures d’inscription existent : faites vérifier le dossier.');
+    const invoice = invoices[0];
+    const changed = ['fullDay', 'supplies', 'karate', 'transportZone'].some(key => data[key] !== undefined && (current[key] || false) !== (options[key] || false));
+    const delta = changed && enrollment && invoice ? registrationAdjustment(current, { ...current, ...options }, enrollment.classroom, classroom, invoice).delta : 0;
+    return { ...fees, projectedAmount: invoice ? invoice.amount + delta : null, paidAmount: invoice?.paidAmount ?? null,
+      projectedBalance: invoice ? invoice.amount + delta - invoice.paidAmount : null };
+  }
+
   async update(id: string, data: any, actor: ActingUser) {
     const author = actorStamp(actor);
     const existing = await this.prisma.student.findUnique({ where: { id }, select: { id: true, parentId: true, dateOfBirth: true, enrollments: { where: { academicYear: { isCurrent: true } }, take: 1, select: { academicYearId: true, classroom: { select: { id: true, name: true, level: true, program: true, registrationFee: true, monthlyTuition: true } } } } } });
@@ -311,59 +339,57 @@ export class StudentsService {
     }
     if (data.dateOfBirth !== undefined) studentData.dateOfBirth = new Date(data.dateOfBirth);
 
-    if (data.parentData) {
-      const parentData: any = {};
-      for (const field of ['firstName', 'lastName', 'phone', 'email', 'address', 'profession', 'relation']) {
-        if (data.parentData[field] !== undefined) {
-          const value = typeof data.parentData[field] === 'string' ? data.parentData[field].trim() : data.parentData[field];
-          if (['firstName', 'lastName', 'phone'].includes(field) && !value) continue;
-          parentData[field] = value || null;
-        }
-      }
-      if (existing.parentId) {
-        if (parentData.email !== undefined) parentData.email = normalizeEmail(parentData.email);
-        await this.prisma.parent.update({ where: { id: existing.parentId }, data: parentData });
-      } else if (parentData.firstName && parentData.phone) {
-        if (parentData.email !== undefined) parentData.email = normalizeEmail(parentData.email);
-        const parent = await this.prisma.parent.create({ data: parentData });
-        studentData.parentId = parent.id;
-      }
-    }
-
     if (Object.keys(studentData).length > 0) {
       await this.prisma.$transaction(async (tx) => {
+        await tx.$queryRaw(Prisma.sql`SELECT id FROM "Student" WHERE id = ${id} FOR UPDATE`);
+        const current = await tx.student.findUnique({ where: { id }, include: { enrollments: { where: { academicYear: { isCurrent: true } }, take: 1, include: { classroom: true } } } });
+        if (!current) throw new NotFoundException('Élève introuvable.');
+        const enrollment = current.enrollments[0];
+        const classroom = data.classroomId ? await tx.classroom.findUnique({ where: { id: data.classroomId } }) : enrollment?.classroom;
+        const next = { ...current, ...studentData };
+        const billingChanged = ['fullDay', 'supplies', 'karate', 'transportZone'].some(key => data[key] !== undefined && (current[key] || false) !== (next[key] || false));
+        if (billingChanged || (data.classroomId && data.classroomId !== enrollment?.classroomId)) validateOptionsForClass(next, classroom);
+        if (billingChanged && enrollment && classroom) {
+          // Lock invoices before reading their paid amounts: simultaneous cash receipts remain safe.
+          await tx.$queryRaw(Prisma.sql`SELECT id FROM "Invoice" WHERE "studentId" = ${id} AND "academicYearId" = ${enrollment.academicYearId} AND type = 'REGISTRATION' FOR UPDATE`);
+          const invoices = await tx.invoice.findMany({ where: { studentId: id, academicYearId: enrollment.academicYearId, type: InvoiceType.REGISTRATION } });
+          if (invoices.length > 1) throw new BadRequestException('Plusieurs factures d’inscription existent : faites vérifier le dossier avant de changer les options.');
+          const invoice = invoices[0];
+          if (invoice) {
+            const adjustment = registrationAdjustment(current, next, enrollment.classroom, classroom, invoice);
+            const amount = invoice.amount + adjustment.delta;
+            if (amount < invoice.paidAmount || amount < 0) throw new BadRequestException('La modification ferait passer le montant dû sous les paiements encaissés. Une régularisation comptable est nécessaire.');
+            const balance = amount - invoice.paidAmount;
+            await tx.invoice.update({ where: { id: invoice.id }, data: { amount, balance, registrationOptions: adjustment.registrationOptions,
+              status: balance === 0 ? InvoiceStatus.PAID : invoice.paidAmount > 0 ? InvoiceStatus.PARTIAL : InvoiceStatus.UNPAID } });
+          }
+        }
+        if (data.parentData) {
+          const parentData: any = {};
+          for (const field of ['firstName', 'lastName', 'phone', 'email', 'address', 'profession', 'relation']) {
+            if (data.parentData[field] !== undefined) {
+              const value = typeof data.parentData[field] === 'string' ? data.parentData[field].trim() : data.parentData[field];
+              if (['firstName', 'lastName', 'phone'].includes(field) && !value) continue;
+              parentData[field] = value || null;
+            }
+          }
+          if (current.parentId) {
+            if (parentData.email !== undefined) parentData.email = normalizeEmail(parentData.email);
+            await tx.parent.update({ where: { id: current.parentId }, data: parentData });
+          } else if (parentData.firstName && parentData.phone) {
+            if (parentData.email !== undefined) parentData.email = normalizeEmail(parentData.email);
+            const parent = await tx.parent.create({ data: parentData });
+            studentData.parentId = parent.id;
+          }
+        }
+
         await tx.student.update({ where: { id }, data: studentData });
-        const enrollment = existing.enrollments[0];
-        const classroom = enrollment?.classroom;
-        // Only standard, completely unpaid registration invoices may follow this option.
-        // The guarded update also protects a payment recorded concurrently.
-        if (data.fullDay !== undefined && classroom &&
-            (!data.classroomId || data.classroomId === classroom.id) &&
-            (classroom.program === 'PRESCHOOL' || ['TPS', 'PS', 'MS', 'GS'].includes(classroom.level))) {
-          const amount = schoolFees({ fullDay: studentData.fullDay }, classroom).registrationFee;
-          await tx.invoice.updateMany({
-            where: {
-              studentId: id, academicYearId: enrollment.academicYearId,
-              type: InvoiceType.REGISTRATION, status: InvoiceStatus.UNPAID,
-              paidAmount: 0, payments: { none: {} },
-              amount: { in: [classroom.registrationFee, 65000], not: amount },
-            },
-            data: {
-              amount, balance: amount,
-              title: `${!studentData.fullDay && classroom.program === 'PRESCHOOL' ? 'Forfait initial (une mensualité incluse)' : 'Inscription'} - ${classroom.name}`,
-            },
-          });
+        if (data.classroomId && classroom) {
+          await tx.enrollment.upsert({ where: { studentId_academicYearId: { studentId: id, academicYearId: classroom.academicYearId } },
+            update: { classroomId: classroom.id, status: 'REGISTERED', registeredById: author.id, registeredByName: author.name, registeredByRole: author.role },
+            create: { studentId: id, classroomId: classroom.id, academicYearId: classroom.academicYearId, status: 'REGISTERED', registeredById: author.id, registeredByName: author.name, registeredByRole: author.role } });
         }
       });
-    }
-
-    if (data.classroomId !== undefined && data.classroomId) {
-      const classroom = await this.prisma.classroom.findUnique({
-        where: { id: data.classroomId },
-        select: { id: true, academicYearId: true },
-      });
-      if (!classroom) throw new BadRequestException('Classe sélectionnée introuvable.');
-      await this.enroll({ studentId: id, classroomId: classroom.id, academicYearId: classroom.academicYearId }, actor);
     }
 
     return this.findOne(id, { roles: ['ADMIN', 'DIRECTEUR'] });
@@ -371,38 +397,21 @@ export class StudentsService {
 
   async enroll(data: { studentId: string; classroomId: string; academicYearId: string }, actor: ActingUser) {
     const author = actorStamp(actor);
-    const [student, classroom] = await Promise.all([
-      this.prisma.student.findUnique({ where: { id: data.studentId }, select: { dateOfBirth: true } }),
-      this.prisma.classroom.findUnique({ where: { id: data.classroomId }, select: { program: true } }),
-    ]);
-    if (!student || !classroom) throw new NotFoundException('Élève ou classe introuvable.');
-    validateProgramAge(classroom.program, student.dateOfBirth);
-    const existing = await this.prisma.enrollment.findUnique({
-      where: {
-        studentId_academicYearId: {
-          studentId: data.studentId,
-          academicYearId: data.academicYearId,
-        },
-      },
-    });
-
-    if (existing) {
-      return this.prisma.enrollment.update({
-        where: { id: existing.id },
-        data: { classroomId: data.classroomId, status: 'REGISTERED', registeredById: author.id, registeredByName: author.name, registeredByRole: author.role },
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw(Prisma.sql`SELECT id FROM "Student" WHERE id = ${data.studentId} FOR UPDATE`);
+      const [student, classroom] = await Promise.all([
+        tx.student.findUnique({ where: { id: data.studentId }, select: { dateOfBirth: true, karate: true, fullDay: true, supplies: true } }),
+        tx.classroom.findUnique({ where: { id: data.classroomId } }),
+      ]);
+      if (!student || !classroom) throw new NotFoundException('Élève ou classe introuvable.');
+      if (classroom.academicYearId !== data.academicYearId) throw new BadRequestException('La classe ne correspond pas à l’année scolaire.');
+      validateProgramAge(classroom.program, student.dateOfBirth);
+      validateOptionsForClass(student, classroom);
+      return tx.enrollment.upsert({
+        where: { studentId_academicYearId: { studentId: data.studentId, academicYearId: data.academicYearId } },
+        update: { classroomId: data.classroomId, status: 'REGISTERED', registeredById: author.id, registeredByName: author.name, registeredByRole: author.role },
+        create: { ...data, status: 'REGISTERED', registeredById: author.id, registeredByName: author.name, registeredByRole: author.role },
       });
-    }
-
-    return this.prisma.enrollment.create({
-      data: {
-        studentId: data.studentId,
-        classroomId: data.classroomId,
-        academicYearId: data.academicYearId,
-        status: 'REGISTERED',
-        registeredById: author.id,
-        registeredByName: author.name,
-        registeredByRole: author.role,
-      },
     });
   }
 

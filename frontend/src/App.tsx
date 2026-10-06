@@ -1,3 +1,4 @@
+import { ActivityPaymentsPage } from './pages/ActivityPaymentsPage';
 import { SchoolInformationPage } from './pages/SchoolInformationPage';
 import { t } from "./i18n/index";
 import React, { lazy, Suspense } from 'react';
@@ -49,6 +50,8 @@ export const App: React.FC = () => (
           <Route index element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><DashboardPage /></RequireRoles>} />
           <Route path="students" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT']}><StudentsPage /></RequireRoles>} />
           <Route path="parents" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><ParentsPage /></RequireRoles>} />
+          <Route path="kimono" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><ActivityPaymentsPage category="KIMONO" /></RequireRoles>} />
+          <Route path="karate" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><ActivityPaymentsPage category="KARATE" /></RequireRoles>} />
           <Route path="finances" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><FinancesPage /></RequireRoles>} />
           <Route path="grades" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'ENSEIGNANT']}><GradesPage /></RequireRoles>} />
           <Route path="attendance" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'ENSEIGNANT']}><AttendancePage /></RequireRoles>} />

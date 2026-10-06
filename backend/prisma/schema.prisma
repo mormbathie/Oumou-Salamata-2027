@@ -186,6 +186,7 @@ model Student {
   gender        Gender
   address       String?
   transportZone Int?
+  supplies        Boolean       @default(false)
   fullDay       Boolean       @default(false)
   karate        Boolean       @default(false)
   eveningClasses Boolean      @default(false)
@@ -309,6 +310,9 @@ model Invoice {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
+  registrationOptions String?
+  category        String?
+  billingKey      String?       @unique
   payments        Payment[]
 }
 

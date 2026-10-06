@@ -1,7 +1,7 @@
-import { schoolFees } from '../school/school-options';
+import { schoolFees, optionTariffs } from '../school/school-options';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { InvoiceStatus, InvoiceType, PaymentMethod } from '@prisma/client';
+import { Prisma, InvoiceStatus, InvoiceType, PaymentMethod } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { ActingUser, actorStamp } from '../audit/actor';
 
@@ -15,11 +15,13 @@ export class FinancesService {
     status?: string;
     type?: string;
     academicYearId?: string;
+    category?: string;
   }) {
-    const { studentId, classroomId, status, type, academicYearId } = params;
+    const { studentId, classroomId, status, type, academicYearId, category } = params;
 
     const where: any = {};
 
+    if (category) where.category = category;
     if (studentId) where.studentId = studentId;
     if (status) where.status = status as InvoiceStatus;
     if (type) where.type = type as InvoiceType;
@@ -141,6 +143,8 @@ export class FinancesService {
       throw new NotFoundException(`Facture avec l'ID ${data.invoiceId} introuvable`);
     }
 
+    if (data.paymentDate && !Number.isFinite(new Date(data.paymentDate).getTime())) throw new BadRequestException('Date de paiement invalide.');
+    if (!Object.values(PaymentMethod).includes(data.paymentMethod)) throw new BadRequestException('Mode de paiement invalide.');
     if (!Number.isFinite(data.amount) || data.amount <= 0) {
       throw new BadRequestException('Le montant du paiement doit être un nombre supérieur à zéro');
     }
@@ -275,6 +279,32 @@ export class FinancesService {
       message: `${createdCount} factures générées pour la classe ${classroom.name}`,
       createdCount,
     };
+  }
+
+  async createActivityInvoice(data: { studentId: string; category: string; month?: string }, actor: ActingUser) {
+    const author = actorStamp(actor);
+    if (!['KIMONO', 'KARATE'].includes(data.category)) throw new BadRequestException('Catégorie invalide.');
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw(Prisma.sql`SELECT id FROM "Student" WHERE id = ${data.studentId} FOR UPDATE`);
+      const student = await tx.student.findUnique({ where: { id: data.studentId }, include: {
+        enrollments: { where: { academicYear: { isCurrent: true }, status: 'REGISTERED' }, take: 1, include: { classroom: true, academicYear: true } },
+      } });
+      const enrollment = student?.enrollments[0];
+      if (!student || !enrollment || student.status !== 'ACTIVE') throw new BadRequestException('Élève actif inscrit requis.');
+      if (['TPS', 'PS'].includes(enrollment.classroom.level)) throw new BadRequestException('Karaté et Kimono interdits en TPS et PS.');
+      if (data.category === 'KARATE' && !student.karate) throw new BadRequestException('L’option Karaté doit être active.');
+      if (data.category === 'KARATE' && (!data.month || !/^\d{4}-(0[1-9]|1[0-2])$/.test(data.month))) throw new BadRequestException('Mois requis au format AAAA-MM.');
+      const billingKey = `${data.category}:${student.id}:${enrollment.academicYearId}:${data.category === 'KARATE' ? data.month : 'once'}`;
+      const amount = data.category === 'KIMONO' ? optionTariffs.kimono : optionTariffs.karateMonthly;
+      // The unique key protects concurrent submissions, not only clicks in the UI.
+      return tx.invoice.upsert({ where: { billingKey }, update: {}, create: {
+        billingKey, category: data.category, studentId: student.id, academicYearId: enrollment.academicYearId,
+        invoiceNumber: 'FAC-' + new Date().getFullYear() + '-' + randomUUID().slice(0, 12).toUpperCase(),
+        title: data.category === 'KIMONO' ? 'Vente Kimono' : `Karaté ${data.month}`,
+        type: InvoiceType.OTHER, amount, paidAmount: 0, balance: amount, dueDate: new Date(), status: InvoiceStatus.UNPAID,
+        createdById: author.id, createdByName: author.name, createdByRole: author.role,
+      }, include: { student: true, payments: { orderBy: { paymentDate: 'desc' } } } });
+    });
   }
 
   async getFinancialStats(academicYearId?: string) {

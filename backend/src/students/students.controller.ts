@@ -24,10 +24,15 @@ export class StudentsController {
     @Query('classId') classId?: string,
     @Query('search') search?: string,
     @Query('status') status?: string,
+    @Query('fullDay') fullDay?: string,
     @CurrentUser() user?: any,
   ) {
-    return this.studentsService.findAll({ classId, search, status }, user);
+    return this.studentsService.findAll({ classId, search, status, fullDay }, user);
   }
+
+  @Post('fee-quote')
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
+  async quote(@Body() body: any) { return this.studentsService.quote(body); }
 
   @Get(':id/photo')
   @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT', 'CONTROLEUR_PRESENCE')

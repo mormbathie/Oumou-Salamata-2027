@@ -1,3 +1,4 @@
+import { collectionPeriod, type CollectionFilter } from './collection-period';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Gender, StudentStatus, InvoiceStatus, AttendanceStatus } from '@prisma/client';
@@ -6,7 +7,18 @@ import { Gender, StudentStatus, InvoiceStatus, AttendanceStatus } from '@prisma/
 export class DashboardService {
   constructor(private prisma: PrismaService) {}
 
-  async getSummary() {
+  async getSummary(filter: CollectionFilter = {}) {
+    const period = collectionPeriod(filter);
+    const collectedPayments = await this.prisma.payment.findMany({
+      where: period.where, select: { amount: true, invoice: { select: { type: true, category: true } } },
+    });
+    const byCategory: Record<string, number> = {};
+    for (const payment of collectedPayments) {
+      const category = payment.invoice.category || payment.invoice.type;
+      byCategory[category] = (byCategory[category] || 0) + payment.amount;
+    }
+    const collection = { mode: period.mode, start: period.start, end: period.end,
+      total: collectedPayments.reduce((sum, p) => sum + p.amount, 0), count: collectedPayments.length, byCategory };
     const currentYear = await this.prisma.academicYear.findFirst({
       where: { isCurrent: true },
     });
@@ -83,6 +95,7 @@ export class DashboardService {
     const todayAttendanceRate = totalToday > 0 ? Math.round((presentToday / totalToday) * 1000) / 10 : 96.5;
 
     return {
+      collection,
       academicYear: currentYear?.name || '2026-2027',
       counts: {
         totalStudents,
