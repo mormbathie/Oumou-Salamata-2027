@@ -1,7 +1,7 @@
 import { printInvoice } from '../utils/schoolDocuments';
 import { SchoolHeader } from '../components/SchoolHeader';
 import { t, locale, roleLabel } from "../i18n/index";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   CreditCard,
   Plus,
@@ -50,32 +50,57 @@ export const FinancesPage: React.FC = () => {
   const [batchMonth, setBatchMonth] = useState('Novembre 2026');
   const [batchDueDate, setBatchDueDate] = useState('2026-11-10');
 
-  const loadFinances = async () => {
+  const requestVersion = useRef(0);
+  const requestPending = useRef(false);
+
+  const loadFinances = async (background = false) => {
+    if (background && requestPending.current) return;
+    const version = ++requestVersion.current;
+    requestPending.current = true;
     try {
-      setLoading(true);
+      if (!background) setLoading(true);
       const [statsRes, invoicesRes, classesRes, studentsRes] = await Promise.all([
         financesApi.getStats(),
         financesApi.getInvoices({ status: statusFilter || undefined, classroomId: classFilter || undefined }),
         classesApi.getAll(),
         studentsApi.getAll(),
       ]);
+      if (version !== requestVersion.current) return;
       setStats(statsRes);
       setInvoices(invoicesRes);
       setClasses(classesRes);
       setStudents(studentsRes);
-      if (classesRes.length > 0 && !batchClassId) {
-        setBatchClassId(classesRes[0].id);
-      }
+      if (classesRes.length > 0) setBatchClassId(current => current || classesRes[0].id);
     } catch (err) {
       console.error('Failed to load finances:', err);
     } finally {
-      setLoading(false);
+      if (version === requestVersion.current) {
+        requestPending.current = false;
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
     loadFinances();
+    return () => { ++requestVersion.current; requestPending.current = false; };
   }, [statusFilter, classFilter]);
+
+  useEffect(() => {
+    // Keep open forms and receipts stable; refresh only while this tab is visible.
+    if (showPaymentModal || showBatchModal || showReceiptModal) return;
+    const refresh = () => {
+      if (document.visibilityState === 'visible') void loadFinances(true);
+    };
+    const timer = window.setInterval(refresh, 30000);
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [statusFilter, classFilter, showPaymentModal, showBatchModal, showReceiptModal]);
 
   const handleOpenPayment = (inv: any) => {
     setSelectedInvoice(inv);
