@@ -171,3 +171,31 @@ nouvel agent, sans appel réseau de géolocalisation et sans duplication des cor
 La mémoire disponible et la charge CPU restent à surveiller : la mesure avant
 modification montrait environ 3,8 Go disponibles, 43 % du disque utilisé et une
 activité CPU notable de ClickHouse. Cela ne constitue pas une garantie sous charge.
+
+## Réduction de la charge du VPS
+
+Les diagnostics internes de ClickHouse ont été allégés : profilage CPU, temps réel,
+mémoire et pipelines détaillés désactivé ; la table interne `system.trace_log`
+n'est plus alimentée. Ces traces internes ne sont pas les traces API stockées
+par SigNoz, qui restent collectées à 25 %. Les métriques internes sont collectées
+toutes les 30 secondes et vidées toutes les 60 secondes ; les messages internes
+conservent les avertissements et erreurs. L’historique SigNoz n’est pas effacé.
+
+La page des finances actualise les factures et statistiques toutes les 30 secondes,
+et les listes de classes et d’élèves toutes les cinq minutes pendant l’actualisation
+automatique. Les chargements manuels restent complets.
+
+Le nettoyage Docker peut être prévisualisé puis exécuté :
+
+```bash
+sudo python3 /opt/oumou-salamat/deploy/cleanup-docker.py
+sudo python3 /opt/oumou-salamat/deploy/cleanup-docker.py --apply
+```
+
+Il protège toutes les images référencées par les conteneurs et les images exactes
+du rollback enregistré dans `deploy/last-release.json`. Il retire seulement les
+anciennes images applicatives non protégées et le cache de build inutilisé.
+Il ne supprime aucun conteneur ni volume. Le nettoyage du 7 octobre 2026 a libéré
+environ 20 Go, passant le disque de 46 % à 18 % d’occupation. Le profilage réduit
+ne garantit pas une baisse immédiate du CPU : les fusions de tables internes
+ont encore été observées après le premier redémarrage.

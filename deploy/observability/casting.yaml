@@ -130,3 +130,30 @@ spec:
     - op: replace
       path: /logger/size
       value: 10M
+
+    - op: add
+      path: /profiles/default/log_processors_profiles
+      value: 0
+    - op: add
+      path: /profiles/default/query_profiler_cpu_time_period_ns
+      value: 0
+    - op: add
+      path: /profiles/default/query_profiler_real_time_period_ns
+      value: 0
+    - op: add
+      path: /metric_log/collect_interval_milliseconds
+      value: 30000
+    - op: replace
+      path: /metric_log/flush_interval_milliseconds
+      value: 60000
+    - op: add
+      path: /text_log/level
+      value: warning
+    - op: replace
+      path: /text_log/flush_interval_milliseconds
+      value: 60000
+    - op: remove
+      path: /trace_log
+    - op: add
+      path: /profiles/default/memory_profiler_step
+      value: 0

@@ -52,25 +52,28 @@ export const FinancesPage: React.FC = () => {
 
   const requestVersion = useRef(0);
   const requestPending = useRef(false);
+  const referenceLoadedAt = useRef(0);
 
   const loadFinances = async (background = false) => {
     if (background && requestPending.current) return;
     const version = ++requestVersion.current;
     requestPending.current = true;
+    const refreshLists = !background || Date.now() - referenceLoadedAt.current >= 300000;
     try {
       if (!background) setLoading(true);
       const [statsRes, invoicesRes, classesRes, studentsRes] = await Promise.all([
         financesApi.getStats(),
         financesApi.getInvoices({ status: statusFilter || undefined, classroomId: classFilter || undefined }),
-        classesApi.getAll(),
-        studentsApi.getAll(),
+        refreshLists ? classesApi.getAll() : Promise.resolve(null),
+        refreshLists ? studentsApi.getAll() : Promise.resolve(null),
       ]);
       if (version !== requestVersion.current) return;
       setStats(statsRes);
       setInvoices(invoicesRes);
-      setClasses(classesRes);
-      setStudents(studentsRes);
-      if (classesRes.length > 0) setBatchClassId(current => current || classesRes[0].id);
+      if (classesRes && studentsRes) referenceLoadedAt.current = Date.now();
+      if (classesRes) setClasses(classesRes);
+      if (studentsRes) setStudents(studentsRes);
+      if (classesRes && classesRes.length > 0) setBatchClassId(current => current || classesRes[0].id);
     } catch (err) {
       console.error('Failed to load finances:', err);
     } finally {
