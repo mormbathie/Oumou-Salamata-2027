@@ -1,4 +1,4 @@
-import { schoolFees, schoolOptions, validateProgramAge } from './school-options';
+import { schoolFees, schoolOptions, validateProgramAge, validateOptionsForClass } from './school-options';
 describe('School registration options', () => {
   it('accepts the three transport zones and preserves unchecked options', () => {
     for (const transportZone of [1, 2, 3, null]) expect(schoolOptions({transportZone, karate:false})).toEqual({transportZone, karate:false});
@@ -24,7 +24,7 @@ describe('School registration options', () => {
     expect(schoolFees({fullDay:true},classroom)).toEqual({registrationFee:65000,monthlyTuition:35000});
     expect(schoolFees({fullDay:false},classroom)).toEqual({registrationFee:50000,monthlyTuition:15000});
     expect(classroom.registrationFee).toBe(50000);
-    expect(schoolFees({fullDay:true},{...classroom,level:'CI',program:'ELEMENTARY'})).toEqual({registrationFee:50000,monthlyTuition:15000});
+    expect(schoolFees({fullDay:true},{...classroom,level:'CI',program:'ELEMENTARY'})).toEqual({registrationFee:75000,monthlyTuition:35000});
     expect(()=>schoolOptions({fullDay:'true'})).toThrow();
   });
 });
@@ -57,4 +57,18 @@ describe('Legacy option billing snapshots',()=>{
     const result=registrationAdjustment({transportZone:3},{transportZone:3,supplies:true},c,c,{amount:100000});
     expect(result.delta).toBe(37500);expect(JSON.parse(result.registrationOptions).transportZone).toBeNull();
   });
+});
+
+ describe('elementary full-day option', () => {
+  for (const level of ['CI','CP','CE1']) it(`adds 25000 for ${level} and sets monthly tuition to 35000`, () => {
+   const classroom={level,program:'ELEMENTARY',registrationFee:40000,monthlyTuition:15000};
+   expect(()=>validateOptionsForClass({fullDay:true},classroom)).not.toThrow();
+   expect(schoolFees({fullDay:true},classroom)).toEqual({registrationFee:65000,monthlyTuition:35000});
+   expect(schoolFees({fullDay:false},classroom)).toEqual({registrationFee:40000,monthlyTuition:15000});
+  });
+ });
+it('preserves other options with elementary full-day and rejects CE2', () => {
+  const classroom = {level:'CP',program:'ELEMENTARY',registrationFee:40000,monthlyTuition:15000};
+  expect(schoolFees({fullDay:true,supplies:true,karate:true,transportZone:1},classroom)).toEqual({registrationFee:114500,monthlyTuition:35000});
+  expect(()=>validateOptionsForClass({fullDay:true},{...classroom,level:'CE2'})).toThrow();
 });

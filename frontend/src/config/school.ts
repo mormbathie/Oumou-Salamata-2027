@@ -30,9 +30,11 @@ export function ageWarning(birth: string | Date, classroom?: {program?:string; l
 }
 export const effectiveFees = (student: {fullDay?:boolean}, classroom?: {program?:string;level?:string;registrationFee?:number;monthlyTuition?:number}) => {
   const plan = programFor(classroom);
-  return student.fullDay && (plan.id==='PRESCHOOL' || ['TPS','PS','MS','GS'].includes(classroom?.level || ''))
-    ? {registrationFee:65000,monthlyTuition:35000}
+  return student.fullDay && supportsFullDay(classroom)
+    ? {registrationFee:isPreschool(classroom) ? 65000 : (classroom?.registrationFee === 40500 && classroom.level === 'CI' ? 40000 : classroom?.registrationFee ?? plan.registrationFee) + 25000,monthlyTuition:35000}
     : {registrationFee:classroom?.registrationFee ?? plan.registrationFee,monthlyTuition:classroom?.monthlyTuition ?? plan.monthlyTuition};
 };
 
 export const isPreschool = (classroom?: {program?:string;level?:string}) => classroom?.program==='PRESCHOOL' || ['TPS','PS','MS','GS'].includes(classroom?.level || '');
+
+export const supportsFullDay = (classroom?: {program?:string;level?:string}) => isPreschool(classroom) || ['CI','CP','CE1'].includes(classroom?.level || '');

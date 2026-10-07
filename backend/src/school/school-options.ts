@@ -25,7 +25,7 @@ export function validateProgramAge(_program: string | null | undefined, birth: s
   const date = new Date(birth);
   if (!Number.isFinite(date.getTime()) || date > new Date()) throw new BadRequestException('Date de naissance invalide.');
 }
-export const optionTariffs = { elementaryRegistration: 40000, supplies: 37500, karateRegistration: 2000, karateMonthly: 2000, kimono: 6000, fullDayRegistration: 65000, fullDayMonthly: 35000, transport: { 1: 10000, 2: 15000, 3: 20000 } };
+export const optionTariffs = { elementaryRegistration: 40000, supplies: 37500, karateRegistration: 2000, karateMonthly: 2000, kimono: 6000, fullDayRegistration: 65000, elementaryFullDaySupplement: 25000, fullDayMonthly: 35000, transport: { 1: 10000, 2: 15000, 3: 20000 } };
 export type FeeOptions = { fullDay?: boolean; supplies?: boolean; karate?: boolean; transportZone?: number | null };
 export type FeeClass = { level?: string; program?: string | null; registrationFee: number; monthlyTuition: number };
 export const elementaryClass = (classroom: FeeClass) => classroom.program === 'ELEMENTARY' || ['CI','CP','CE1','CE2','CM1','CM2'].includes(classroom.level || '');
@@ -36,14 +36,14 @@ export function validateOptionsForClass(student: FeeOptions, classroom?: FeeClas
   }
   if (student.karate && ['TPS', 'PS'].includes(classroom.level || '')) throw new BadRequestException('Karaté interdit en TPS et PS.');
   if (student.supplies && !elementaryClass(classroom)) throw new BadRequestException('Fournitures réservées à l’élémentaire.');
-  if (student.fullDay && !(classroom.program === 'PRESCHOOL' || ['TPS','PS','MS','GS'].includes(classroom.level || ''))) throw new BadRequestException('Journée continue réservée à la maternelle.');
+  if (student.fullDay && !(classroom.program === 'PRESCHOOL' || ['TPS','PS','MS','GS','CI','CP','CE1'].includes(classroom.level || ''))) throw new BadRequestException('Journée continue réservée à la maternelle, au CI, au CP et au CE1.');
 }
 export function schoolFees(student: FeeOptions, classroom: FeeClass) {
   const preschool = classroom.program === 'PRESCHOOL' || ['TPS','PS','MS','GS'].includes(classroom.level || '');
-  const fullDay = student.fullDay && preschool;
+  const fullDay = student.fullDay && (preschool || ['CI','CP','CE1'].includes(classroom.level || ''));
   // Correct the former standard CI tariff prospectively; preserve custom class tariffs.
   const base = classroom.level === 'CI' && classroom.registrationFee === 40500 ? optionTariffs.elementaryRegistration : classroom.registrationFee;
-  const registrationBase = fullDay ? optionTariffs.fullDayRegistration : base;
+  const registrationBase = fullDay ? (preschool ? optionTariffs.fullDayRegistration : base + optionTariffs.elementaryFullDaySupplement) : base;
   const transport = optionTariffs.transport[student.transportZone || 0] || 0;
   const karate = student.karate ? optionTariffs.karateRegistration : 0;
   const supplies = student.supplies && elementaryClass(classroom) ? optionTariffs.supplies : 0;
