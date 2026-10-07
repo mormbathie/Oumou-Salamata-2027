@@ -1,3 +1,4 @@
+import { findOrCreateParent } from './parent-identity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DocumentsService } from '../documents/documents.service';
@@ -71,9 +72,7 @@ export class ParentsService {
     profession?: string;
     relation?: string;
   }) {
-    return this.prisma.parent.create({
-      data: { ...data, email: normalizeEmail(data.email) },
-    });
+    return this.prisma.$transaction(tx => findOrCreateParent(tx, data));
   }
 
   async update(id: string, data: any) {

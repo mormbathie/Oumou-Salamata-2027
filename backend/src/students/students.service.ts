@@ -1,3 +1,4 @@
+import { findOrCreateParent } from '../parents/parent-identity';
 import { schoolFees, schoolOptions, validateProgramAge, validateOptionsForClass, registrationAdjustment, registrationSnapshot } from '../school/school-options';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DocumentsService } from '../documents/documents.service';
@@ -222,9 +223,7 @@ export class StudentsService {
 
     // Create parent if new parent data provided
     if (!parentId && data.parentData && data.parentData.firstName && data.parentData.phone) {
-      const parent = await tx.parent.create({
-        data: { ...data.parentData, email: normalizeEmail(data.parentData.email) },
-      });
+      const parent = await findOrCreateParent(tx, { ...data.parentData, email: normalizeEmail(data.parentData.email) });
       parentId = parent.id;
     }
 
@@ -384,7 +383,7 @@ export class StudentsService {
             await tx.parent.update({ where: { id: current.parentId }, data: parentData });
           } else if (parentData.firstName && parentData.phone) {
             if (parentData.email !== undefined) parentData.email = normalizeEmail(parentData.email);
-            const parent = await tx.parent.create({ data: parentData });
+            const parent = await findOrCreateParent(tx, parentData);
             studentData.parentId = parent.id;
           }
         }
