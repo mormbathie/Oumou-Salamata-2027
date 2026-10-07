@@ -4,6 +4,7 @@ import { DocumentsService } from '../documents/documents.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, Gender, StudentStatus, InvoiceType, InvoiceStatus } from '@prisma/client';
 import { ActingUser, actorStamp } from '../audit/actor';
+import { randomUUID } from 'node:crypto';
 import { normalizeEmail } from '../common/email';
 
 @Injectable()
@@ -209,23 +210,26 @@ export class StudentsService {
     if (data.classroomId && !selectedClass) throw new BadRequestException('Classe sélectionnée introuvable.');
     validateProgramAge(selectedClass?.program, data.dateOfBirth);
     validateOptionsForClass(options, selectedClass);
+    const studentId = await this.prisma.$transaction(async (tx) => {
     // Generate matricule
-    const count = await this.prisma.student.count();
+    // Serialize registration numbering; deletion must never reuse a matricule.
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(20261007)`;
+    const records = await tx.student.findMany({ select: { matricule: true } });
     const currentYear = new Date().getFullYear();
-    const matricule = `OS-${currentYear}-${String(count + 1).padStart(4, '0')}`;
+    const matricule = `OS-${currentYear}-${String(Math.max(0, ...records.map(row => { const match = row.matricule.match(new RegExp(`^OS-${currentYear}-(\\d+)$`)); return match ? Number(match[1]) : 0; })) + 1).padStart(4, '0')}`;
 
     let parentId = data.parentId;
 
     // Create parent if new parent data provided
     if (!parentId && data.parentData && data.parentData.firstName && data.parentData.phone) {
-      const parent = await this.prisma.parent.create({
+      const parent = await tx.parent.create({
         data: { ...data.parentData, email: normalizeEmail(data.parentData.email) },
       });
       parentId = parent.id;
     }
 
     // Create student
-    const student = await this.prisma.student.create({
+    const student = await tx.student.create({
       data: {
         ...options,
         matricule,
@@ -249,14 +253,14 @@ export class StudentsService {
     if (data.classroomId) {
       let academicYearId = data.academicYearId;
       if (!academicYearId) {
-        const currentYearRecord = await this.prisma.academicYear.findFirst({
+        const currentYearRecord = await tx.academicYear.findFirst({
           where: { isCurrent: true },
         });
         academicYearId = currentYearRecord?.id;
       }
 
       if (academicYearId) {
-        await this.prisma.enrollment.create({
+        await tx.enrollment.create({
           data: {
             studentId: student.id,
             classroomId: data.classroomId,
@@ -270,15 +274,14 @@ export class StudentsService {
 
         // Generate Registration invoice if requested
         if (data.generateInvoice !== false) {
-          const classroom = await this.prisma.classroom.findUnique({
+          const classroom = await tx.classroom.findUnique({
             where: { id: data.classroomId },
           });
 
           if (classroom) {
-            const invoiceCount = await this.prisma.invoice.count();
-            await this.prisma.invoice.create({
+            await tx.invoice.create({
               data: {
-                invoiceNumber: `FAC-${currentYear}-${String(invoiceCount + 1).padStart(4, '0')}`,
+                invoiceNumber: `FAC-${currentYear}-${randomUUID().toUpperCase()}`,
                 studentId: student.id,
                 academicYearId,
                 title: `${!student.fullDay && ['PRESCHOOL', 'ELEMENTARY'].includes(classroom.program || '') ? 'Forfait initial (une mensualité incluse)' : 'Inscription'} - ${classroom.name}`,
@@ -299,7 +302,10 @@ export class StudentsService {
       }
     }
 
-    return this.findOne(student.id, { roles: ['ADMIN', 'DIRECTEUR'] });
+    return student.id;
+    });
+
+    return this.findOne(studentId, { roles: ['ADMIN', 'DIRECTEUR'] });
   }
 
   async quote(data: any) {

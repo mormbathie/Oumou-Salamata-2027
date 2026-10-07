@@ -102,9 +102,8 @@ export class FinancesService {
       throw new BadRequestException('Année académique non définie');
     }
 
-    const count = await this.prisma.invoice.count();
     const year = new Date().getFullYear();
-    const invoiceNumber = `FAC-${year}-${String(count + 1).padStart(4, '0')}`;
+    const invoiceNumber = `FAC-${year}-${randomUUID().toUpperCase()}`;
 
     return this.prisma.invoice.create({
       data: {
@@ -251,8 +250,7 @@ export class FinancesService {
       });
 
       if (!existing) {
-        const count = await this.prisma.invoice.count();
-        const invoiceNumber = `FAC-${year}-${String(count + 1).padStart(4, '0')}`;
+            const invoiceNumber = `FAC-${year}-${randomUUID().toUpperCase()}`;
 
         await this.prisma.invoice.create({
           data: {
