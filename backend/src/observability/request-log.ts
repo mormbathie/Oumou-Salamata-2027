@@ -42,7 +42,11 @@ export function requestLog(req: Request, res: Response, next: NextFunction) {
       event: 'http.request', severity: status >= 500 ? 'ERROR' : status >= 400 ? 'WARN' : 'INFO',
       correlation_id: correlationId, trace_id: spanContext?.traceId, span_id: spanContext?.spanId,
       trace_sampled: Boolean(spanContext && (spanContext.traceFlags & 1)),
-      method: req.method, route: req.route?.path || req.path, status_code: status,
+      status_class: `${Math.floor(status / 100)}xx`, aborted,
+      request_content_type: safeText(req.headers['content-type'] || ''),
+      request_bytes: /^\d{1,12}$/.test(String(req.headers['content-length'] || '')) ? Number(req.headers['content-length']) : undefined,
+      response_bytes: /^\d{1,12}$/.test(String(res.getHeader?.('content-length') || '')) ? Number(res.getHeader('content-length')) : undefined,
+      method: req.method, route: req.route?.path || req.path.replace(/\/[a-f0-9-]{36}(?=\/|$)|\/\d+(?=\/|$)/gi, '/:id').slice(0, 200), status_code: status,
       outcome: status >= 400 ? 'error' : 'success', duration_ms: Math.round((performance.now() - started) * 100) / 100,
       account: user ? { id: user.userId || user.keycloakId || user.id, username: safeText(user.username || ''), roles: user.roles || (user.role ? [user.role] : []) } : { authenticated: false },
       device: { user_agent: ua, type: /tablet|ipad/i.test(ua) ? 'tablet' : /mobile|android|iphone/i.test(ua) ? 'mobile' : 'desktop',
@@ -55,9 +59,16 @@ export function requestLog(req: Request, res: Response, next: NextFunction) {
     event.account_roles = user?.roles || (user?.role ? [user.role] : []);
     event.device_type = (event.device as any).type;
     event.location_country = country;
+    if (!req.path.startsWith('/api/auth') && !/password|two-factor|scan/.test(req.path)) {
+      const requestContext = { params: safeInputs(req.params), query: safeInputs(req.query) };
+      event.request_context = JSON.stringify(requestContext).length <= 2048 ? requestContext : { truncated: true };
+    }
     if (status >= 400) {
       event.error = { type: res.locals.errorType || 'HttpError', message: Array.isArray(res.locals.requestError) ? res.locals.requestError.map(safeText) : safeText(res.locals.requestError || (aborted ? 'Connection closed' : 'Request failed')) };
       event.error_message = (event.error as any).message;
+      event.error_code = res.locals.errorCode;
+      event.error_hint = res.locals.errorHint;
+      event.error_fields = res.locals.errorFields;
       if (res.locals.errorFrames) (event.error as any).frames = res.locals.errorFrames;
       // Capture useful business values only on failures; never log auth bodies or uploaded files.
       event.input = req.path.startsWith('/api/auth') || req.path.includes('/password') || req.path.includes('/two-factor') || req.path.includes('/scan') ? '[redacted]' : { body: safeInputs(req.body), query: safeInputs(req.query), params: safeInputs(req.params) };

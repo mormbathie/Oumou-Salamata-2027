@@ -134,3 +134,40 @@ Cette pile possède ses propres volumes ; les sauvegardes scolaires ne sauvegard
 pas l’historique de supervision.
 
 Référence : https://signoz.io/docs/install/docker/
+
+## Tableau de suivi des requêtes
+
+Le tableau **As Sakina — Requêtes et erreurs API** présente six graphiques :
+statuts HTTP, catégories 2xx/3xx/4xx/5xx, latence P95 par route, erreurs serveur,
+refus/validations et requêtes de plus d’une seconde. Les healthchecks sont exclus
+pour ne pas masquer l’activité réelle. Les données proviennent des logs de toutes
+les requêtes, et non des traces échantillonnées. Une fenêtre d’une heure et une
+actualisation d’une minute limitent le coût des requêtes graphiques. Les groupes
+sont limités à 20 séries ; aucun regroupement par utilisateur ou IP.
+
+Pour installer ou actualiser ce tableau sans doublon, sur le VPS :
+
+```bash
+cd /opt/oumou-salamat
+sudo python3 deploy/observability/install-api-dashboard.py deploy/observability/dashboard-api.json
+```
+
+Le script utilise le compte privé existant sans afficher ses secrets et vérifie
+chaque requête graphique avant publication. Il préserve le tableau du serveur.
+
+Les logs ajoutent `status_class`, `aborted`, `request_content_type`, et les tailles
+`request_bytes` / `response_bytes` quand les en-têtes Content-Length sont disponibles
+(ce ne sont pas des compteurs des octets réellement transmis). `request_context`
+contient les paramètres et filtres autorisés, même en cas de succès, limité à 2 Ko.
+Les corps restent absents sur les succès et masqués/limités sur les erreurs.
+
+Pour les erreurs Prisma : `error_code` fournit par exemple **P2002** (doublon),
+`error_fields` indique les champs de contrainte et `error_hint` explique la catégorie.
+Aucun SQL ni valeur à l’origine de la contrainte n’est enregistré. Chercher ensuite
+le `correlation_id` pour retrouver la requête et, si conservée, sa trace.
+
+Ces ajouts conservent un seul log par requête et le taux de traces de 25 %, sans
+nouvel agent, sans appel réseau de géolocalisation et sans duplication des corps.
+La mémoire disponible et la charge CPU restent à surveiller : la mesure avant
+modification montrait environ 3,8 Go disponibles, 43 % du disque utilisé et une
+activité CPU notable de ClickHouse. Cela ne constitue pas une garantie sous charge.

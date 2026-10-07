@@ -1,0 +1,632 @@
+{
+  "schemaVersion": "v6",
+  "name": "as-sakina-requetes-api",
+  "image": "/assets/Icons/eight-ball",
+  "tags": [
+    {
+      "key": "tag",
+      "value": "support"
+    }
+  ],
+  "spec": {
+    "display": {
+      "name": "As Sakina — Requêtes et erreurs API",
+      "description": "Statuts HTTP, erreurs et latence. Refresh 60 s ; aucun regroupement par utilisateur ou IP."
+    },
+    "variables": [],
+    "panels": {
+      "28594013-6c02-5c53-92b8-baed02ee16ec": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Requêtes par statut HTTP",
+            "description": "Requêtes API hors healthchecks. Données issues des logs de toutes les requêtes ; pas des traces échantillonnées."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": {
+                "timePreference": "global_time",
+                "fillSpans": false
+              },
+              "formatting": {
+                "unit": "none",
+                "decimalPrecision": "2"
+              },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": {
+                  "fillOnlyBelow": false,
+                  "fillLessThan": ""
+                }
+              },
+              "axes": {
+                "softMin": 0,
+                "softMax": 0,
+                "isLogScale": false
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list",
+                "customColors": null
+              },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "plugin": {
+                  "kind": "signoz/CompositeQuery",
+                  "spec": {
+                    "queries": [
+                      {
+                        "type": "builder_query",
+                        "spec": {
+                          "name": "A",
+                          "signal": "logs",
+                          "source": "",
+                          "stepInterval": 60,
+                          "aggregations": [
+                            {
+                              "expression": "count()"
+                            }
+                          ],
+                          "disabled": false,
+                          "filter": {
+                            "expression": "service.name = 'as-sakina-backend' AND event = 'http.request' AND route != '/api/health'"
+                          },
+                          "groupBy": [
+                            {
+                              "name": "status_code",
+                              "fieldContext": "attribute",
+                              "fieldDataType": "float64"
+                            }
+                          ],
+                          "order": [],
+                          "limit": 20,
+                          "having": {
+                            "expression": ""
+                          },
+                          "functions": [],
+                          "legend": "{{status_code}}"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      },
+      "cf773e62-3381-5f95-afb3-96505f97cc0d": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Succès, refus et erreurs",
+            "description": "Requêtes API hors healthchecks. Données issues des logs de toutes les requêtes ; pas des traces échantillonnées."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": {
+                "timePreference": "global_time",
+                "fillSpans": false
+              },
+              "formatting": {
+                "unit": "none",
+                "decimalPrecision": "2"
+              },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": {
+                  "fillOnlyBelow": false,
+                  "fillLessThan": ""
+                }
+              },
+              "axes": {
+                "softMin": 0,
+                "softMax": 0,
+                "isLogScale": false
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list",
+                "customColors": null
+              },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "plugin": {
+                  "kind": "signoz/CompositeQuery",
+                  "spec": {
+                    "queries": [
+                      {
+                        "type": "builder_query",
+                        "spec": {
+                          "name": "A",
+                          "signal": "logs",
+                          "source": "",
+                          "stepInterval": 60,
+                          "aggregations": [
+                            {
+                              "expression": "count()"
+                            }
+                          ],
+                          "disabled": false,
+                          "filter": {
+                            "expression": "service.name = 'as-sakina-backend' AND event = 'http.request' AND route != '/api/health'"
+                          },
+                          "groupBy": [
+                            {
+                              "name": "status_class",
+                              "fieldContext": "attribute",
+                              "fieldDataType": "string"
+                            }
+                          ],
+                          "order": [],
+                          "limit": 20,
+                          "having": {
+                            "expression": ""
+                          },
+                          "functions": [],
+                          "legend": "{{status_class}}"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      },
+      "a099a9a6-eb4a-51f0-8b72-20eea30d80a9": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Temps de réponse P95 par route",
+            "description": "Requêtes API hors healthchecks. Données issues des logs de toutes les requêtes ; pas des traces échantillonnées."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": {
+                "timePreference": "global_time",
+                "fillSpans": false
+              },
+              "formatting": {
+                "unit": "ms",
+                "decimalPrecision": "2"
+              },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": {
+                  "fillOnlyBelow": false,
+                  "fillLessThan": ""
+                }
+              },
+              "axes": {
+                "softMin": 0,
+                "softMax": 0,
+                "isLogScale": false
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list",
+                "customColors": null
+              },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "plugin": {
+                  "kind": "signoz/CompositeQuery",
+                  "spec": {
+                    "queries": [
+                      {
+                        "type": "builder_query",
+                        "spec": {
+                          "name": "A",
+                          "signal": "logs",
+                          "source": "",
+                          "stepInterval": 60,
+                          "aggregations": [
+                            {
+                              "expression": "p95(duration_ms)"
+                            }
+                          ],
+                          "disabled": false,
+                          "filter": {
+                            "expression": "service.name = 'as-sakina-backend' AND event = 'http.request' AND route != '/api/health'"
+                          },
+                          "groupBy": [
+                            {
+                              "name": "route",
+                              "fieldContext": "attribute",
+                              "fieldDataType": "string"
+                            }
+                          ],
+                          "order": [],
+                          "limit": 20,
+                          "having": {
+                            "expression": ""
+                          },
+                          "functions": [],
+                          "legend": "{{route}}"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      },
+      "868f2e7c-90ba-5e2c-af99-4854ee5c978f": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Erreurs serveur (5xx) par route",
+            "description": "Requêtes API hors healthchecks. Données issues des logs de toutes les requêtes ; pas des traces échantillonnées."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": {
+                "timePreference": "global_time",
+                "fillSpans": false
+              },
+              "formatting": {
+                "unit": "none",
+                "decimalPrecision": "2"
+              },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": {
+                  "fillOnlyBelow": false,
+                  "fillLessThan": ""
+                }
+              },
+              "axes": {
+                "softMin": 0,
+                "softMax": 0,
+                "isLogScale": false
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list",
+                "customColors": null
+              },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "plugin": {
+                  "kind": "signoz/CompositeQuery",
+                  "spec": {
+                    "queries": [
+                      {
+                        "type": "builder_query",
+                        "spec": {
+                          "name": "A",
+                          "signal": "logs",
+                          "source": "",
+                          "stepInterval": 60,
+                          "aggregations": [
+                            {
+                              "expression": "count()"
+                            }
+                          ],
+                          "disabled": false,
+                          "filter": {
+                            "expression": "service.name = 'as-sakina-backend' AND event = 'http.request' AND route != '/api/health' AND status_code >= 500"
+                          },
+                          "groupBy": [
+                            {
+                              "name": "route",
+                              "fieldContext": "attribute",
+                              "fieldDataType": "string"
+                            }
+                          ],
+                          "order": [],
+                          "limit": 20,
+                          "having": {
+                            "expression": ""
+                          },
+                          "functions": [],
+                          "legend": "{{route}}"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      },
+      "09fbeb40-1905-5002-a848-9c2cb62e69e9": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Refus et validations (4xx)",
+            "description": "Requêtes API hors healthchecks. Données issues des logs de toutes les requêtes ; pas des traces échantillonnées."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": {
+                "timePreference": "global_time",
+                "fillSpans": false
+              },
+              "formatting": {
+                "unit": "none",
+                "decimalPrecision": "2"
+              },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": {
+                  "fillOnlyBelow": false,
+                  "fillLessThan": ""
+                }
+              },
+              "axes": {
+                "softMin": 0,
+                "softMax": 0,
+                "isLogScale": false
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list",
+                "customColors": null
+              },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "plugin": {
+                  "kind": "signoz/CompositeQuery",
+                  "spec": {
+                    "queries": [
+                      {
+                        "type": "builder_query",
+                        "spec": {
+                          "name": "A",
+                          "signal": "logs",
+                          "source": "",
+                          "stepInterval": 60,
+                          "aggregations": [
+                            {
+                              "expression": "count()"
+                            }
+                          ],
+                          "disabled": false,
+                          "filter": {
+                            "expression": "service.name = 'as-sakina-backend' AND event = 'http.request' AND route != '/api/health' AND status_code >= 400 AND status_code < 500"
+                          },
+                          "groupBy": [
+                            {
+                              "name": "status_code",
+                              "fieldContext": "attribute",
+                              "fieldDataType": "float64"
+                            }
+                          ],
+                          "order": [],
+                          "limit": 20,
+                          "having": {
+                            "expression": ""
+                          },
+                          "functions": [],
+                          "legend": "{{status_code}}"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      },
+      "1308db16-fd69-5ed2-ac14-93b40c94cf72": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Requêtes lentes (plus de 1 seconde)",
+            "description": "Requêtes API hors healthchecks. Données issues des logs de toutes les requêtes ; pas des traces échantillonnées."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": {
+                "timePreference": "global_time",
+                "fillSpans": false
+              },
+              "formatting": {
+                "unit": "none",
+                "decimalPrecision": "2"
+              },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": {
+                  "fillOnlyBelow": false,
+                  "fillLessThan": ""
+                }
+              },
+              "axes": {
+                "softMin": 0,
+                "softMax": 0,
+                "isLogScale": false
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list",
+                "customColors": null
+              },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "plugin": {
+                  "kind": "signoz/CompositeQuery",
+                  "spec": {
+                    "queries": [
+                      {
+                        "type": "builder_query",
+                        "spec": {
+                          "name": "A",
+                          "signal": "logs",
+                          "source": "",
+                          "stepInterval": 60,
+                          "aggregations": [
+                            {
+                              "expression": "count()"
+                            }
+                          ],
+                          "disabled": false,
+                          "filter": {
+                            "expression": "service.name = 'as-sakina-backend' AND event = 'http.request' AND route != '/api/health' AND duration_ms > 1000"
+                          },
+                          "groupBy": [
+                            {
+                              "name": "route",
+                              "fieldContext": "attribute",
+                              "fieldDataType": "string"
+                            }
+                          ],
+                          "order": [],
+                          "limit": 20,
+                          "having": {
+                            "expression": ""
+                          },
+                          "functions": [],
+                          "legend": "{{route}}"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      }
+    },
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "Suivi des requêtes",
+            "collapse": {
+              "open": true
+            }
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 6,
+              "height": 6,
+              "content": {
+                "$ref": "#/spec/panels/28594013-6c02-5c53-92b8-baed02ee16ec"
+              }
+            },
+            {
+              "x": 6,
+              "y": 0,
+              "width": 6,
+              "height": 6,
+              "content": {
+                "$ref": "#/spec/panels/cf773e62-3381-5f95-afb3-96505f97cc0d"
+              }
+            },
+            {
+              "x": 0,
+              "y": 6,
+              "width": 6,
+              "height": 6,
+              "content": {
+                "$ref": "#/spec/panels/a099a9a6-eb4a-51f0-8b72-20eea30d80a9"
+              }
+            },
+            {
+              "x": 6,
+              "y": 6,
+              "width": 6,
+              "height": 6,
+              "content": {
+                "$ref": "#/spec/panels/868f2e7c-90ba-5e2c-af99-4854ee5c978f"
+              }
+            },
+            {
+              "x": 0,
+              "y": 12,
+              "width": 6,
+              "height": 6,
+              "content": {
+                "$ref": "#/spec/panels/09fbeb40-1905-5002-a848-9c2cb62e69e9"
+              }
+            },
+            {
+              "x": 6,
+              "y": 12,
+              "width": 6,
+              "height": 6,
+              "content": {
+                "$ref": "#/spec/panels/1308db16-fd69-5ed2-ac14-93b40c94cf72"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "duration": "1h",
+    "refreshInterval": "1m",
+    "links": []
+  }
+}
