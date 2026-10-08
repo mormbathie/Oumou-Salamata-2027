@@ -3973,5 +3973,45 @@
     "fr": "Confirmer le règlement",
     "en": "Confirm payment",
     "ar": "تأكيد الدفع"
+  },
+  "Exemplaire parent": {
+    "fr": "Exemplaire parent",
+    "en": "Parent copy",
+    "ar": "نسخة ولي الأمر"
+  },
+  "Exemplaire comptabilité": {
+    "fr": "Exemplaire comptabilité",
+    "en": "Accounting copy",
+    "ar": "نسخة المحاسبة"
+  },
+  "Découper suivant les pointillés": {
+    "fr": "Découper suivant les pointillés",
+    "en": "Cut along the dotted line",
+    "ar": "قص على طول الخط المنقط"
+  },
+  "Date d’émission": {
+    "fr": "Date d’émission",
+    "en": "Issue date",
+    "ar": "تاريخ الإصدار"
+  },
+  "Cette facture ne constitue pas un reçu de paiement.": {
+    "fr": "Cette facture ne constitue pas un reçu de paiement.",
+    "en": "This invoice is not proof of payment.",
+    "ar": "هذه الفاتورة ليست إيصال دفع."
+  },
+  "School year": {
+    "fr": "Année scolaire",
+    "en": "School year",
+    "ar": "السنة الدراسية"
+  },
+  "Invoice number": {
+    "fr": "Numéro de facture",
+    "en": "Invoice number",
+    "ar": "رقم الفاتورة"
+  },
+  "Due date": {
+    "fr": "Date d’échéance",
+    "en": "Due date",
+    "ar": "تاريخ الاستحقاق"
   }
 }

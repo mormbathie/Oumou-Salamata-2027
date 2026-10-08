@@ -1,3 +1,4 @@
+import { printFinancialDocument } from './financialPrint';
 import { getLanguage, t } from '../i18n';
 import { ageWarning, effectiveFees, school, programs, programFor, itemLabels, money, transportFees } from '../config/school';
 export const escapeHtml = (v:unknown) => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
@@ -22,7 +23,5 @@ export function printSchoolInformation() {
 }
 export const schoolNotes=()=>['The preschool and elementary initial packages include one monthly tuition payment.','Supplies are available from the school office.','July is part of the school year and is included in enrolment.','June is paid in advance and spread over the other months.','Teaching: 50% Arabic (Islamic and language education), 50% French plus English.'];
 export function printInvoice(invoice:any) {
-  const student=invoice.student || {};
-  const fields:[string,unknown][]=[['Invoice number',invoice.invoiceNumber],['Student name:',`${student.firstName || ''} ${student.lastName || ''}`],['Matricule',student.matricule],['Purpose',invoice.title],['Due date',new Date(invoice.dueDate).toLocaleDateString('fr-SN')],['Created by',invoice.createdByName || '—']];
-  printSchoolDocument(t('Invoice'),`<table>${fields.map(([k,v])=>`<tr><th>${escapeHtml(t(k))}</th><td>${escapeHtml(v)}</td></tr>`).join('')}</table><section><h3>${escapeHtml(t('Invoice amount'))}</h3><table><tr><th>${escapeHtml(t('Invoice amount'))}</th><td>${money(invoice.amount)}</td></tr><tr><th>${escapeHtml(t('Total paid'))}</th><td>${money(invoice.paidAmount)}</td></tr><tr class="total"><th>${escapeHtml(t('Balance due'))}</th><td>${money(invoice.balance)}</td></tr></table></section><div class="signatures"><span>${escapeHtml(t('Parent / payer signature'))}</span><span>${escapeHtml(t('School office stamp and signature'))}</span></div>`,invoice.academicYear?.name || school.year);
+  printFinancialDocument(invoice);
 }
