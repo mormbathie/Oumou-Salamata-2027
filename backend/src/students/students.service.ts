@@ -1,6 +1,6 @@
 import { findOrCreateParent } from '../parents/parent-identity';
 import { schoolFees, schoolOptions, validateProgramAge, validateOptionsForClass, registrationAdjustment, registrationSnapshot } from '../school/school-options';
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { DocumentsService } from '../documents/documents.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, Gender, StudentStatus, InvoiceType, InvoiceStatus } from '@prisma/client';
@@ -37,7 +37,7 @@ export class StudentsService {
     const isManager = roles.includes('ADMIN') || roles.includes('DIRECTEUR');
     const isTeacher = roles.includes('ENSEIGNANT') && !isManager;
     if (!isManager && roles.includes('PARENT') && !isTeacher) {
-      if (!requester.email) return [];
+      if (!requester.email || !requester.emailVerified) throw new ForbiddenException('Vérifiez votre adresse e-mail pour accéder aux dossiers de vos enfants.');
       where.parent = { is: { email: { equals: requester.email, mode: 'insensitive' } } };
     } else if (isTeacher) {
       if (!requester.email) return [];
@@ -61,6 +61,7 @@ export class StudentsService {
           ? { select: { id: true, firstName: true, lastName: true, phone: true, relation: true } }
           : true,
         enrollments: {
+          where: { academicYear: { isCurrent: true } },
           include: {
             classroom: true,
             academicYear: true,
@@ -70,6 +71,7 @@ export class StudentsService {
         },
         ...(!isTeacher ? {
           invoices: {
+            where: { cancelledAt: null },
             select: { amount: true, paidAmount: true, balance: true, status: true },
           },
         } : {}),
@@ -82,16 +84,18 @@ export class StudentsService {
     const roles: string[] = requester?.roles || [];
     const isManager = roles.includes('ADMIN') || roles.includes('DIRECTEUR');
     const isTeacher = roles.includes('ENSEIGNANT') && !isManager;
+    const isParent = !isManager && !isTeacher && roles.includes('PARENT');
+    if (isParent && (!requester.email || !requester.emailVerified)) throw new ForbiddenException('Vérifiez votre adresse e-mail pour accéder aux dossiers de vos enfants.');
     const student = await this.prisma.student.findUnique({
       where: { id },
       include: {
         parent: isTeacher
           ? { select: { id: true, firstName: true, lastName: true, phone: true, relation: true } }
-          : { include: { ...(isManager ? { documents: { orderBy: { createdAt: 'desc' as const } } } : {}) } },
-        ...(isManager ? { documents: { orderBy: { createdAt: 'desc' as const } } } : {}),
+          : { include: { ...((isManager || isParent) ? { documents: { orderBy: { createdAt: 'desc' as const } } } : {}) } },
+        ...((isManager || isParent) ? { documents: { orderBy: { createdAt: 'desc' as const } } } : {}),
         enrollments: {
           include: { classroom: { include: { teacher: { select: { email: true } } } }, academicYear: true },
-          orderBy: { enrollmentDate: 'desc' },
+          orderBy: [{ academicYear: { isCurrent: 'desc' } }, { academicYear: { startDate: 'desc' } }],
         },
         ...(!isTeacher ? {
           invoices: { include: { payments: true }, orderBy: { createdAt: 'desc' } },
@@ -173,6 +177,25 @@ export class StudentsService {
     return this.documents.studentPhoto(id);
   }
 
+  private async findDuplicates(tx: Prisma.TransactionClient, data: any) {
+    const name = (value: string) => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().replace(/\s+/g, ' ').toLowerCase();
+    const phone = (value: string) => String(value || '').replace(/\D/g, '').replace(/^(00221|221)(?=\d{9}$)/, '');
+    const birth = new Date(data.dateOfBirth);
+    if (!Number.isFinite(birth.getTime())) throw new BadRequestException('Date de naissance invalide.');
+    const from = new Date(birth.toISOString().slice(0, 10) + 'T00:00:00.000Z');
+    const to = new Date(from.getTime() + 86400000);
+    const candidates = await tx.student.findMany({
+      where: { dateOfBirth: { gte: from, lt: to } },
+      include: { parent: { select: { id: true, phone: true } } },
+    });
+    const chosenParent = data.parentId ? await tx.parent.findUnique({ where: { id: data.parentId }, select: { phone: true } }) : null;
+    const parentPhone = phone(chosenParent?.phone || data.parentData?.phone);
+    return candidates.filter(row => name(row.firstName) === name(data.firstName) && name(row.lastName) === name(data.lastName) &&
+      (data.parentId ? row.parentId === data.parentId || (!!parentPhone && phone(row.parent?.phone || '') === parentPhone)
+        : parentPhone ? phone(row.parent?.phone || '') === parentPhone : !row.parentId))
+      .map(row => ({ id: row.id, matricule: row.matricule, firstName: row.firstName, lastName: row.lastName }));
+  }
+
   async create(data: {
     firstName: string;
     lastName: string;
@@ -204,6 +227,7 @@ export class StudentsService {
     emergencyContactPhone?: string;
     healthNotes?: string;
     schoolItemsProvided?: string;
+    duplicateOverrideReason?: string;
   }, actor: ActingUser) {
     const author = actorStamp(actor);
     const options = schoolOptions(data as any);
@@ -215,9 +239,18 @@ export class StudentsService {
     // Generate matricule
     // Serialize registration numbering; deletion must never reuse a matricule.
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(20261007)`;
+    const duplicates = await this.findDuplicates(tx, data);
+    const reason = data.duplicateOverrideReason?.trim();
+    if (duplicates.length && (!reason || reason.length < 10 || reason.length > 1000)) {
+      throw new ConflictException({ message: 'Un dossier similaire existe déjà. Vérifiez le matricule avant de poursuivre. Pour un homonyme, indiquez un motif de dérogation (10 à 1 000 caractères).', duplicates });
+    }
     const records = await tx.student.findMany({ select: { matricule: true } });
     const currentYear = new Date().getFullYear();
-    const matricule = `OS-${currentYear}-${String(Math.max(0, ...records.map(row => { const match = row.matricule.match(new RegExp(`^OS-${currentYear}-(\\d+)$`)); return match ? Number(match[1]) : 0; })) + 1).padStart(4, '0')}`;
+    const maximum = Math.max(0, ...records.map(row => { const match = row.matricule.match(new RegExp(`^OS-${currentYear}-(\\d+)$`)); return match ? Number(match[1]) : 0; }));
+    const counter = await tx.registrationCounter.findUnique({ where: { year: currentYear } });
+    const nextNumber = Math.max(maximum, counter?.value || 0) + 1;
+    await tx.registrationCounter.upsert({ where: { year: currentYear }, update: { value: nextNumber }, create: { year: currentYear, value: nextNumber } });
+    const matricule = `OS-${currentYear}-${String(nextNumber).padStart(4, '0')}`;
 
     let parentId = data.parentId;
 
@@ -232,6 +265,7 @@ export class StudentsService {
       data: {
         ...options,
         matricule,
+        duplicateOverrideReason: duplicates.length ? reason : null,
         firstName: data.firstName,
         lastName: data.lastName,
         gender: data.gender,
@@ -301,6 +335,11 @@ export class StudentsService {
       }
     }
 
+    if (duplicates.length) await tx.businessAudit.create({ data: {
+      action: 'STUDENT_DUPLICATE_OVERRIDE', entityId: student.id,
+      actorId: author.id, actorName: author.name, actorRole: author.role,
+      reason, details: JSON.stringify({ existingIds: duplicates.map(row => row.id) }),
+    } });
     return student.id;
     });
 
@@ -319,7 +358,7 @@ export class StudentsService {
     } });
     if (!current) throw new NotFoundException('Élève introuvable.');
     const enrollment = current.enrollments[0];
-    const invoices = enrollment ? await this.prisma.invoice.findMany({ where: { studentId: current.id, academicYearId: enrollment.academicYearId, type: InvoiceType.REGISTRATION } }) : [];
+    const invoices = enrollment ? await this.prisma.invoice.findMany({ where: { studentId: current.id, academicYearId: enrollment.academicYearId, type: InvoiceType.REGISTRATION, cancelledAt: null } }) : [];
     if (invoices.length > 1) throw new BadRequestException('Plusieurs factures d’inscription existent : faites vérifier le dossier.');
     const invoice = invoices[0];
     const changed = ['fullDay', 'supplies', 'karate', 'transportZone'].some(key => data[key] !== undefined && (current[key] || false) !== (options[key] || false));
@@ -357,7 +396,7 @@ export class StudentsService {
         if (billingChanged && enrollment && classroom) {
           // Lock invoices before reading their paid amounts: simultaneous cash receipts remain safe.
           await tx.$queryRaw(Prisma.sql`SELECT id FROM "Invoice" WHERE "studentId" = ${id} AND "academicYearId" = ${enrollment.academicYearId} AND type = 'REGISTRATION' FOR UPDATE`);
-          const invoices = await tx.invoice.findMany({ where: { studentId: id, academicYearId: enrollment.academicYearId, type: InvoiceType.REGISTRATION } });
+          const invoices = await tx.invoice.findMany({ where: { studentId: id, academicYearId: enrollment.academicYearId, type: InvoiceType.REGISTRATION, cancelledAt: null } });
           if (invoices.length > 1) throw new BadRequestException('Plusieurs factures d’inscription existent : faites vérifier le dossier avant de changer les options.');
           const invoice = invoices[0];
           if (invoice) {

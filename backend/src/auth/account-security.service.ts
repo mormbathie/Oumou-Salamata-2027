@@ -26,6 +26,10 @@ export class AccountSecurityService {
     return response.status === 204 ? undefined : response.json();
   }
 
+  async smtpSettings(): Promise<Record<string, string>> {
+    return (await this.request('')).smtpServer || {};
+  }
+
   private throttle(key: string, maximum: number) {
     const now = Date.now();
     for (const [k, value] of this.limits) if (value.expires <= now) this.limits.delete(k);

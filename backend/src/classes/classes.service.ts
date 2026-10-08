@@ -12,6 +12,7 @@ export class ClassesService {
     const managesAll = roles.includes('ADMIN') || roles.includes('DIRECTEUR');
     if (roles.includes('CONTROLEUR_PRESENCE') && !managesAll && !roles.includes('ENSEIGNANT')) {
       return this.prisma.classroom.findMany({
+        where: { academicYear: { isCurrent: true } },
         select: {
           id: true,
           name: true,
@@ -25,7 +26,7 @@ export class ClassesService {
     if (roles.includes('ENSEIGNANT') && !managesAll) {
       if (!requester.email) return [];
       const assignedClasses = await this.prisma.classroom.findMany({
-        where: { teacher: { is: { email: requester.email } } },
+        where: { academicYear: { isCurrent: true }, teacher: { is: { email: requester.email } } },
         include: {
           academicYear: true,
           teacher: { select: { id: true, firstName: true, lastName: true, email: true } },
@@ -36,6 +37,7 @@ export class ClassesService {
       return assignedClasses.map(classroom => ({ ...classroom, effectiveRegistrationFee: schoolFees({}, classroom).registrationFee }));
     }
     const classrooms = await this.prisma.classroom.findMany({
+      where: { academicYear: { isCurrent: true } },
       include: {
         academicYear: true,
         teacher: {
@@ -49,6 +51,8 @@ export class ClassesService {
     });
     return classrooms.map(classroom => ({ ...classroom, effectiveRegistrationFee: schoolFees({}, classroom).registrationFee }));
   }
+
+  async currentYear() { return this.prisma.academicYear.findFirst({ where: { isCurrent: true }, select: { id: true, name: true } }); }
 
   async findOne(id: string, requester?: any) {
     const roles: string[] = requester?.roles || [];

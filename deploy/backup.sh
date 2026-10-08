@@ -50,8 +50,8 @@ cleanup() {
   if (( result != 0 )); then
     # Remove only files created for this failed run, never an application volume.
     rm -f -- "$staging/postgres.sql.gz.tmp" "$staging/keycloak.sql.gz.tmp" \
-      "$staging/school-documents.tar.gz.tmp" "$staging/postgres.sql.gz" \
-      "$staging/keycloak.sql.gz" "$staging/school-documents.tar.gz" \
+      "$staging/school-documents.tar.gz.tmp" "$staging/deployment-config.tar.gz.tmp" "$staging/postgres.sql.gz" \
+      "$staging/keycloak.sql.gz" "$staging/school-documents.tar.gz" "$staging/deployment-config.tar.gz" \
       "$staging/.complete" || true
     rmdir -- "$staging" 2>/dev/null || true
     printf 'Backup failed; no completed backup was published.\n' >&2
@@ -69,7 +69,17 @@ trap cleanup EXIT
 "${compose[@]}" exec -T backend tar -czf - -C /app uploads \
   </dev/null > "$staging/school-documents.tar.gz.tmp"
 
-# Publish only after all three commands succeeded. The directory rename is atomic.
+# Only include private configuration after the owner explicitly authorizes its encrypted offsite copy.
+if [[ -f /etc/assakina-backup/include-private-config ]]; then
+  config_files=(.env deployment-access.txt deploy/realm.production.json deploy/production.env)
+  for optional in deploy/smtp.private.json deploy/last-release.json; do
+    [[ ! -f "$optional" ]] || config_files+=("$optional")
+  done
+  tar -czf "$staging/deployment-config.tar.gz.tmp" -- "${config_files[@]}"
+  mv -- "$staging/deployment-config.tar.gz.tmp" "$staging/deployment-config.tar.gz"
+fi
+
+# Publish only after all commands succeeded. The directory rename is atomic.
 mv -- "$staging/postgres.sql.gz.tmp" "$staging/postgres.sql.gz"
 mv -- "$staging/keycloak.sql.gz.tmp" "$staging/keycloak.sql.gz"
 mv -- "$staging/school-documents.tar.gz.tmp" "$staging/school-documents.tar.gz"
@@ -81,7 +91,7 @@ trap - EXIT
 while IFS= read -r -d '' old_backup; do
   if [[ -f "$old_backup/.complete" && ! -L "$old_backup/.complete" ]]; then
     if ! rm -f -- "$old_backup/postgres.sql.gz" "$old_backup/keycloak.sql.gz" \
-      "$old_backup/school-documents.tar.gz" "$old_backup/.complete" \
+      "$old_backup/school-documents.tar.gz" "$old_backup/deployment-config.tar.gz" "$old_backup/.complete" \
       || ! rmdir -- "$old_backup"; then
       printf 'Could not fully remove expired backup: %s\n' "$old_backup" >&2
     fi

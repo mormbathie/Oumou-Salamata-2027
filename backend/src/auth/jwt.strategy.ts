@@ -46,6 +46,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       userId: payload.sub,
       username: payload.preferred_username || payload.username,
       email: payload.email,
+      emailVerified: payload.email_verified === true,
       firstName: payload.given_name || '',
       lastName: payload.family_name || '',
       roles,

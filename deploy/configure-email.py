@@ -76,6 +76,11 @@ def main():
     for key in ('host', 'port', 'user', 'from', 'ssl', 'auth'):
         if saved.get(key) != smtp_settings[key]:
             raise SystemExit('La vérification des paramètres enregistrés a échoué.')
+    target = root / 'deploy/smtp.private.json'
+    descriptor = os.open(str(target) + '.tmp', os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(descriptor, 'w') as handle:
+        json.dump(smtp_settings, handle)
+    os.replace(str(target) + '.tmp', target)
     print('Configuration enregistrée et message de test accepté par OVH.')
     print('Vérifiez sa réception dans Zimbra, puis testez « Envoyer un lien de vérification » dans Mon profil.')
     print('Aucun redémarrage requis. La vérification obligatoire et le double facteur ne sont pas activés par ce script.')

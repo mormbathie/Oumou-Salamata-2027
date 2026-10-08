@@ -1,3 +1,4 @@
+import { cashDay, openCashDay } from './cash-day';
 import { schoolFees, optionTariffs } from '../school/school-options';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -19,7 +20,7 @@ export class FinancesService {
   }) {
     const { studentId, classroomId, status, type, academicYearId, category } = params;
 
-    const where: any = {};
+    const where: any = { cancelledAt: null };
 
     if (category) where.category = category;
     if (studentId) where.studentId = studentId;
@@ -148,6 +149,7 @@ export class FinancesService {
       throw new BadRequestException('Le montant du paiement doit être un nombre supérieur à zéro');
     }
 
+    if (invoice.cancelledAt) throw new BadRequestException('Cette facture est annulée.');
     if (data.amount > invoice.balance) {
       throw new BadRequestException(
         `Le montant (${data.amount}) dépasse le solde restant (${invoice.balance})`,
@@ -158,8 +160,9 @@ export class FinancesService {
     const paymentNumber = 'REC-' + year + '-' + randomUUID().slice(0, 8).toUpperCase();
 
     return this.prisma.$transaction(async (tx) => {
+      await openCashDay(tx, cashDay(data.paymentDate ? new Date(data.paymentDate) : new Date()));
       const updated = await tx.invoice.updateMany({
-        where: { id: invoice.id, balance: { gte: data.amount } },
+        where: { id: invoice.id, cancelledAt: null, balance: { gte: data.amount } },
         data: {
           paidAmount: { increment: data.amount },
           balance: { decrement: data.amount },
@@ -246,6 +249,7 @@ export class FinancesService {
           studentId: enrollment.studentId,
           academicYearId,
           title,
+          cancelledAt: null,
         },
       });
 
@@ -306,7 +310,7 @@ export class FinancesService {
   }
 
   async getFinancialStats(academicYearId?: string) {
-    const where: any = academicYearId ? { academicYearId } : {};
+    const where: any = { cancelledAt: null, ...(academicYearId ? { academicYearId } : {}) };
 
     const invoices = await this.prisma.invoice.findMany({
       where,
@@ -332,6 +336,7 @@ export class FinancesService {
     };
 
     const recentPayments = await this.prisma.payment.findMany({
+      where: { cancelledAt: null, ...(academicYearId ? { invoice: { academicYearId } } : {}) },
       take: 10,
       orderBy: { paymentDate: 'desc' },
       include: {

@@ -2,6 +2,7 @@ import { school } from '../config/school';
 import { t, locale, getLanguage, roleLabel } from "../i18n";
 type ReceiptRecord = {
   payment: {
+    cancelledAt?: string | null;
     paymentNumber: string;
     paymentDate: string | Date;
     amount: number;
@@ -11,6 +12,7 @@ type ReceiptRecord = {
     receivedByRole?: string | null;
   };
   invoice: {
+    cancelledAt?: string | null;
     invoiceNumber: string;
     title: string;
     amount: number;
@@ -42,6 +44,7 @@ const money = (value: number) =>
   new Intl.NumberFormat(locale()).format(Number(value) || 0) + ' FCFA';
 
 export const printPaymentReceipt = (receipt: ReceiptRecord) => {
+  if (receipt.payment.cancelledAt || receipt.invoice.cancelledAt) { window.alert('Cette écriture est annulée. Elle ne peut plus servir de justificatif de paiement.'); return; }
   const printWindow = window.open('', '_blank', 'width=900,height=700');
   if (!printWindow) {
     window.alert(t("Allow pop-ups to print the receipt."));

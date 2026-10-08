@@ -1,3 +1,6 @@
+import { ParentPortalPage } from './pages/ParentPortalPage';
+import { AcademicTransitionPage } from './pages/AcademicTransitionPage';
+import { FinanceControlPage } from './pages/FinanceControlPage';
 import { ActivityPaymentsPage } from './pages/ActivityPaymentsPage';
 import { SchoolInformationPage } from './pages/SchoolInformationPage';
 import { t } from "./i18n/index";
@@ -32,12 +35,12 @@ const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const RequireRoles: React.FC<{ roles: string[]; children: React.ReactNode }> = ({ roles, children }) => {
   const { hasRole } = useAuth();
   if (hasRole(roles)) return <>{children}</>;
-  return <Navigate to={hasRole(['PARENT', 'ENSEIGNANT']) ? '/students' : '/'} replace />;
+  return <Navigate to={hasRole(['PARENT']) ? '/parent-portal' : hasRole(['ENSEIGNANT']) ? '/students' : '/'} replace />;
 };
 
 const HomeByRole: React.FC = () => {
   const { hasRole } = useAuth();
-  const destination = hasRole(['CONTROLEUR_PRESENCE']) ? '/attendance/scan' : hasRole(['PARENT', 'ENSEIGNANT']) ? '/students' : '/';
+  const destination = hasRole(['CONTROLEUR_PRESENCE']) ? '/attendance/scan' : hasRole(['PARENT']) ? '/parent-portal' : hasRole(['ENSEIGNANT']) ? '/students' : '/';
   return <Navigate to={destination} replace />;
 };
 
@@ -49,9 +52,12 @@ export const App: React.FC = () => (
         <Route path="/" element={<RequireAuth><Layout /></RequireAuth>}>
           <Route index element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><DashboardPage /></RequireRoles>} />
           <Route path="students" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT']}><StudentsPage /></RequireRoles>} />
+          <Route path="parent-portal" element={<RequireRoles roles={['PARENT']}><ParentPortalPage /></RequireRoles>} />
+          <Route path="academic-transition" element={<RequireRoles roles={['ADMIN','DIRECTEUR']}><AcademicTransitionPage /></RequireRoles>} />
           <Route path="parents" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><ParentsPage /></RequireRoles>} />
           <Route path="kimono" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><ActivityPaymentsPage category="KIMONO" /></RequireRoles>} />
           <Route path="karate" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><ActivityPaymentsPage category="KARATE" /></RequireRoles>} />
+          <Route path="finance-control" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><FinanceControlPage /></RequireRoles>} />
           <Route path="finances" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><FinancesPage /></RequireRoles>} />
           <Route path="grades" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'ENSEIGNANT']}><GradesPage /></RequireRoles>} />
           <Route path="attendance" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'ENSEIGNANT']}><AttendancePage /></RequireRoles>} />

@@ -212,10 +212,13 @@ def main():
     realm_path = root / "deploy" / "realm.production.json"
     access_path = root / "deployment-access.txt"
     created_paths = []
+    smtp_file = root / 'deploy/smtp.private.json'
     try:
         if preserve_existing(
             env_path, realm_path, access_path, arguments.app_host, arguments.auth_host
         ):
+            if not smtp_file.exists():
+                write_private(smtp_file, '{}\n', created_paths)
             return 0
         template = json.loads(
             (root / "keycloak" / "realm-export.json").read_text(encoding="utf-8")
@@ -249,6 +252,8 @@ def main():
             mode=0o640 if is_root else 0o600,
             group=1000 if is_root else None,
         )
+        if not smtp_file.exists():
+            write_private(smtp_file, '{}\n', created_paths)
         # Write .env last as the marker for a complete bootstrap.
         write_private(
             env_path,

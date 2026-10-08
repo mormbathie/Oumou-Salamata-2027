@@ -5,6 +5,8 @@ describe('Financial action attribution', () => {
 
   it('records the authenticated cashier instead of a submitted name', async () => {
     const tx: any = {
+      $executeRaw: jest.fn().mockResolvedValue(0),
+      cashClosing: { findUnique: jest.fn().mockResolvedValue(null) },
       invoice: {
         updateMany: jest.fn().mockResolvedValue({ count: 1 }),
         findUnique: jest.fn().mockResolvedValue({ id: 'invoice', balance: 0, paidAmount: 100 }),

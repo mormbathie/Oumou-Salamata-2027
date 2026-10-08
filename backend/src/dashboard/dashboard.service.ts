@@ -10,7 +10,7 @@ export class DashboardService {
   async getSummary(filter: CollectionFilter = {}) {
     const period = collectionPeriod(filter);
     const collectedPayments = await this.prisma.payment.findMany({
-      where: period.where, select: { amount: true, invoice: { select: { type: true, category: true } } },
+      where: { ...period.where, cancelledAt: null }, select: { amount: true, invoice: { select: { type: true, category: true } } },
     });
     const byCategory: Record<string, number> = {};
     for (const payment of collectedPayments) {
@@ -38,13 +38,14 @@ export class DashboardService {
       this.prisma.student.count({ where: { status: StudentStatus.ACTIVE } }),
       this.prisma.student.count({ where: { gender: Gender.MALE, status: StudentStatus.ACTIVE } }),
       this.prisma.student.count({ where: { gender: Gender.FEMALE, status: StudentStatus.ACTIVE } }),
-      this.prisma.classroom.count(),
+      this.prisma.classroom.count({ where: { academicYear: { isCurrent: true } } }),
       this.prisma.parent.count(),
       this.prisma.invoice.findMany({
-        where: currentYear ? { academicYearId: currentYear.id } : {},
+        where: { cancelledAt: null, ...(currentYear ? { academicYearId: currentYear.id } : {}) },
         select: { amount: true, paidAmount: true, balance: true, status: true },
       }),
       this.prisma.payment.findMany({
+        where: { cancelledAt: null },
         take: 5,
         orderBy: { paymentDate: 'desc' },
         include: {
@@ -61,6 +62,7 @@ export class DashboardService {
         },
       }),
       this.prisma.classroom.findMany({
+        where: { academicYear: { isCurrent: true } },
         select: {
           id: true,
           name: true,

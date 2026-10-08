@@ -178,6 +178,7 @@ model Parent {
 
 model Student {
   id            String        @id @default(uuid())
+  duplicateOverrideReason String?
   matricule     String        @unique // e.g. "OS-2026-0001"
   firstName     String
   lastName      String
@@ -310,6 +311,11 @@ model Invoice {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
+  cancelledAt     DateTime?
+  cancellationReason String?
+  cancelledById   String?
+  cancelledByName String?
+  cancelledByRole String?
   registrationOptions String?
   category        String?
   billingKey      String?       @unique
@@ -328,6 +334,11 @@ model Payment {
   receivedBy    String?       // Nom de l'agent ou comptable
   receivedById  String?
   receivedByRole String?
+  cancelledAt     DateTime?
+  cancellationReason String?
+  cancelledById   String?
+  cancelledByName String?
+  cancelledByRole String?
   notes         String?
   createdAt     DateTime      @default(now())
 }
@@ -378,4 +389,60 @@ model ParentDocument {
   createdAt    DateTime @default(now())
 
   @@index([parentId, category])
+}
+
+model BusinessAudit {
+  id String @id @default(uuid())
+  action String
+  entityId String
+  actorId String
+  actorName String
+  actorRole String
+  reason String?
+  details String
+  createdAt DateTime @default(now())
+  @@index([entityId, createdAt])
+}
+
+model CashClosing {
+  id String @id @default(uuid())
+  day String @unique
+  expectedCash Float
+  countedCash Float
+  difference Float
+  summary String
+  notes String?
+  actorId String
+  actorName String
+  actorRole String
+  createdAt DateTime @default(now())
+}
+
+model PaymentReminder {
+  id String @id @default(uuid())
+  invoiceId String
+  billingKey String @unique
+  status String @default("SENDING")
+  actorId String
+  actorName String
+  actorRole String
+  error String?
+  createdAt DateTime @default(now())
+  sentAt DateTime?
+  @@index([invoiceId, createdAt])
+}
+
+model PaymentInstallment {
+  id String @id @default(uuid())
+  invoiceId String
+  dueDate DateTime
+  amount Float
+  basePaidAmount Float
+  createdAt DateTime @default(now())
+  @@index([invoiceId, dueDate])
+}
+
+model RegistrationCounter {
+  year Int @id
+  value Int
 }

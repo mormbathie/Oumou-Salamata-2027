@@ -344,9 +344,9 @@ export const FinancesPage: React.FC = () => {
                           </button>
                         )}
                           <button onClick={() => printInvoice(inv)} className="rounded-lg p-2 text-emerald-700 hover:bg-emerald-50" title={t('Print invoice')}><Printer className="h-4 w-4" /></button>
-                        {inv.payments && inv.payments.length > 0 && (
+                        {inv.payments?.some((payment: any) => !payment.cancelledAt) && (
                           <button
-                            onClick={() => handleViewReceipt(inv, inv.payments[0])}
+                            onClick={() => handleViewReceipt(inv, inv.payments.find((payment: any) => !payment.cancelledAt))}
                             title={t("View the latest payment receipt")}
                             className="inline-flex items-center space-x-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-medium transition"
                           >

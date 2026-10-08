@@ -20,6 +20,10 @@ export class ClassesController {
     return this.classesService.findAll(user);
   }
 
+  @Get('current-year')
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'CONTROLEUR_PRESENCE', 'PARENT')
+  currentYear() { return this.classesService.currentYear(); }
+
   @Get('academic-years')
   @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT')
   @ApiOperation({ summary: 'Liste des années académiques' })

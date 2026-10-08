@@ -15,6 +15,9 @@ for private_file in .env deployment-access.txt deploy/realm.production.json; do
     exit 1
   fi
 done
+if [[ ! -f deploy/smtp.private.json ]]; then
+  python3 deploy/export-smtp-private.py
+fi
 version_line=$(cat deploy/production.env)
 if [[ ! "$version_line" =~ ^APP_VERSION=([0-9a-f]{40})$ ]]; then
   printf 'deploy/production.env must contain one full Git SHA.\n' >&2

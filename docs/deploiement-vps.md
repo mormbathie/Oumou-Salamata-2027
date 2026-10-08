@@ -284,3 +284,18 @@ retour arrière (qui préserve le schéma) ou publier une version corrigée.
 
 Quatre scénarios sont vérifiés dans la CI avec des services simulés : démarrage
 échoué, healthcheck échoué, contrôle public échoué et déploiement réussi.
+
+## Gestion financière, continuité et sauvegarde Google Drive
+
+Voir [les nouvelles fonctions et leur vérification](version-prochaine-suivi.md).
+Les sauvegardes externes utilisent rclone crypt ; l’autorisation Google et la
+clé de récupération sont privées et exclues de Git. Le timer
+`assakina-offsite-backup.timer` copie les sauvegardes à 03 h, heure de Tunis.
+`assakina-monitor.timer` vérifie les services toutes les cinq minutes.
+
+```bash
+sudo systemctl list-timers assakina-offsite-backup.timer assakina-monitor.timer
+sudo systemctl start assakina-offsite-backup.service
+sudo python3 /opt/oumou-salamat/deploy/test-restore.py
+sudo journalctl -u assakina-monitor.service --no-pager -n 20
+```

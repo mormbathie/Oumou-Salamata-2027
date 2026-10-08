@@ -3918,5 +3918,10 @@
     "fr": "Supplément journée continue : 25 000 F CFA ; mensualité : 35 000 F CFA.",
     "en": "Full-day supplement: 25,000 FCFA; monthly tuition: 35,000 FCFA.",
     "ar": "إضافة اليوم المتواصل: 25 000 فرنك؛ الرسوم الشهرية: 35 000 فرنك."
+  },
+  "School year {0}": {
+    "fr": "Année scolaire {0}",
+    "en": "School year {0}",
+    "ar": "السنة الدراسية {0}"
   }
 }

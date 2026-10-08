@@ -1,6 +1,7 @@
+import api from '../services/api';
 import { school } from '../config/school';
 import { t } from "../i18n/index";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserCheck, CreditCard, FileSpreadsheet, CalendarCheck, ScanLine,
@@ -16,14 +17,19 @@ export const Layout: React.FC = () => {
   const { user, logout, hasRole } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [yearName, setYearName] = useState(school.year.replace('/', ' - '));
+  useEffect(() => { let active = true; const loadYear = () => { api.get('/classes/current-year').then(r => { if (active && r.data?.name) setYearName(r.data.name); }).catch(() => {}); }; loadYear(); window.addEventListener('academic-year-changed', loadYear); return () => { active = false; window.removeEventListener('academic-year-changed', loadYear); }; }, []);
   const activeRole = user?.roles?.find((role) => roleNames.includes(role.toUpperCase()))?.toUpperCase();
   const visibleRole = roleLabel(activeRole || 'User');
   const navItems = [
     { to: '/', label: t("Dashboard"), icon: LayoutDashboard, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/students', label: t("Enrollment & Students"), icon: Users, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT', 'PARENT'] },
+    { to: '/parent-portal', label: 'Espace parents', icon: Users, roles: ['PARENT'] },
+    { to: '/academic-transition', label: 'Passage d’année', icon: CalendarCheck, roles: ['ADMIN', 'DIRECTEUR'] },
     { to: '/parents', label: t("Parents & Guardians"), icon: UserCheck, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/kimono', label: t('Kimono sales'), icon: CreditCard, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
     { to: '/karate', label: t('Monthly karate payments'), icon: CreditCard, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
+    { to: '/finance-control', label: 'Contrôle financier', icon: CreditCard, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/finances', label: t("Invoices & Payments"), icon: CreditCard, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/grades', label: t("Grades & Report Cards"), icon: FileSpreadsheet, roles: ['ADMIN', 'DIRECTEUR', 'ENSEIGNANT'] },
     { to: '/attendance', label: t("Attendance & Absences"), icon: CalendarCheck, roles: ['ADMIN', 'DIRECTEUR', 'ENSEIGNANT'] },
@@ -58,7 +64,7 @@ export const Layout: React.FC = () => {
 
       <div className="flex min-w-0 flex-1 flex-col md:overflow-hidden">
         <header className="sticky top-0 z-20 flex min-h-14 items-center justify-between border-b border-slate-200 bg-white px-3 shadow-xs sm:h-16 sm:px-6">
-          <div className="flex min-w-0 items-center gap-3 sm:gap-4"><button onClick={() => setMobileMenuOpen(true)} className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden" aria-label={t("Open menu")}><Menu className="h-5 w-5" /></button><div className="flex min-w-0 items-center gap-2"><span className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-emerald-500" /><span className="truncate text-[10px] font-semibold uppercase tracking-wider text-slate-500 sm:text-xs">{t("School year 2026 - 2027")}</span></div><span className="hidden text-slate-300 sm:inline">|</span><span className="hidden text-xs text-slate-500 sm:inline">{t("Dakar, Senegal")}</span></div>
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4"><button onClick={() => setMobileMenuOpen(true)} className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden" aria-label={t("Open menu")}><Menu className="h-5 w-5" /></button><div className="flex min-w-0 items-center gap-2"><span className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-emerald-500" /><span className="truncate text-[10px] font-semibold uppercase tracking-wider text-slate-500 sm:text-xs">{t('School year {0}', [yearName])}</span></div><span className="hidden text-slate-300 sm:inline">|</span><span className="hidden text-xs text-slate-500 sm:inline">{t("Dakar, Senegal")}</span></div>
           <LanguageSelector /><span className="shrink-0 rounded-full border border-emerald-200 bg-emerald-100 px-2.5 py-1 text-[10px] font-medium text-emerald-800 sm:text-xs">{visibleRole}</span>
         </header>
         <main className="hide-scrollbar min-w-0 flex-1 overflow-y-auto bg-slate-100/60 p-3 sm:p-6"><Outlet /></main>

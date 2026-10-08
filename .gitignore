@@ -39,3 +39,7 @@ __pycache__/
 
 # Recorded VPS rollback state (private server runtime file).
 /deploy/last-release.json
+
+/deploy/smtp.private.json
+
+/deployment-backup-recovery.json

@@ -214,7 +214,21 @@ export const StudentsPage: React.FC = () => {
           address: formData.parentAddress.trim() || undefined,
         };
       }
-      const created = await studentsApi.create(payload);
+      let created;
+      try {
+        created = await studentsApi.create(payload);
+      } catch (error: any) {
+        const duplicates = error.response?.data?.duplicates;
+        if (error.response?.status !== 409 || !Array.isArray(duplicates)) throw error;
+        const list = duplicates.map((row: any) => `${row.firstName} ${row.lastName} — ${row.matricule}`).join('\n');
+        const reason = window.prompt(`Un dossier similaire existe déjà :\n${list}\n\nVérifiez ce dossier. S'il s'agit bien d'un autre enfant, indiquez le motif de dérogation (10 caractères minimum). Annulez sinon.`);
+        if (!reason) return;
+        if (reason.trim().length < 10 || reason.trim().length > 1000) {
+          alert('Le motif doit contenir entre 10 et 1 000 caractères.');
+          return;
+        }
+        created = await studentsApi.create({ ...payload, duplicateOverrideReason: reason.trim() });
+      }
       setShowAddModal(false);
       setFormData((previous) => ({ ...previous, firstName: '', lastName: '', parentFirstName: '', parentLastName: '', parentPhone: '', parentEmail: '', parentAddress: '', parentProfession: '', supplies: false, fullDay: false, transportZone: null, karate: false, eveningClasses: false, emergencyContactName: '', emergencyContactPhone: '', healthNotes: '', schoolItemsProvided: '', placeOfBirth: '', address: '', bloodGroup: '' }));
       await loadData();
@@ -468,7 +482,7 @@ export const StudentsPage: React.FC = () => {
                 {!selectedStudent.attendances?.length ? <p className="text-xs text-slate-400">{t("No attendance recorded")}</p> : <div className="max-h-56 space-y-2 overflow-auto">{selectedStudent.attendances.map((attendance: any) => <div key={attendance.id} className="flex flex-col gap-1 rounded-lg border border-slate-100 p-3 text-xs sm:flex-row sm:items-center sm:justify-between"><div><b className="text-slate-800">{new Date(attendance.date).toLocaleDateString(locale())}</b><span className="ml-2 text-slate-500">{attendance.classroom?.name || ''}</span>{attendance.reason && <p className="text-[11px] text-slate-500">{attendance.reason}{attendance.justified ? t(" · excused") : ''}</p>}</div><span className="font-semibold text-slate-700">{attendance.status === 'PRESENT' ? t("Present") : attendance.status === 'ABSENT' ? 'Absent' : attendance.status === 'LATE' ? t("Late") : t("Excused")}{attendance.checkInAt ? t(" · arrived at ") + new Date(attendance.checkInAt).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' }) : ''}</span></div>)}</div>}
               </section>
 
-              {canSeeFinances && <section><h4 className="mb-2 text-xs font-bold uppercase text-slate-500">{t("Financial history & invoices")}</h4><div className="space-y-2">{!selectedStudent.invoices?.length ? <p className="text-xs text-slate-400">{t("No invoices recorded")}</p> : selectedStudent.invoices.map((invoice: any) => <div key={invoice.id} className="flex flex-col gap-2 rounded-lg border border-slate-100 bg-slate-50 p-3 text-xs sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold text-slate-800">{invoice.title}</p><p className="text-[11px] text-slate-400">{invoice.invoiceNumber} {t("· Due:")}{new Date(invoice.dueDate).toLocaleDateString(locale())}</p></div><div className="sm:text-right"><p className="font-bold text-slate-800">{invoice.amount.toLocaleString()} {t("FCFA")}</p><span className="inline-block rounded bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-800">{invoice.status === 'PAID' ? t("Paid") : invoice.status === 'PARTIAL' ? t("Balance: {0} F", [invoice.balance.toLocaleString()]) : t("Unpaid")}</span></div></div>)}</div></section>}
+              {canSeeFinances && <section><h4 className="mb-2 text-xs font-bold uppercase text-slate-500">{t("Financial history & invoices")}</h4><div className="space-y-2">{!selectedStudent.invoices?.length ? <p className="text-xs text-slate-400">{t("No invoices recorded")}</p> : selectedStudent.invoices.map((invoice: any) => <div key={invoice.id} className="flex flex-col gap-2 rounded-lg border border-slate-100 bg-slate-50 p-3 text-xs sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold text-slate-800">{invoice.title}</p><p className="text-[11px] text-slate-400">{invoice.invoiceNumber} {t("· Due:")}{new Date(invoice.dueDate).toLocaleDateString(locale())}</p></div><div className="sm:text-right"><p className="font-bold text-slate-800">{invoice.amount.toLocaleString()} {t("FCFA")}</p><span className="inline-block rounded bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-800">{invoice.cancelledAt ? 'Annulée' : invoice.status === 'PAID' ? t("Paid") : invoice.status === 'PARTIAL' ? t("Balance: {0} F", [invoice.balance.toLocaleString()]) : t("Unpaid")}</span></div></div>)}</div></section>}
             </div>}
 
             {detailsTab === 'documents' && manager && <div className="space-y-6 p-4 sm:p-6">

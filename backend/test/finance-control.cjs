@@ -1,0 +1,57 @@
+const assert = require('node:assert/strict');
+const { randomUUID } = require('node:crypto');
+const { PrismaClient } = require('@prisma/client');
+const { FinanceControlService } = require('../dist/src/finances/finance-control.service');
+const { FinancesService } = require('../dist/src/finances/finances.service');
+const { StudentsService } = require('../dist/src/students/students.service');
+(async () => {
+  if (!process.env.DATABASE_URL?.includes('_test')) throw Error('Isolated test database required');
+  const db = new PrismaClient(), deliveries=[], control = new FinanceControlService(db, {send:async(...args)=>{deliveries.push(args);}}), finances = new FinancesService(db), students = new StudentsService(db, {});
+  const actor = { userId: 'qa', username: 'QA', roles: ['ADMIN'] }, tag = randomUUID(), ids = [];
+  const day = '2000-01-15';
+  try {
+    assert.equal(await db.cashClosing.count({where:{day}}), 0, 'Test day must be unused');
+    const input = { firstName: 'QA '+tag, lastName: 'Duplication', gender: 'MALE', dateOfBirth: '2020-01-01', generateInvoice: false, parentData: {firstName:'QA '+tag,lastName:'Parent',phone:'780001234',email:'qa@example.invalid'} };
+    const a = await students.create(input, actor); ids.push(a.id);
+    await assert.rejects(students.create(input, actor), e=>e.getStatus()===409 && e.getResponse().duplicates[0].id===a.id);
+    assert.equal(await db.student.count({where:{firstName:input.firstName}}),1);
+    const b = await students.create({...input, duplicateOverrideReason:'Deux enfants homonymes vérifiés'},actor); ids.push(b.id);
+    assert.equal(await db.businessAudit.count({where:{entityId:b.id, action:'STUDENT_DUPLICATE_OVERRIDE'}}),1);
+    const invoice = await finances.createInvoice({studentId:a.id,title:tag,type:'OTHER',amount:1000,dueDate:new Date()},actor);
+    await finances.recordPayment({invoiceId:invoice.id,amount:400,paymentMethod:'CASH',paymentDate:day},actor);
+    await control.saveInstallments(invoice.id,[{dueDate:'2030-01-01',amount:300},{dueDate:'2030-02-01',amount:300}],actor);
+    await assert.rejects(control.saveInstallments(invoice.id,[{dueDate:'2030-01-01',amount:700}],actor));
+    const approval=(await control.reminderPreview(invoice.id)).approvalToken;
+    await assert.rejects(control.sendReminder(invoice.id,true,actor,'obsolete-preview'));
+    await control.sendReminder(invoice.id,true,actor,approval);
+    await assert.rejects(control.sendReminder(invoice.id,true,actor,approval));
+    assert.equal(deliveries.length,1,'Only one email per invoice/day');
+    assert.equal((await control.installments(invoice.id)).length,2);
+    let saved = await db.invoice.findUniqueOrThrow({where:{id:invoice.id},include:{payments:true}});
+    await assert.rejects(control.cancelInvoice(invoice.id,'Facture de test annulée',actor));
+    await Promise.all([control.cancelPayment(saved.payments[0].id,'Paiement enregistré par erreur',actor),control.cancelPayment(saved.payments[0].id,'Paiement enregistré par erreur',actor)]);
+    saved=await db.invoice.findUniqueOrThrow({where:{id:invoice.id}}); assert.equal(saved.paidAmount,0);assert.equal(saved.balance,1000);
+    await control.cancelInvoice(invoice.id,'Facture de test annulée',actor);
+    assert.equal(await db.invoice.count({where:{id:invoice.id}}),1,'Cancellation keeps original invoice');
+    await assert.rejects(finances.recordPayment({invoiceId:invoice.id,amount:100,paymentMethod:'CASH'},actor));
+    const second = await finances.createInvoice({studentId:a.id,title:tag,type:'OTHER',amount:1000,dueDate:new Date()},actor);
+    const result=await finances.recordPayment({invoiceId:second.id,amount:600,paymentMethod:'CASH',paymentDate:day},actor);
+    assert.equal((await control.preview(day)).expectedCash,600);
+    await assert.rejects(control.close({day,countedCash:590},actor));
+    await control.close({day,countedCash:590,notes:'Écart de caisse vérifié'},actor);
+    await assert.rejects(finances.recordPayment({invoiceId:second.id,amount:100,paymentMethod:'CASH',paymentDate:day},actor));
+    await assert.rejects(control.cancelPayment(result.createdPayment.id,'Correction après clôture',actor));
+    console.log('PASS: duplicate rollback, audited homonym override, concurrent cancellation idempotency, payment preservation, closed-day locks');
+  } finally {
+    const invoices=await db.invoice.findMany({where:{studentId:{in:ids}},select:{id:true}});
+    const invIds=invoices.map(x=>x.id);
+    const pay=await db.payment.findMany({where:{invoiceId:{in:invIds}},select:{id:true}});
+    const closing=await db.cashClosing.findUnique({where:{day}});
+    await db.businessAudit.deleteMany({where:{entityId:{in:[...ids,...invIds,...pay.map(x=>x.id),...(closing?[closing.id]:[])]}}});
+    await db.cashClosing.deleteMany({where:{day}});
+    await db.paymentInstallment.deleteMany({where:{invoiceId:{in:invIds}}});
+    await db.paymentReminder.deleteMany({where:{invoiceId:{in:invIds}}});
+    await db.payment.deleteMany({where:{invoiceId:{in:invIds}}}); await db.invoice.deleteMany({where:{id:{in:invIds}}});
+    await db.student.deleteMany({where:{id:{in:ids}}}); await db.parent.deleteMany({where:{firstName:'QA '+tag}});await db.$disconnect();
+  }
+})().catch(e=>{console.error(e);process.exit(1)});

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -34,6 +35,12 @@ export class DocumentsService {
     config: ConfigService,
   ) {
     this.storagePath = resolve(config.get<string>('DOCUMENTS_STORAGE_PATH') || 'uploads');
+  }
+
+  async assertParentOwnsStudent(studentId: string, user: any) {
+    if (!user.email || !user.emailVerified) throw new ForbiddenException('Vérifiez votre adresse e-mail pour consulter les dossiers de vos enfants.');
+    const row = await this.prisma.student.findFirst({ where: { id: studentId, parent: { is: { email: { equals: user.email, mode: 'insensitive' } } } }, select: { id: true } });
+    if (!row) throw new NotFoundException('Document introuvable.');
   }
 
   async listStudent(studentId: string) {
