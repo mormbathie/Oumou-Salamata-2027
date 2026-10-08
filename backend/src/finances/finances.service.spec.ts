@@ -50,3 +50,20 @@ describe('Individual full-day tuition', () => {
     expect(result.createdCount).toBe(2);
   });
 });
+
+describe('Bulk settlement validation', () => {
+  const actor = { userId: 'cashier', username: 'QA', roles: ['COMPTABLE'] };
+  it.each([
+    { invoices: [], paymentMethod: 'CASH' },
+    { invoices: [{ id: 'a', balance: 0 }], paymentMethod: 'CASH' },
+    { invoices: [{ id: 'a', balance: 1.5 }], paymentMethod: 'CASH' },
+    { invoices: [{ id: 'a', balance: 100 }, { id: 'a', balance: 100 }], paymentMethod: 'CASH' },
+    { invoices: [{ id: 'a', balance: 100 }], paymentMethod: 'INVALID' },
+    { invoices: [{ id: 'a', balance: 100 }], paymentMethod: 'CASH', notes: 'x'.repeat(1001) },
+    { invoices: Array.from({ length: 1001 }, (_, i) => ({ id: String(i), balance: 100 })), paymentMethod: 'CASH' },
+  ])('rejects invalid selection before database writes', async data => {
+    const prisma: any = { $transaction: jest.fn() };
+    await expect(new FinancesService(prisma).settleBatch(data as any, actor)).rejects.toThrow();
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+});

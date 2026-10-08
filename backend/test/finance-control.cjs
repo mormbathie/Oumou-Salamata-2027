@@ -7,7 +7,7 @@ const { StudentsService } = require('../dist/src/students/students.service');
 (async () => {
   if (!process.env.DATABASE_URL?.includes('_test')) throw Error('Isolated test database required');
   const db = new PrismaClient(), deliveries=[], control = new FinanceControlService(db, {send:async(...args)=>{deliveries.push(args);}}), finances = new FinancesService(db), students = new StudentsService(db, {});
-  const actor = { userId: 'qa', username: 'QA', roles: ['ADMIN'] }, tag = randomUUID(), ids = [];
+  const actor = { userId: 'qa', username: 'QA', roles: ['ADMIN'] }, tag = randomUUID(), ids = [], batchIds = [];
   const day = '2000-01-15';
   try {
     assert.equal(await db.cashClosing.count({where:{day}}), 0, 'Test day must be unused');
@@ -34,6 +34,29 @@ const { StudentsService } = require('../dist/src/students/students.service');
     await control.cancelInvoice(invoice.id,'Facture de test annulée',actor);
     assert.equal(await db.invoice.count({where:{id:invoice.id}}),1,'Cancellation keeps original invoice');
     await assert.rejects(finances.recordPayment({invoiceId:invoice.id,amount:100,paymentMethod:'CASH'},actor));
+    const bulkA = await finances.createInvoice({studentId:a.id,title:tag,type:'OTHER',amount:1200,dueDate:new Date()},actor);
+    const bulkB = await finances.createInvoice({studentId:a.id,title:tag,type:'OTHER',amount:800,dueDate:new Date()},actor);
+    await finances.recordPayment({invoiceId:bulkA.id,amount:200,paymentMethod:'WAVE',paymentDate:day},actor);
+    const batchInput={invoices:[{id:bulkA.id,balance:1000},{id:bulkB.id,balance:800}],paymentMethod:'WAVE'};
+    await assert.rejects(finances.settleBatch({...batchInput,invoices:[batchInput.invoices[0],batchInput.invoices[0]]},actor));
+    const staleItems=[...batchInput.invoices].sort((a,b)=>a.id.localeCompare(b.id));
+    staleItems[1]={...staleItems[1],balance:staleItems[1].balance-100};
+    const paymentCountBefore=await db.payment.count({where:{invoiceId:{in:[bulkA.id,bulkB.id]}}});
+    await assert.rejects(finances.settleBatch({...batchInput,invoices:staleItems},actor));
+    assert.equal(await db.payment.count({where:{invoiceId:{in:[bulkA.id,bulkB.id]}}}),paymentCountBefore,'Rollback removes payments created before stale invoice');
+    assert.equal((await db.invoice.findUniqueOrThrow({where:{id:bulkA.id}})).balance,1000,'Failed lot rolls back every invoice');
+    const attempts=await Promise.allSettled([finances.settleBatch(batchInput,actor),finances.settleBatch(batchInput,actor)]);
+    assert.equal(attempts.filter(x=>x.status==='fulfilled').length,1,'Concurrent submission creates only one lot');
+    const batch=attempts.find(x=>x.status==='fulfilled').value; batchIds.push(batch.batchId);
+    assert.equal(batch.total,1800); assert.equal(batch.count,2);
+    assert.equal(new Set(batch.payments.map(x=>x.paymentNumber)).size,2);
+    assert.equal(await db.businessAudit.count({where:{entityId:batch.batchId,actorId:'qa',action:'PAYMENT_BATCH_SETTLED'}}),1);
+    for(const id of [bulkA.id,bulkB.id]) {
+      const paid=await db.invoice.findUniqueOrThrow({where:{id},include:{payments:true}});
+      assert.equal(paid.balance,0); assert.equal(paid.paidAmount,paid.amount); assert.equal(paid.status,'PAID');
+      assert.equal(paid.payments.at(-1).receivedById,'qa');
+    }
+    await assert.rejects(finances.settleBatch({...batchInput,invoices:[{id:invoice.id,balance:1000}]},actor));
     const second = await finances.createInvoice({studentId:a.id,title:tag,type:'OTHER',amount:1000,dueDate:new Date()},actor);
     const result=await finances.recordPayment({invoiceId:second.id,amount:600,paymentMethod:'CASH',paymentDate:day},actor);
     assert.equal((await control.preview(day)).expectedCash,600);
@@ -41,13 +64,17 @@ const { StudentsService } = require('../dist/src/students/students.service');
     await control.close({day,countedCash:590,notes:'Écart de caisse vérifié'},actor);
     await assert.rejects(finances.recordPayment({invoiceId:second.id,amount:100,paymentMethod:'CASH',paymentDate:day},actor));
     await assert.rejects(control.cancelPayment(result.createdPayment.id,'Correction après clôture',actor));
+    const today=new Date().toISOString().slice(0,10);
+    await db.cashClosing.create({data:{day:today,expectedCash:0,countedCash:0,difference:0,summary:'{}',actorId:'qa',actorName:'QA',actorRole:'ADMIN'}});
+    try { await assert.rejects(finances.settleBatch({invoices:[{id:second.id,balance:400}],paymentMethod:'CASH'},actor)); }
+    finally { await db.cashClosing.delete({where:{day:today}}); }
     console.log('PASS: duplicate rollback, audited homonym override, concurrent cancellation idempotency, payment preservation, closed-day locks');
   } finally {
     const invoices=await db.invoice.findMany({where:{studentId:{in:ids}},select:{id:true}});
     const invIds=invoices.map(x=>x.id);
     const pay=await db.payment.findMany({where:{invoiceId:{in:invIds}},select:{id:true}});
     const closing=await db.cashClosing.findUnique({where:{day}});
-    await db.businessAudit.deleteMany({where:{entityId:{in:[...ids,...invIds,...pay.map(x=>x.id),...(closing?[closing.id]:[])]}}});
+    await db.businessAudit.deleteMany({where:{entityId:{in:[...batchIds,...ids,...invIds,...pay.map(x=>x.id),...(closing?[closing.id]:[])]}}});
     await db.cashClosing.deleteMany({where:{day}});
     await db.paymentInstallment.deleteMany({where:{invoiceId:{in:invIds}}});
     await db.paymentReminder.deleteMany({where:{invoiceId:{in:invIds}}});

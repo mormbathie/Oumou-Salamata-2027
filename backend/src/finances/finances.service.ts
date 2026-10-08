@@ -216,6 +216,54 @@ export class FinancesService {
     });
   }
 
+  async settleBatch(data: {
+    invoices: { id: string; balance: number }[];
+    paymentMethod: PaymentMethod;
+    reference?: string;
+    notes?: string;
+  }, actor: ActingUser) {
+    if (!Array.isArray(data.invoices) || !data.invoices.length || data.invoices.length > 1000) {
+      throw new BadRequestException('Sélectionnez entre 1 et 1 000 factures.');
+    }
+    if (!Object.values(PaymentMethod).includes(data.paymentMethod)) throw new BadRequestException('Mode de paiement invalide.');
+    if (data.invoices.some(item => !item || typeof item.id !== 'string' || !item.id || !Number.isSafeInteger(item.balance) || item.balance <= 0)
+      || new Set(data.invoices.map(item => item.id)).size !== data.invoices.length) {
+      throw new BadRequestException('Sélection de factures invalide.');
+    }
+    if ([data.reference, data.notes].some(value => value !== undefined && (typeof value !== 'string' || value.length > 1000))) {
+      throw new BadRequestException('Référence ou notes invalides (1 000 caractères maximum).');
+    }
+    const author = actorStamp(actor);
+    const paymentDate = new Date();
+    const batchId = randomUUID();
+    return this.prisma.$transaction(async tx => {
+      await openCashDay(tx, cashDay(paymentDate));
+      const payments: { invoiceId: string; paymentId: string; paymentNumber: string; amount: number }[] = [];
+      // Stable order and exact approved balances prevent stale selections and double payment.
+      for (const item of [...data.invoices].sort((a, b) => a.id.localeCompare(b.id))) {
+        const updated = await tx.invoice.updateMany({
+          where: { id: item.id, cancelledAt: null, balance: item.balance },
+          data: { paidAmount: { increment: item.balance }, balance: 0, status: InvoiceStatus.PAID },
+        });
+        if (updated.count !== 1) throw new BadRequestException('Une facture a changé ou est déjà réglée. Aucun paiement du lot n’a été enregistré. Actualisez la page.');
+        const payment = await tx.payment.create({ data: {
+          invoiceId: item.id, amount: item.balance, paymentDate, paymentMethod: data.paymentMethod,
+          paymentNumber: 'REC-' + paymentDate.getFullYear() + '-' + randomUUID().toUpperCase(),
+          reference: data.reference, notes: data.notes,
+          receivedBy: author.name, receivedById: author.id, receivedByRole: author.role,
+        } });
+        payments.push({ invoiceId: item.id, paymentId: payment.id, paymentNumber: payment.paymentNumber, amount: item.balance });
+      }
+      const total = payments.reduce((sum, payment) => sum + payment.amount, 0);
+      await tx.businessAudit.create({ data: {
+        action: 'PAYMENT_BATCH_SETTLED', entityId: batchId,
+        actorId: author.id, actorName: author.name, actorRole: author.role,
+        details: JSON.stringify({ payments, total, paymentMethod: data.paymentMethod }),
+      } });
+      return { batchId, count: payments.length, total, payments };
+    }, { timeout: 30000 });
+  }
+
   async generateTuitionInvoicesForClass(data: {
     classroomId: string;
     monthName: string;

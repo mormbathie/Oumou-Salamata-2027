@@ -95,6 +95,12 @@ export class FinancesController {
     return this.financesService.createActivityInvoice(body, actor);
   }
 
+  @Post('payments/settle-batch')
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
+  async settleBatch(@Body() body: { invoices: { id: string; balance: number }[]; paymentMethod: PaymentMethod; reference?: string; notes?: string }, @CurrentUser() actor: any) {
+    return this.financesService.settleBatch(body, actor);
+  }
+
   @Post('payments')
   @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
   @ApiOperation({ summary: 'Enregistrer un paiement / versement pour une facture (génère un reçu)' })

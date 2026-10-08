@@ -39,6 +39,38 @@ export const FinancesPage: React.FC = () => {
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [currentReceiptPayment, setCurrentReceiptPayment] = useState<any>(null);
 
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [settlementInvoices, setSettlementInvoices] = useState<any[]>([]);
+  const [settling, setSettling] = useState(false);
+  const settlementPending = useRef(false);
+  const eligibleInvoices = invoices.filter(inv => !inv.cancelledAt && inv.balance > 0);
+  const chosenInvoices = eligibleInvoices.filter(inv => selectedIds.includes(inv.id));
+  const allSelected = eligibleInvoices.length > 0 && chosenInvoices.length === eligibleInvoices.length;
+  const settlementTotal = settlementInvoices.reduce((sum, inv) => sum + inv.balance, 0);
+
+  const openSettlement = () => {
+    setSettlementInvoices(chosenInvoices.map(inv => ({ ...inv })));
+    setPaymentMethod('CASH'); setPaymentRef(''); setPaymentNotes('');
+  };
+  const submitSettlement = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (settlementPending.current || !settlementInvoices.length) return;
+    settlementPending.current = true; setSettling(true);
+    try {
+      const result = await financesApi.settleBatch({
+        invoices: settlementInvoices.map(inv => ({ id: inv.id, balance: inv.balance })),
+        paymentMethod, reference: paymentRef, notes: paymentNotes,
+      });
+      setSettlementInvoices([]); setSelectedIds([]);
+      alert(t('Règlement enregistré : {0} factures, {1} FCFA.', [result.count, result.total.toLocaleString(locale())]));
+      await loadFinances();
+    } catch (error: any) {
+      alert(t('Payment error: {0}', [error.response?.data?.message || error.message]));
+      setSettlementInvoices([]); setSelectedIds([]);
+      await loadFinances();
+    } finally { settlementPending.current = false; setSettling(false); }
+  };
+
   // Payment Form
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<string>('CASH');
@@ -85,13 +117,14 @@ export const FinancesPage: React.FC = () => {
   };
 
   useEffect(() => {
+    setSelectedIds([]);
     loadFinances();
     return () => { ++requestVersion.current; requestPending.current = false; };
   }, [statusFilter, classFilter]);
 
   useEffect(() => {
     // Keep open forms and receipts stable; refresh only while this tab is visible.
-    if (showPaymentModal || showBatchModal || showReceiptModal) return;
+    if (showPaymentModal || showBatchModal || showReceiptModal || settlementInvoices.length) return;
     const refresh = () => {
       if (document.visibilityState === 'visible') void loadFinances(true);
     };
@@ -103,7 +136,7 @@ export const FinancesPage: React.FC = () => {
       window.removeEventListener('focus', refresh);
       document.removeEventListener('visibilitychange', refresh);
     };
-  }, [statusFilter, classFilter, showPaymentModal, showBatchModal, showReceiptModal]);
+  }, [statusFilter, classFilter, showPaymentModal, showBatchModal, showReceiptModal, settlementInvoices.length]);
 
   const handleOpenPayment = (inv: any) => {
     setSelectedInvoice(inv);
@@ -269,12 +302,22 @@ export const FinancesPage: React.FC = () => {
           {t("Showing")}<span className="font-bold text-slate-700">{invoices.length}</span> {t("invoices")}</div>
       </div>
 
+      <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <label className="flex items-center gap-2">
+          <input type="checkbox" aria-label={t('Sélectionner toutes les factures impayées affichées')} checked={allSelected} disabled={loading || !eligibleInvoices.length} onChange={event => setSelectedIds(event.target.checked ? eligibleInvoices.map(inv => inv.id) : [])} />
+          {t('Sélectionner toutes les factures impayées affichées')}
+        </label>
+        <span>{t('{0} factures sélectionnées · {1} FCFA', [chosenInvoices.length, chosenInvoices.reduce((sum, inv) => sum + inv.balance, 0).toLocaleString(locale())])}</span>
+        <button disabled={loading || !chosenInvoices.length} onClick={openSettlement} className="bg-emerald-600 text-white px-4 py-2 rounded-lg disabled:opacity-50">{t('Régler la sélection')}</button>
+      </div>
+
       {/* Invoices Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
               <tr>
+                <th className="px-3 py-3.5">{t("Sélection")}</th>
                 <th className="px-5 py-3.5">{t("Invoice No. & Date")}</th>
                 <th className="px-4 py-3.5">{t("Student & Class")}</th>
                 <th className="px-4 py-3.5">{t("Description")}</th>
@@ -288,12 +331,12 @@ export const FinancesPage: React.FC = () => {
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-8 text-slate-400">
+                  <td colSpan={9} className="text-center py-8 text-slate-400">
                     {t("Loading invoices…")}</td>
                 </tr>
               ) : invoices.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-8 text-slate-400">
+                  <td colSpan={9} className="text-center py-8 text-slate-400">
                     {t("No invoices found.")}</td>
                 </tr>
               ) : (
@@ -301,6 +344,7 @@ export const FinancesPage: React.FC = () => {
                   const studentClass = inv.student?.enrollments?.[0]?.classroom?.name || 'CI';
                   return (
                     <tr key={inv.id} className="hover:bg-slate-50/80 transition">
+                      <td className="px-3 py-3.5"><input type="checkbox" aria-label={t('Sélectionner la facture {0}', [inv.invoiceNumber])} disabled={!!inv.cancelledAt || inv.balance <= 0} checked={inv.balance > 0 && selectedIds.includes(inv.id)} onChange={event => setSelectedIds(ids => event.target.checked ? [...ids, inv.id] : ids.filter(id => id !== inv.id))} /></td>
                       <td className="px-5 py-3.5">
                         <span className="font-mono font-bold text-slate-800">{inv.invoiceNumber}</span>
                         <p className="text-[10px] text-slate-400">
@@ -365,6 +409,25 @@ export const FinancesPage: React.FC = () => {
       </div>
 
       {/* Modal: Save un Paiement */}
+      {settlementInvoices.length > 0 && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="settlement-title">
+          <form onSubmit={submitSettlement} className="bg-white rounded-xl p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto space-y-4">
+            <h3 id="settlement-title" className="font-bold text-lg">{t('Confirmer le règlement groupé')}</h3>
+            <p className="text-sm">{t('Cette action enregistre les encaissements réels et solde les factures sélectionnées. Un reçu sera créé pour chaque facture.')}</p>
+            <div className="max-h-48 overflow-y-auto space-y-2 text-sm">
+              {settlementInvoices.map(inv => <div key={inv.id} className="border-b pb-2"><strong>{inv.invoiceNumber}</strong> · {inv.student?.firstName} {inv.student?.lastName}<p>{inv.title} · {inv.balance.toLocaleString(locale())} FCFA</p></div>)}
+            </div>
+            <p className="font-bold">{t('{0} factures sélectionnées · {1} FCFA', [settlementInvoices.length, settlementTotal.toLocaleString(locale())])}</p>
+            <label className="block text-sm">{t('Payment method *')}<select required disabled={settling} value={paymentMethod} onChange={event => setPaymentMethod(event.target.value)} className="block w-full border rounded-lg p-2">
+              <option value="CASH">{t('Espèces')}</option><option value="WAVE">Wave</option><option value="ORANGE_MONEY">Orange Money</option><option value="BANK_TRANSFER">{t('Virement bancaire')}</option><option value="CHECK">{t('Chèque')}</option>
+            </select></label>
+            <label className="block text-sm">{t('Référence')}<input maxLength={1000} disabled={settling} value={paymentRef} onChange={event => setPaymentRef(event.target.value)} className="block w-full border rounded-lg p-2" /></label>
+            <label className="block text-sm">{t('Notes')}<textarea maxLength={1000} disabled={settling} value={paymentNotes} onChange={event => setPaymentNotes(event.target.value)} className="block w-full border rounded-lg p-2" /></label>
+            <div className="flex justify-end gap-3"><button type="button" disabled={settling} onClick={() => setSettlementInvoices([])} className="border rounded-lg px-4 py-2">{t('Cancel')}</button><button disabled={settling} className="bg-emerald-600 text-white rounded-lg px-4 py-2 disabled:opacity-50">{t(settling ? 'Enregistrement…' : 'Confirmer le règlement')}</button></div>
+          </form>
+        </div>
+      )}
+
       {showPaymentModal && selectedInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">

@@ -3923,5 +3923,55 @@
     "fr": "Année scolaire {0}",
     "en": "School year {0}",
     "ar": "السنة الدراسية {0}"
+  },
+  "Sélectionner toutes les factures impayées affichées": {
+    "fr": "Sélectionner toutes les factures impayées affichées",
+    "en": "Select all displayed outstanding invoices",
+    "ar": "تحديد جميع الفواتير غير المسددة المعروضة"
+  },
+  "{0} factures sélectionnées · {1} FCFA": {
+    "fr": "{0} factures sélectionnées · {1} FCFA",
+    "en": "{0} selected invoices · {1} FCFA",
+    "ar": "{0} فواتير محددة · {1} فرنك"
+  },
+  "Régler la sélection": {
+    "fr": "Régler la sélection",
+    "en": "Pay selected invoices",
+    "ar": "تسديد الفواتير المحددة"
+  },
+  "Sélection": {
+    "fr": "Sélection",
+    "en": "Selection",
+    "ar": "تحديد"
+  },
+  "Sélectionner la facture {0}": {
+    "fr": "Sélectionner la facture {0}",
+    "en": "Select invoice {0}",
+    "ar": "تحديد الفاتورة {0}"
+  },
+  "Confirmer le règlement groupé": {
+    "fr": "Confirmer le règlement groupé",
+    "en": "Confirm bulk payment",
+    "ar": "تأكيد الدفع الجماعي"
+  },
+  "Cette action enregistre les encaissements réels et solde les factures sélectionnées. Un reçu sera créé pour chaque facture.": {
+    "fr": "Cette action enregistre les encaissements réels et solde les factures sélectionnées. Un reçu sera créé pour chaque facture.",
+    "en": "This records actual payments and settles the selected invoices. A receipt will be created for each invoice.",
+    "ar": "يسجل هذا الإجراء المدفوعات الفعلية ويسدد الفواتير المحددة. سيتم إنشاء إيصال لكل فاتورة."
+  },
+  "Règlement enregistré : {0} factures, {1} FCFA.": {
+    "fr": "Règlement enregistré : {0} factures, {1} FCFA.",
+    "en": "Payment recorded: {0} invoices, {1} FCFA.",
+    "ar": "تم تسجيل الدفع: {0} فواتير، {1} فرنك."
+  },
+  "Enregistrement…": {
+    "fr": "Enregistrement…",
+    "en": "Saving…",
+    "ar": "جارٍ الحفظ…"
+  },
+  "Confirmer le règlement": {
+    "fr": "Confirmer le règlement",
+    "en": "Confirm payment",
+    "ar": "تأكيد الدفع"
   }
 }
