@@ -1,3 +1,4 @@
+import { useAuth } from '../auth/AuthContext';
 import { printInvoice } from '../utils/schoolDocuments';
 import { SchoolHeader } from '../components/SchoolHeader';
 import { t, locale, roleLabel } from "../i18n/index";
@@ -22,6 +23,40 @@ import { financesApi, classesApi, studentsApi } from '../services/api';
 import { printPaymentReceipt } from '../utils/receipt';
 
 export const FinancesPage: React.FC = () => {
+  const { hasRole } = useAuth();
+  const [correctionInvoice, setCorrectionInvoice] = useState<any>(null);
+  const [correctionPaymentId, setCorrectionPaymentId] = useState('');
+  const [correctionAmount, setCorrectionAmount] = useState('');
+  const [correctionReason, setCorrectionReason] = useState('');
+  const [correctionHistory, setCorrectionHistory] = useState<any[]>([]);
+  const [correctionBusy, setCorrectionBusy] = useState(false);
+  const [correctionError, setCorrectionError] = useState('');
+  const correctionPending = useRef(false);
+  const correctionPayment = correctionInvoice?.payments?.find((p: any) => p.id === correctionPaymentId);
+  const correctedPaid = correctionInvoice && correctionPayment ? correctionInvoice.paidAmount - correctionPayment.amount + Number(correctionAmount) : 0;
+  const openCorrection = async (invoice: any) => {
+    if (!hasRole(['ADMIN'])) return;
+    setCorrectionError(''); setCorrectionHistory([]);
+    try {
+      const [fresh, history] = await Promise.all([financesApi.getInvoice(invoice.id), financesApi.correctionHistory(invoice.id)]);
+      setCorrectionInvoice(fresh); setCorrectionHistory(history);
+      const payment = fresh.payments.find((p: any) => !p.cancelledAt);
+      setCorrectionPaymentId(payment?.id || ''); setCorrectionAmount(String(payment?.amount || '')); setCorrectionReason('');
+    } catch (error: any) { alert(error.response?.data?.message || error.message); }
+  };
+  const submitCorrection = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!correctionPayment || correctionPending.current) return;
+    correctionPending.current = true; setCorrectionBusy(true); setCorrectionError('');
+    try {
+      const updated = await financesApi.correctPayment(correctionPayment.id, { amount: Number(correctionAmount), expectedAmount: correctionPayment.amount,
+        expectedPaidAmount: correctionInvoice.paidAmount, reason: correctionReason });
+      setCorrectionInvoice(null);
+      setCurrentReceiptPayment({ invoice: updated, payment: updated.createdPayment }); setShowReceiptModal(true);
+      await loadFinances();
+    } catch (error: any) { setCorrectionError(error.response?.data?.message || error.message); }
+    finally { correctionPending.current = false; setCorrectionBusy(false); }
+  };
   const [stats, setStats] = useState<any>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
   const [classes, setClasses] = useState<any[]>([]);
@@ -124,7 +159,7 @@ export const FinancesPage: React.FC = () => {
 
   useEffect(() => {
     // Keep open forms and receipts stable; refresh only while this tab is visible.
-    if (showPaymentModal || showBatchModal || showReceiptModal || settlementInvoices.length) return;
+    if (showPaymentModal || showBatchModal || showReceiptModal || settlementInvoices.length || correctionInvoice) return;
     const refresh = () => {
       if (document.visibilityState === 'visible') void loadFinances(true);
     };
@@ -136,7 +171,7 @@ export const FinancesPage: React.FC = () => {
       window.removeEventListener('focus', refresh);
       document.removeEventListener('visibilitychange', refresh);
     };
-  }, [statusFilter, classFilter, showPaymentModal, showBatchModal, showReceiptModal, settlementInvoices.length]);
+  }, [statusFilter, classFilter, showPaymentModal, showBatchModal, showReceiptModal, settlementInvoices.length, correctionInvoice]);
 
   const handleOpenPayment = (inv: any) => {
     setSelectedInvoice(inv);
@@ -378,6 +413,9 @@ export const FinancesPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-5 py-3.5 text-right space-x-2">
+                        {hasRole(['ADMIN']) && inv.payments?.some((p: any) => !p.cancelledAt) && (
+                          <button onClick={() => void openCorrection(inv)} className="inline-flex px-2.5 py-1 border border-amber-300 text-amber-800 rounded-lg text-[11px]">{t('Corriger le paiement')}</button>
+                        )}
                         {inv.balance > 0 && (
                           <button
                             onClick={() => handleOpenPayment(inv)}
@@ -409,6 +447,29 @@ export const FinancesPage: React.FC = () => {
       </div>
 
       {/* Modal: Save un Paiement */}
+      {correctionInvoice && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="correction-title">
+          <form onSubmit={submitCorrection} className="bg-white rounded-xl p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto space-y-4 text-sm">
+            <h3 id="correction-title" className="font-bold text-lg">{t('Corriger le paiement')}</h3>
+            <p>{correctionInvoice.student?.firstName} {correctionInvoice.student?.lastName} · {correctionInvoice.invoiceNumber}</p>
+            <p>{t('Le reçu erroné sera annulé et conservé dans l’historique. Un nouveau reçu sera créé. Le mode de paiement, la date et le comptable initial seront conservés. Une caisse clôturée ne peut pas être modifiée.')}</p>
+            <label className="block">{t('Paiement à corriger')}<select required disabled={correctionBusy} value={correctionPaymentId} onChange={e => { setCorrectionPaymentId(e.target.value); setCorrectionAmount(String(correctionInvoice.payments.find((p: any) => p.id === e.target.value)?.amount || '')); }} className="block w-full border rounded-lg p-2">
+              {correctionInvoice.payments.filter((p: any) => !p.cancelledAt).map((p: any) => <option key={p.id} value={p.id}>{p.paymentNumber} · {new Date(p.paymentDate).toLocaleDateString(locale())} · {p.amount.toLocaleString(locale())} FCFA</option>)}
+            </select></label>
+            <label className="block">{t('Montant réellement reçu (FCFA)')}<input required type="number" min="1" step="1" max={correctionInvoice.amount - correctionInvoice.paidAmount + (correctionPayment?.amount || 0)} value={correctionAmount} disabled={correctionBusy} onChange={e => setCorrectionAmount(e.target.value)} className="block w-full border rounded-lg p-2" /></label>
+            <div className="bg-slate-50 border rounded-lg p-3 space-y-1">
+              <p>{t('Invoice amount')}: {correctionInvoice.amount.toLocaleString(locale())} FCFA</p>
+              <p>{t('Total paid')}: {correctionInvoice.paidAmount.toLocaleString(locale())} → {correctedPaid.toLocaleString(locale())} FCFA</p>
+              <p>{t('Balance due')}: {correctionInvoice.balance.toLocaleString(locale())} → {(correctionInvoice.amount - correctedPaid).toLocaleString(locale())} FCFA</p>
+            </div>
+            <label className="block">{t('Motif de la correction (10 caractères minimum)')}<textarea required minLength={10} maxLength={1000} value={correctionReason} disabled={correctionBusy} onChange={e => setCorrectionReason(e.target.value)} className="block w-full border rounded-lg p-2" /></label>
+            {correctionHistory.length > 0 && <section><h4 className="font-semibold">{t('Historique des corrections')}</h4>{correctionHistory.map(entry => { const details = JSON.parse(entry.details); return <p key={entry.id} className="text-xs border-t py-2">{new Date(entry.createdAt).toLocaleString(locale())} · {entry.actorName} · {roleLabel(entry.actorRole)}<br />{details.originalAmount.toLocaleString(locale())} → {details.correctedAmount.toLocaleString(locale())} FCFA · {entry.reason}</p>; })}</section>}
+            {correctionError && <p role="alert" className="text-red-700">{correctionError}</p>}
+            <div className="flex justify-end gap-3"><button type="button" disabled={correctionBusy} onClick={() => setCorrectionInvoice(null)} className="border rounded-lg px-4 py-2">{t('Cancel')}</button><button disabled={correctionBusy || !correctionPayment || Number(correctionAmount) === correctionPayment?.amount} className="bg-emerald-600 text-white rounded-lg px-4 py-2 disabled:opacity-50">{t(correctionBusy ? 'Enregistrement…' : 'Confirmer la correction')}</button></div>
+          </form>
+        </div>
+      )}
+
       {settlementInvoices.length > 0 && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="settlement-title">
           <form onSubmit={submitSettlement} className="bg-white rounded-xl p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto space-y-4">

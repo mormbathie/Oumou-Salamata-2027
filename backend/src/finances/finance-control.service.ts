@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { SchoolMailService } from './school-mail.service';
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -12,6 +12,46 @@ export class FinanceControlService {
   private reason(value: unknown) {
     if (typeof value !== 'string' || value.trim().length < 10 || value.trim().length > 1000) throw new BadRequestException('Un motif de 10 à 1 000 caractères est obligatoire.');
     return value.trim();
+  }
+  async correctPayment(id: string, data: { amount: number; expectedAmount: number; expectedPaidAmount: number; reason: string }, actor: ActingUser) {
+    if (!actor.roles?.includes('ADMIN')) throw new ForbiddenException('Seul un administrateur peut corriger un paiement.');
+    const reason = this.reason(data?.reason), author = actorStamp(actor);
+    if (![data.amount, data.expectedAmount, data.expectedPaidAmount].every(value => Number.isSafeInteger(value) && value > 0)) throw new BadRequestException('Montants entiers positifs requis.');
+    return this.prisma.$transaction(async tx => {
+      await openCashDay(tx, cashDay(new Date()));
+      const original = await tx.payment.findUnique({ where: { id } });
+      if (!original) throw new NotFoundException('Paiement introuvable.');
+      await openCashDay(tx, cashDay(original.paymentDate));
+      await tx.$queryRaw(Prisma.sql`SELECT id FROM "Invoice" WHERE id = ${original.invoiceId} FOR UPDATE`);
+      const payment = await tx.payment.findUniqueOrThrow({ where: { id } });
+      const invoice = await tx.invoice.findUniqueOrThrow({ where: { id: payment.invoiceId } });
+      if (payment.cancelledAt || invoice.cancelledAt) throw new BadRequestException('Cette écriture est annulée. Actualisez la page.');
+      if (payment.amount !== data.expectedAmount || invoice.paidAmount !== data.expectedPaidAmount) throw new BadRequestException('La situation a changé. Actualisez la page avant de corriger le paiement.');
+      if (payment.amount === data.amount) throw new BadRequestException('Le nouveau montant est identique au montant actuel.');
+      const paidAmount = invoice.paidAmount - payment.amount + data.amount;
+      if (paidAmount < 0 || paidAmount > invoice.amount) throw new BadRequestException('Le montant corrigé dépasse le montant restant de la facture.');
+      const correctedAt = new Date();
+      await tx.payment.update({ where: { id }, data: { cancelledAt: correctedAt, cancellationReason: reason, cancelledById: author.id, cancelledByName: author.name, cancelledByRole: author.role } });
+      const replacement = await tx.payment.create({ data: {
+        invoiceId: invoice.id, amount: data.amount, paymentDate: payment.paymentDate, paymentMethod: payment.paymentMethod,
+        paymentNumber: 'REC-' + correctedAt.getFullYear() + '-' + randomUUID().toUpperCase(),
+        reference: payment.reference, receivedBy: payment.receivedBy, receivedById: payment.receivedById, receivedByRole: payment.receivedByRole,
+        notes: `Correction du reçu ${payment.paymentNumber}. ${reason}${payment.notes ? ' — ' + payment.notes : ''}`,
+      } });
+      const updated = await tx.invoice.update({ where: { id: invoice.id }, data: {
+        paidAmount, balance: invoice.amount - paidAmount, status: paidAmount === invoice.amount ? 'PAID' : 'PARTIAL',
+      }, include: { academicYear: true, payments: { orderBy: { paymentDate: 'desc' } }, student: { include: { parent: true, enrollments: { include: { classroom: true } } } } } });
+      await tx.businessAudit.create({ data: {
+        action: 'PAYMENT_CORRECTED', entityId: invoice.id, actorId: author.id, actorName: author.name, actorRole: author.role, reason,
+        details: JSON.stringify({ originalPaymentId: payment.id, originalPaymentNumber: payment.paymentNumber, originalAmount: payment.amount,
+          replacementPaymentId: replacement.id, replacementPaymentNumber: replacement.paymentNumber, correctedAmount: replacement.amount,
+          previousPaidAmount: invoice.paidAmount, paidAmount, balance: updated.balance, originalCashier: payment.receivedBy }),
+      } });
+      return { ...updated, createdPayment: replacement };
+    });
+  }
+  async correctionHistory(invoiceId: string) {
+    return this.prisma.businessAudit.findMany({ where: { entityId: invoiceId, action: 'PAYMENT_CORRECTED' }, orderBy: { createdAt: 'desc' } });
   }
   async cancelPayment(id: string, input: unknown, actor: ActingUser) {
     const reason = this.reason(input), author = actorStamp(actor);

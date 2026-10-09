@@ -4013,5 +4013,40 @@
     "fr": "Date d’échéance",
     "en": "Due date",
     "ar": "تاريخ الاستحقاق"
+  },
+  "Corriger le paiement": {
+    "fr": "Corriger le paiement",
+    "en": "Correct payment",
+    "ar": "تصحيح الدفع"
+  },
+  "Paiement à corriger": {
+    "fr": "Paiement à corriger",
+    "en": "Payment to correct",
+    "ar": "الدفعة المراد تصحيحها"
+  },
+  "Montant réellement reçu (FCFA)": {
+    "fr": "Montant réellement reçu (FCFA)",
+    "en": "Amount actually received (FCFA)",
+    "ar": "المبلغ المستلم فعلياً"
+  },
+  "Motif de la correction (10 caractères minimum)": {
+    "fr": "Motif de la correction (10 caractères minimum)",
+    "en": "Reason for correction (at least 10 characters)",
+    "ar": "سبب التصحيح (10 أحرف على الأقل)"
+  },
+  "Historique des corrections": {
+    "fr": "Historique des corrections",
+    "en": "Correction history",
+    "ar": "سجل التصحيحات"
+  },
+  "Confirmer la correction": {
+    "fr": "Confirmer la correction",
+    "en": "Confirm correction",
+    "ar": "تأكيد التصحيح"
+  },
+  "Le reçu erroné sera annulé et conservé dans l’historique. Un nouveau reçu sera créé. Le mode de paiement, la date et le comptable initial seront conservés. Une caisse clôturée ne peut pas être modifiée.": {
+    "fr": "Le reçu erroné sera annulé et conservé dans l’historique. Un nouveau reçu sera créé. Le mode de paiement, la date et le comptable initial seront conservés. Une caisse clôturée ne peut pas être modifiée.",
+    "en": "The incorrect receipt will be cancelled and retained in the history. A new receipt will be created. The payment method, date and original cashier will be preserved. A closed cash day cannot be modified.",
+    "ar": "سيتم إلغاء الإيصال الخاطئ والاحتفاظ به في السجل وإنشاء إيصال جديد. سيتم الحفاظ على طريقة الدفع والتاريخ والمحاسب الأصلي. لا يمكن تعديل يوم صندوق مغلق."
   }
 }

@@ -8,6 +8,10 @@ import { FinanceControlService } from './finance-control.service';
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class FinanceControlController {
   constructor(private readonly service: FinanceControlService) {}
+  @Post('payments/:id/correct') @Roles('ADMIN')
+  correctPayment(@Param('id') id: string, @Body() body: { amount: number; expectedAmount: number; expectedPaidAmount: number; reason: string }, @CurrentUser() user: any) { return this.service.correctPayment(id, body, user); }
+  @Get('invoices/:id/corrections') @Roles('ADMIN')
+  correctionHistory(@Param('id') id: string) { return this.service.correctionHistory(id); }
   @Post('payments/:id/cancel') @Roles('ADMIN','DIRECTEUR','COMPTABLE')
   cancelPayment(@Param('id') id: string, @Body() body: { reason: string }, @CurrentUser() user: any) { return this.service.cancelPayment(id, body.reason, user); }
   @Post('invoices/:id/cancel') @Roles('ADMIN','DIRECTEUR','COMPTABLE')
