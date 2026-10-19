@@ -1,3 +1,4 @@
+import { PwaControls } from './components/PwaControls'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
@@ -9,5 +10,6 @@ initializeLanguage()
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
+    <PwaControls />
   </StrictMode>,
 )

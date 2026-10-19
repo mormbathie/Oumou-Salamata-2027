@@ -55,22 +55,22 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-slate-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-slate-900 rounded-2xl p-4 md:p-6 text-white shadow-lg relative overflow-hidden">
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center space-x-2 bg-emerald-500/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-200 mb-3 border border-emerald-400/30">
+          <div className="inline-flex items-center space-x-2 bg-emerald-500/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-200 mb-3 hidden md:inline-flex border border-emerald-400/30">
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
             <span>{t("Integrated and Secure School Management")}</span>
           </div>
-          <h2 className="text-2xl font-bold tracking-tight">
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight">
             {t("Welcome to the As Sakina School portal")}</h2>
-          <p className="text-emerald-100 text-sm mt-1">
+          <p className="hidden md:block text-emerald-100 text-sm mt-1">
             {t("Current school year:")}<span className="font-semibold text-white">{data?.academicYear}</span>{t(". Track enrollment, billing, grades, and attendance in real time.")}</p>
         </div>
       </div>
 
       <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4"><h3 className="font-bold">{t('Actual receipts')}</h3><p className="text-xs text-slate-500">{t('Payment dates follow Dakar time. Amounts due are not receipts.')}</p><div className="flex flex-wrap gap-3"><label>{t('Period')}<select className="ml-2 rounded-lg border p-2" value={filter.mode} onChange={e=>setFilter({...filter,mode:e.target.value})}><option value="today">{t('Today')}</option><option value="date">{t('Specific date')}</option><option value="range">{t('Date range')}</option><option value="all">{t('All / global')}</option></select></label>{['date','range'].includes(filter.mode)&&<label>{t('Start date')}<input className="ml-2 rounded-lg border p-2" type="date" value={filter.start} onChange={e=>setFilter({...filter,start:e.target.value})}/></label>}{filter.mode==='range'&&<label>{t('End date')}<input className="ml-2 rounded-lg border p-2" type="date" value={filter.end} onChange={e=>setFilter({...filter,end:e.target.value})}/></label>}</div>{loading&&<p aria-live="polite" className="text-sm">{t('Loading…')}</p>}{error&&<p role="alert" className="text-rose-700">{error}</p>}<div className="flex flex-wrap gap-4 text-sm">{Object.entries(data?.collection?.byCategory || {}).map(([category,total])=><p key={category}><span className="font-semibold">{t(category)}</span> : {Number(total).toLocaleString(locale())} FCFA</p>)}</div><p className="text-xs text-slate-500">{t('Global collected')}: {(finances.totalCollected || 0).toLocaleString(locale())} FCFA · {t('Payments in selected period')}: {data?.collection?.count || 0}</p></section>
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="mobile-dashboard-kpis grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
         {/* Students */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
           <div className="flex items-center justify-between">

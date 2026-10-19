@@ -254,7 +254,7 @@ export const FinancesPage: React.FC = () => {
       </div>
 
       {/* Financial KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mobile-finance-kpis grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
             {t("Total Invoiced")}</span>
@@ -300,7 +300,7 @@ export const FinancesPage: React.FC = () => {
 
       {/* Filters */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4 text-xs">
-        <div className="flex items-center space-x-4">
+        <div className="mobile-finance-filters flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
             <span className="font-semibold text-slate-600">{t("Status :")}</span>
@@ -346,8 +346,21 @@ export const FinancesPage: React.FC = () => {
         <button disabled={loading || !chosenInvoices.length} onClick={openSettlement} className="bg-emerald-600 text-white px-4 py-2 rounded-lg disabled:opacity-50">{t('Régler la sélection')}</button>
       </div>
 
+      <section aria-label={t('Factures sur mobile')} className="space-y-3 md:hidden">
+        {loading ? <p className="py-8 text-center text-slate-500">{t('Loading invoices…')}</p> : invoices.length === 0 ? <p className="py-8 text-center text-slate-500">{t('No invoices found.')}</p> : invoices.map(inv => {
+          const payment = inv.payments?.find((p: any) => !p.cancelledAt);
+          return <article key={inv.id} className={`rounded-2xl border bg-white p-4 shadow-xs ${selectedIds.includes(inv.id) ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-slate-200'}`}>
+            <div className="flex items-start justify-between gap-3"><label className="flex min-w-0 items-start gap-3"><input type="checkbox" className="mt-1 h-5 w-5 shrink-0 accent-emerald-600" aria-label={t('Sélectionner la facture {0}', [inv.invoiceNumber])} disabled={!!inv.cancelledAt || inv.balance <= 0} checked={inv.balance > 0 && selectedIds.includes(inv.id)} onChange={e => setSelectedIds(ids => e.target.checked ? [...ids, inv.id] : ids.filter(id => id !== inv.id))} /><span className="min-w-0"><strong className="block break-words text-sm text-slate-900">{inv.student?.firstName} {inv.student?.lastName}</strong><span className="text-xs text-slate-500">{inv.student?.enrollments?.[0]?.classroom?.name || '—'}</span></span></label><span className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-semibold ${inv.status === 'PAID' ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'}`}>{t(inv.status === 'PAID' ? 'Paid' : inv.status === 'PARTIAL' ? 'Partially paid' : 'Unpaid')}</span></div>
+            <p className="mt-3 text-sm text-slate-700">{inv.title}</p><p className="mt-1 break-all text-[10px] text-slate-400">{inv.invoiceNumber} · {new Date(inv.createdAt).toLocaleDateString(locale())}</p>
+            <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-3 text-xs"><div><span className="block text-slate-500">{t('Invoice amount')}</span><strong className="text-slate-800">{inv.amount.toLocaleString(locale())} FCFA</strong></div><div><span className="block text-slate-500">{t('Total paid')}</span><strong className="text-emerald-700">{inv.paidAmount.toLocaleString(locale())} FCFA</strong></div></div>
+            <div className="mt-3 flex items-center justify-between gap-2"><div><span className="block text-xs text-slate-500">{t('Balance due')}</span><strong className="text-lg text-slate-900">{inv.balance.toLocaleString(locale())} <span className="text-xs font-medium">FCFA</span></strong></div>{inv.balance > 0 ? <button onClick={() => handleOpenPayment(inv)} className="flex min-h-11 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white"><CreditCard className="h-4 w-4" />{t('Pay')}</button> : payment && <button onClick={() => handleViewReceipt(inv, payment)} className="flex min-h-11 items-center gap-2 rounded-xl bg-emerald-50 px-4 text-sm font-semibold text-emerald-800"><Receipt className="h-4 w-4" />{t('Receipt')}</button>}</div>
+            <details className="mt-3 border-t border-slate-100 pt-1"><summary className="flex min-h-11 cursor-pointer items-center text-xs font-semibold text-slate-600">{t('Autres actions')}</summary><div className="flex flex-wrap gap-2"><button onClick={() => printInvoice(inv)} className="rounded-xl border px-3 py-2 text-xs">{t('Print invoice')}</button>{payment && inv.balance > 0 && <button onClick={() => handleViewReceipt(inv, payment)} className="rounded-xl border px-3 py-2 text-xs">{t('Receipt')}</button>}{hasRole(['ADMIN']) && payment && <button onClick={() => void openCorrection(inv)} className="rounded-xl border border-amber-200 px-3 py-2 text-xs text-amber-800">{t('Corriger le paiement')}</button>}</div>{inv.createdByName && <p className="mt-2 text-xs text-slate-500">{t('Created by')} {inv.createdByName} · {roleLabel(inv.createdByRole)}</p>}</details>
+          </article>;
+        })}
+      </section>
+
       {/* Invoices Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { translateMessage } from '../i18n';
 import { refreshAccessToken } from '../auth/session';
 
@@ -8,6 +8,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  if (!navigator.onLine && !['get', 'head', 'options'].includes((config.method || 'get').toLowerCase())) {
+    return Promise.reject(new AxiosError(translateMessage('Connexion Internet nécessaire. Aucune opération n’a été envoyée au serveur.'), 'ERR_NETWORK', config));
+  }
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -56,7 +59,7 @@ export const usersApi = {
 export const staffAttendanceApi = {
   myCard: () => api.get('/staff-attendance/me/card').then((r) => r.data),
   myHistory: () => api.get('/staff-attendance/me').then((r) => r.data),
-  scan: (code: string) => api.post('/staff-attendance/scan', { code }).then((r) => r.data),
+  scan: (code: string, action?: 'arrival'|'departure') => api.post('/staff-attendance/scan', { code, action }).then((r) => r.data),
   list: (date: string) => api.get('/staff-attendance', { params: { date } }).then((r) => r.data),
   finalize: (date: string) => api.post('/staff-attendance/finalize', { date }).then((r) => r.data),
   getCalendar: () => api.get('/staff-attendance/calendar').then((r) => r.data),

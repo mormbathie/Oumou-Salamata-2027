@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { AttendanceStatus, Role } from '@prisma/client';
+import { AttendanceStatus, Role, Prisma } from '@prisma/client';
 import { randomBytes } from 'node:crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ActingUser, actorStamp } from '../audit/actor';
@@ -42,26 +42,37 @@ export class StaffAttendanceService {
     return { code: `ASSTAFF1:${saved.token}` };
   }
 
-  async scan(code: string, actor: ActingUser) {
-    const operator = actorStamp(actor);
+  async scan(code: string, actor: ActingUser, action?: 'arrival' | 'departure') {
+    if (action !== undefined && !['arrival','departure'].includes(action)) throw new BadRequestException('Action de pointage invalide.');
     if (!/^ASSTAFF1:[0-9a-f]{48}$/.test(code || '')) throw new BadRequestException('QR code de professeur invalide.');
-    const card = await this.prisma.staffQrCard.findUnique({ where: { token: code.slice(9) }, include: { teacher: true } });
-    const teacher = card?.teacher;
-    if (!teacher || teacher.role !== Role.ENSEIGNANT) throw new NotFoundException('Professeur introuvable.');
-    const settings = await this.settings();
-    const now = new Date();
-    const local = this.localTime(now, settings.timeZone);
-    const date = this.date(local.date);
-    await this.assertWorkingDay(date, settings.restDays);
-    const existing = await this.prisma.staffAttendance.findUnique({ where: { teacherId_date: { teacherId: teacher.id, date } } });
+    return this.prisma.$transaction(async tx => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(20261019)`;
+      const card = await tx.staffQrCard.findUnique({ where: { token: code.slice(9) }, include: { teacher: true } });
+      if (!card?.teacher || card.teacher.role !== Role.ENSEIGNANT) throw new NotFoundException('Professeur introuvable.');
+      return this.recordPunch(tx, card.teacher, actor, action);
+    });
+  }
+
+  async recordPunch(tx: Prisma.TransactionClient, teacher: { id: string; firstName: string; lastName: string; email: string }, actor: ActingUser, action?: 'arrival' | 'departure') {
+    const operator = actorStamp(actor);
+    const settings = await tx.schoolCalendarSettings.upsert({ where: { id: 1 }, update: {}, create: { id: 1 } });
+    const now = new Date(), local = this.localTime(now, settings.timeZone), date = this.date(local.date);
+    if (this.restDays(settings.restDays).includes(date.getUTCDay())) throw new BadRequestException('Ce jour est un jour de repos.');
+    const holiday = await tx.schoolHoliday.findUnique({ where: { date } });
+    if (holiday) throw new BadRequestException(`Ce jour est férié : ${holiday.name}.`);
+    const existing = await tx.staffAttendance.findUnique({ where: { teacherId_date: { teacherId: teacher.id, date } } });
     if (existing?.checkOutAt) return { teacher: this.safeTeacher(teacher), attendance: existing, event: 'already-complete' };
-    if (existing?.checkInAt) {
-      const attendance = await this.prisma.staffAttendance.update({ where: { id: existing.id }, data: { checkOutAt: now, checkOutById: operator.id, checkOutByName: operator.name } });
+    const intent = action || (existing?.checkInAt ? 'departure' : 'arrival');
+    if (intent === 'arrival' && existing?.checkInAt) return { teacher: this.safeTeacher(teacher), attendance: existing, event: 'already-arrived' };
+    if (intent === 'departure') {
+      if (!existing?.checkInAt) throw new BadRequestException('Enregistrez votre arrivée avant le départ.');
+      if (!action && now.getTime() - existing.checkInAt.getTime() < 30000) return { teacher: this.safeTeacher(teacher), attendance: existing, event: 'already-arrived' };
+      const attendance = await tx.staffAttendance.update({ where: { id: existing.id }, data: { checkOutAt: now, checkOutById: operator.id, checkOutByName: operator.name } });
       return { teacher: this.safeTeacher(teacher), attendance, event: 'departure' };
     }
     const [hour, minute] = settings.startTime.split(':').map(Number);
     const minutesLate = Math.max(0, local.minutes - (hour * 60 + minute));
-    const attendance = await this.prisma.staffAttendance.upsert({
+    const attendance = await tx.staffAttendance.upsert({
       where: { teacherId_date: { teacherId: teacher.id, date } },
       update: { checkInAt: now, status: minutesLate ? AttendanceStatus.LATE : AttendanceStatus.PRESENT, minutesLate, checkInById: operator.id, checkInByName: operator.name },
       create: { teacherId: teacher.id, date, checkInAt: now, status: minutesLate ? AttendanceStatus.LATE : AttendanceStatus.PRESENT, minutesLate, checkInById: operator.id, checkInByName: operator.name },
@@ -97,9 +108,9 @@ export class StaffAttendanceService {
     if (dateStr > today) throw new BadRequestException('Impossible de clôturer une date future.');
     await this.assertWorkingDay(day, settings.restDays);
     const teachers = await this.prisma.user.findMany({ where: { role: Role.ENSEIGNANT }, select: { id: true } });
-    const result = await this.prisma.staffAttendance.createMany({
-      data: teachers.map((teacher) => ({ teacherId: teacher.id, date: day, status: AttendanceStatus.ABSENT })),
-      skipDuplicates: true,
+    const result = await this.prisma.$transaction(async tx => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(20261019)`;
+      return tx.staffAttendance.createMany({ data: teachers.map(teacher => ({ teacherId: teacher.id, date: day, status: AttendanceStatus.ABSENT })), skipDuplicates: true });
     });
     return { date: dateStr, absencesRecorded: result.count };
   }

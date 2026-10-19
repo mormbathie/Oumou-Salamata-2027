@@ -1,3 +1,4 @@
+import { DoorBadgeSettings } from '../components/DoorBadgeSettings';
 import { t, locale, statusLabel } from "../i18n/index";
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
@@ -13,6 +14,7 @@ export const StaffAttendancePage = () => {
   const [date, setDate] = useState(today());
   const [roster, setRoster] = useState<any>(null);
   const [calendar, setCalendar] = useState<any>(null);
+  const [punchAction, setPunchAction] = useState<'arrival'|'departure'>('arrival');
   const [code, setCode] = useState('');
   const [cameraActive, setCameraActive] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -41,14 +43,14 @@ export const StaffAttendancePage = () => {
     if (busyRef.current || (previous.code === value && now - previous.at < 5000)) return;
     busyRef.current = true; setBusy(true); setError(''); setMessage('');
     try {
-      const result = await staffAttendanceApi.scan(value);
-      const event = result.event === 'arrival' ? t("Arrival recorded") : result.event === 'departure' ? t("Departure recorded") : t("Attendance already complete");
+      const result = await staffAttendanceApi.scan(value, punchAction);
+      const event = result.event === 'arrival' ? t("Arrival recorded") : result.event === 'departure' ? t("Departure recorded") : result.event === 'already-arrived' ? t("Arrivée déjà enregistrée") : t("Attendance already complete");
       setMessage(`${result.teacher.firstName} ${result.teacher.lastName} · ${event}${result.attendance.minutesLate ? t(" · {0} min late", [result.attendance.minutesLate]) : ''}`);
       setCode('');
       await load();
     } catch (err) { setError(errorMessage(err)); }
     finally { busyRef.current = false; setBusy(false); }
-  }, [load]);
+  }, [load, punchAction]);
 
   useEffect(() => {
     if (!cameraActive || !videoRef.current) return;
@@ -83,6 +85,8 @@ export const StaffAttendancePage = () => {
     <div><h2 className="text-2xl font-bold">{t("Teacher Attendance")}</h2><p className="text-sm text-slate-600">{t("Scan each teacher’s personal QR code on arrival and departure.")}</p></div>
     {error && <p role="alert" className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
     {message && <p role="status" className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">{message}</p>}
+    {isManager && <DoorBadgeSettings />}
+    <label className="block rounded-xl border bg-white p-3">{t('Action du contrôleur')}<select value={punchAction} onChange={e=>setPunchAction(e.target.value as 'arrival'|'departure')} className="ml-3 rounded-lg border p-2"><option value="arrival">{t('Arrivée')}</option><option value="departure">{t('Départ')}</option></select></label>
     <div className="grid gap-5 lg:grid-cols-2">
       <section className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
         <div className="mb-3 flex justify-between gap-3"><h3 className="font-bold">{t("Scanner")}</h3><button onClick={() => setCameraActive(!cameraActive)} className="text-sm text-emerald-700">{cameraActive ? t("Stop") : t("Start")} {t("the camera")}</button></div>

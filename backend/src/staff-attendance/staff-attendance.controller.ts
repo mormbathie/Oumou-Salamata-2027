@@ -1,3 +1,4 @@
+import { DoorBadgeService } from './door-badge.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -11,7 +12,7 @@ import { StaffAttendanceService } from './staff-attendance.service';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('staff-attendance')
 export class StaffAttendanceController {
-  constructor(private readonly service: StaffAttendanceService) {}
+  constructor(private readonly service: StaffAttendanceService, private readonly door: DoorBadgeService) {}
 
   @Get('me/card')
   @Roles('ENSEIGNANT')
@@ -23,7 +24,14 @@ export class StaffAttendanceController {
 
   @Post('scan')
   @Roles('ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE')
-  scan(@Body() body: { code: string }, @CurrentUser() actor: any) { return this.service.scan(body?.code, actor); }
+  scan(@Body() body: { code: string; action?: 'arrival' | 'departure' }, @CurrentUser() actor: any) { return this.service.scan(body?.code, actor, body?.action); }
+
+  @Get('door') @Roles('ADMIN','DIRECTEUR')
+  doorSettings(@CurrentUser() actor: any) { return this.door.settings(actor); }
+  @Patch('door') @Roles('ADMIN','DIRECTEUR')
+  doorConfigure(@Body() body: { enabled: boolean; latitude?: number; longitude?: number; radiusMeters: number; rotate?: boolean }, @CurrentUser() actor: any) { return this.door.configure(body, actor); }
+  @Post('door/punch') @Roles('ENSEIGNANT')
+  doorPunch(@Body() body: { code: string; action: 'arrival'|'departure'; latitude: number; longitude: number; accuracy: number }, @CurrentUser() actor: any) { return this.door.punch(body, actor); }
 
   @Get('calendar')
   @Roles('ADMIN', 'DIRECTEUR', 'CONTROLEUR_PRESENCE', 'ENSEIGNANT')

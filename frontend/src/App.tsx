@@ -1,3 +1,5 @@
+import { RegistrationReportPage } from './pages/RegistrationReportPage';
+import { TeacherBadgePage } from './pages/TeacherBadgePage';
 import { ParentPortalPage } from './pages/ParentPortalPage';
 import { AcademicTransitionPage } from './pages/AcademicTransitionPage';
 import { FinanceControlPage } from './pages/FinanceControlPage';
@@ -29,7 +31,7 @@ const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   if (initializing) return <div className="grid min-h-screen place-items-center text-slate-500">{t("Checking your session…")}</div>;
   if (authenticated && user?.mustChangePassword && location.pathname !== '/password') return <Navigate to="/password" replace />;
-  return authenticated ? <>{children}</> : <Navigate to="/login" replace />;
+  return authenticated ? <>{children}</> : <Navigate to="/login" replace state={location.pathname === '/teacher-badge' ? { returnTo: location.pathname + location.hash } : undefined} />;
 };
 
 const RequireRoles: React.FC<{ roles: string[]; children: React.ReactNode }> = ({ roles, children }) => {
@@ -58,6 +60,8 @@ export const App: React.FC = () => (
           <Route path="kimono" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><ActivityPaymentsPage category="KIMONO" /></RequireRoles>} />
           <Route path="karate" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><ActivityPaymentsPage category="KARATE" /></RequireRoles>} />
           <Route path="finance-control" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><FinanceControlPage /></RequireRoles>} />
+          <Route path="registration-report" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><RegistrationReportPage /></RequireRoles>} />
+          <Route path="teacher-badge" element={<RequireRoles roles={['ENSEIGNANT']}><TeacherBadgePage /></RequireRoles>} />
           <Route path="finances" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><FinancesPage /></RequireRoles>} />
           <Route path="grades" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'ENSEIGNANT']}><GradesPage /></RequireRoles>} />
           <Route path="attendance" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'ENSEIGNANT']}><AttendancePage /></RequireRoles>} />

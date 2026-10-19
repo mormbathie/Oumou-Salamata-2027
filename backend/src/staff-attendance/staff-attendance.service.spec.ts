@@ -12,6 +12,8 @@ describe('StaffAttendanceService', () => {
     schoolHoliday: { findUnique: jest.fn() },
     staffAttendance: { findUnique: jest.fn(), upsert: jest.fn(), update: jest.fn() },
   } as any;
+  prisma.$executeRaw = jest.fn().mockResolvedValue(0);
+  prisma.$transaction = (fn: any) => fn(prisma);
   const service = new StaffAttendanceService(prisma);
   const code = `ASSTAFF1:${'a'.repeat(48)}`;
 
@@ -33,7 +35,7 @@ describe('StaffAttendanceService', () => {
   });
 
   it('records the authenticated controller on departure', async () => {
-    prisma.staffAttendance.findUnique.mockResolvedValue({ id: 'attendance-1', checkInAt: new Date(), checkOutAt: null, status: AttendanceStatus.PRESENT });
+    prisma.staffAttendance.findUnique.mockResolvedValue({ id: 'attendance-1', checkInAt: new Date(Date.now()-3600000), checkOutAt: null, status: AttendanceStatus.PRESENT });
     prisma.staffAttendance.update.mockImplementation(async ({ data }: any) => data);
     const result = await service.scan(code, actor);
     expect(result.event).toBe('departure');

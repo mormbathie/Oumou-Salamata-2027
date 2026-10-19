@@ -351,7 +351,19 @@ export const StudentsPage: React.FC = () => {
         )}
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
+      <section aria-label={t('Élèves sur mobile')} className="space-y-3 md:hidden">
+        {loading ? <p className="py-8 text-center text-slate-500">{t('Loading records…')}</p> : students.length === 0 ? <p className="py-8 text-center text-slate-500">{t('No students found.')}</p> : students.map(student => {
+          const classroom = student.enrollments?.[0]?.classroom;
+          const balance = student.invoices?.reduce((sum: number, inv: any) => sum + inv.balance, 0) || 0;
+          return <article key={student.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+            <div className="flex items-start gap-3"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 font-bold text-emerald-800">{student.firstName?.[0]}{student.lastName?.[0]}</div><div className="min-w-0 flex-1"><h3 className="break-words text-sm font-bold text-slate-900">{student.firstName} {student.lastName}</h3><p className="mt-1 break-all font-mono text-xs text-emerald-700">{student.matricule}</p><p className="mt-1 text-xs text-slate-500">{classroom?.name || t('Unassigned')} · {t(student.gender === 'MALE' ? 'Boy' : 'Girl')}</p></div></div>
+            <div className="mt-4 rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-500">{t('Parent / guardian')}</p><p className="mt-1 text-sm font-medium text-slate-800">{student.parent ? `${student.parent.firstName} ${student.parent.lastName}` : t('Not provided')}</p>{student.parent?.phone && <a href={`tel:${student.parent.phone.replace(/[^+0-9]/g, '')}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-emerald-700">{student.parent.phone}</a>}</div>
+            <div className="mt-3 flex items-center justify-between gap-2">{canSeeFinances ? <span className={`rounded-full px-2.5 py-1.5 text-xs font-medium ${balance > 0 ? 'bg-amber-50 text-amber-800' : 'bg-emerald-50 text-emerald-800'}`}>{balance > 0 ? `${t('Balance:')} ${balance.toLocaleString()} ${t('F')}` : t('Paid up')}</span> : <span />}<button onClick={() => void handleOpenDetails(student.id)} className="flex min-h-11 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white"><Eye className="h-4 w-4" />{t('Dossier')}</button></div>
+          </article>;
+        })}
+      </section>
+
+      <div className="hidden md:block overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[800px] text-left text-xs">
             <thead className="border-b border-slate-200 bg-slate-50 font-semibold uppercase tracking-wider text-slate-600"><tr>

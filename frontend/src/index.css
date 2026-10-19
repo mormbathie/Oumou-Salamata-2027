@@ -26,3 +26,23 @@ html[dir="rtl"] input[type="email"],
 html[dir="rtl"] input[type="tel"],
 html[dir="rtl"] input[type="date"],
 html[dir="rtl"] input[type="time"] { direction: ltr; }
+
+/* Dedicated phone layout; desktop styles above are unchanged. */
+@media (max-width: 767px) {
+  .mobile-topbar { min-height: calc(4rem + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); }
+  .mobile-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+  .mobile-modules { top: calc(4rem + env(safe-area-inset-top)); bottom: calc(4rem + env(safe-area-inset-bottom)); }
+  .mobile-content { overscroll-behavior-y: contain; padding-bottom: 1.5rem; }
+  .mobile-content input:not([type="checkbox"]):not([type="radio"]),
+  .mobile-content select, .mobile-content textarea { font-size: 16px; min-height: 44px; max-width: 100%; }
+  .mobile-content button { min-height: 44px; }
+  .mobile-content input[type="checkbox"] { width: 20px; height: 20px; accent-color: #059669; }
+  .mobile-finance-filters { width: 100%; flex-direction: column; align-items: stretch; gap: 12px; }
+  .mobile-finance-filters > div { margin: 0; justify-content: space-between; }
+  .mobile-finance-filters select { min-width: 0; flex: 1; }
+  .mobile-finance-kpis > div, .mobile-dashboard-kpis > div { min-width: 0; padding: 14px; }
+  .mobile-finance-kpis > div:last-child > div { flex-wrap: wrap; gap: 4px; }
+  .mobile-finance-kpis > div:last-child > div > span { margin: 0; white-space: nowrap; font-size: 10px; }
+  .mobile-finance-kpis .text-2xl, .mobile-dashboard-kpis .text-3xl { font-size: 1.25rem; }
+  .mobile-app .fixed.inset-0 > form, .mobile-app .fixed.inset-0 > div { max-height: calc(100dvh - 1rem); overflow-y: auto; overscroll-behavior: contain; }
+}

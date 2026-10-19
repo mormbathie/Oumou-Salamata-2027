@@ -1,3 +1,4 @@
+import { RegistrationReportService } from './registration-report.service';
 import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { FinancesService } from './finances.service';
@@ -12,7 +13,11 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class FinancesController {
-  constructor(private readonly financesService: FinancesService) {}
+  constructor(private readonly financesService: FinancesService, private readonly reportService: RegistrationReportService) {}
+
+  @Get('registration-report')
+  @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
+  registrationReport(@Query() query: { academicYearId?: string; classroomId?: string; karate?: string; fullDay?: string; status?: string }) { return this.reportService.report(query); }
 
   @Get('stats')
   @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')

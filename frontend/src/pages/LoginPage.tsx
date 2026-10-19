@@ -1,6 +1,6 @@
 import { school } from '../config/school';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { KeyRound } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 import { t } from '../i18n';
@@ -9,6 +9,8 @@ import { LanguageSelector } from '../components/LanguageSelector';
 export const LoginPage: React.FC = () => {
   const { directLogin, authenticated, initializing, user } = useAuth();
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const returnTo = typeof state?.returnTo === 'string' && /^\/teacher-badge(?:#ASDOOR1:[0-9a-f]{48})?$/.test(state.returnTo) ? state.returnTo : null;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [totp, setTotp] = useState('');
@@ -19,8 +21,8 @@ export const LoginPage: React.FC = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (authenticated && !initializing) navigate(user?.roles?.includes('PARENT') ? '/students' : '/', { replace: true });
-  }, [authenticated, initializing, navigate, user]);
+    if (authenticated && !initializing) navigate(returnTo || (user?.roles?.includes('PARENT') ? '/students' : '/'), { replace: true });
+  }, [authenticated, initializing, navigate, user, returnTo]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -28,7 +30,7 @@ export const LoginPage: React.FC = () => {
     setError('');
     try {
       await directLogin(username, password, totp);
-      navigate(user?.roles?.includes('PARENT') ? '/students' : '/', { replace: true });
+      navigate(returnTo || (user?.roles?.includes('PARENT') ? '/students' : '/'), { replace: true });
     } catch (err: any) {
       setError(err.code === 'PASSWORD_UPDATE_REQUIRED'
         ? t('Your temporary password must be changed. Please contact an administrator.')

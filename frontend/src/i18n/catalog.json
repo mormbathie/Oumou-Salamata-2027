@@ -4048,5 +4048,335 @@
     "fr": "Le reçu erroné sera annulé et conservé dans l’historique. Un nouveau reçu sera créé. Le mode de paiement, la date et le comptable initial seront conservés. Une caisse clôturée ne peut pas être modifiée.",
     "en": "The incorrect receipt will be cancelled and retained in the history. A new receipt will be created. The payment method, date and original cashier will be preserved. A closed cash day cannot be modified.",
     "ar": "سيتم إلغاء الإيصال الخاطئ والاحتفاظ به في السجل وإنشاء إيصال جديد. سيتم الحفاظ على طريقة الدفع والتاريخ والمحاسب الأصلي. لا يمكن تعديل يوم صندوق مغلق."
+  },
+  "Application mobile": {
+    "fr": "Application mobile",
+    "en": "Mobile application",
+    "ar": "تطبيق الهاتف"
+  },
+  "Installer l’application": {
+    "fr": "Installer l’application",
+    "en": "Install the app",
+    "ar": "تثبيت التطبيق"
+  },
+  "Mettre à jour": {
+    "fr": "Mettre à jour",
+    "en": "Update",
+    "ar": "تحديث"
+  },
+  "Une nouvelle version est disponible. Terminez vos opérations avant de la charger.": {
+    "fr": "Une nouvelle version est disponible. Terminez vos opérations avant de la charger.",
+    "en": "A new version is available. Finish your work before loading it.",
+    "ar": "يتوفر إصدار جديد. أكمل عملياتك قبل تحميله."
+  },
+  "Terminez vos opérations et enregistrez vos formulaires avant de mettre à jour. Recharger maintenant ?": {
+    "fr": "Terminez vos opérations et enregistrez vos formulaires avant de mettre à jour. Recharger maintenant ?",
+    "en": "Finish your work and save your forms before updating. Reload now?",
+    "ar": "أكمل العمليات واحفظ النماذج قبل التحديث. هل تريد إعادة التحميل الآن؟"
+  },
+  "Hors connexion : les paiements et pointages nécessitent Internet. Aucune opération ne sera enregistrée hors connexion.": {
+    "fr": "Hors connexion : les paiements et pointages nécessitent Internet. Aucune opération ne sera enregistrée hors connexion.",
+    "en": "Offline: payments and attendance require Internet. No operations will be saved offline.",
+    "ar": "غير متصل: تتطلب المدفوعات والحضور اتصالاً بالإنترنت. لن يتم حفظ أي عملية دون اتصال."
+  },
+  "Sur iPhone ou iPad, ouvrez ce site dans Safari, touchez Partager, puis Sur l’écran d’accueil.": {
+    "fr": "Sur iPhone ou iPad, ouvrez ce site dans Safari, touchez Partager, puis Sur l’écran d’accueil.",
+    "en": "On iPhone or iPad, open this site in Safari, tap Share, then Add to Home Screen.",
+    "ar": "على iPhone أو iPad افتح الموقع في Safari، ثم مشاركة، ثم إضافة إلى الشاشة الرئيسية."
+  },
+  "Ouvrez le menu de votre navigateur, puis choisissez Installer l’application ou Ajouter à l’écran d’accueil si cette option est proposée.": {
+    "fr": "Ouvrez le menu de votre navigateur, puis choisissez Installer l’application ou Ajouter à l’écran d’accueil si cette option est proposée.",
+    "en": "Open your browser menu and choose Install app or Add to Home Screen if available.",
+    "ar": "افتح قائمة المتصفح واختر تثبيت التطبيق أو إضافة إلى الشاشة الرئيسية إن كان الخيار متاحاً."
+  },
+  "Connexion Internet nécessaire. Aucune opération n’a été envoyée au serveur.": {
+    "fr": "Connexion Internet nécessaire. Aucune opération n’a été envoyée au serveur.",
+    "en": "Internet connection required. No operation has been sent to the server.",
+    "ar": "الاتصال بالإنترنت مطلوب. لم يتم إرسال أي عملية إلى الخادم."
+  },
+  "Accueil": {
+    "fr": "Accueil",
+    "en": "Home",
+    "ar": "الرئيسية"
+  },
+  "Mes enfants": {
+    "fr": "Mes enfants",
+    "en": "My children",
+    "ar": "أبنائي"
+  },
+  "Élèves": {
+    "fr": "Élèves",
+    "en": "Students",
+    "ar": "التلاميذ"
+  },
+  "Paiements": {
+    "fr": "Paiements",
+    "en": "Payments",
+    "ar": "المدفوعات"
+  },
+  "Présences": {
+    "fr": "Présences",
+    "en": "Attendance",
+    "ar": "الحضور"
+  },
+  "Notes": {
+    "fr": "Notes",
+    "en": "Grades",
+    "ar": "الدرجات"
+  },
+  "Profil": {
+    "fr": "Profil",
+    "en": "Profile",
+    "ar": "الملف الشخصي"
+  },
+  "Menu": {
+    "fr": "Menu",
+    "en": "Menu",
+    "ar": "القائمة"
+  },
+  "Tous les modules": {
+    "fr": "Tous les modules",
+    "en": "All modules",
+    "ar": "جميع الأقسام"
+  },
+  "Navigation mobile": {
+    "fr": "Navigation mobile",
+    "en": "Mobile navigation",
+    "ar": "التنقل على الهاتف"
+  },
+  "Autres actions": {
+    "fr": "Autres actions",
+    "en": "More actions",
+    "ar": "إجراءات أخرى"
+  },
+  "Factures sur mobile": {
+    "fr": "Factures sur mobile",
+    "en": "Mobile invoices",
+    "ar": "الفواتير على الهاتف"
+  },
+  "Élèves sur mobile": {
+    "fr": "Élèves sur mobile",
+    "en": "Mobile students",
+    "ar": "التلاميذ على الهاتف"
+  },
+  "Synthèse des inscriptions": {
+    "fr": "Synthèse des inscriptions",
+    "en": "Registration summary",
+    "ar": "ملخص التسجيل"
+  },
+  "Imprimer la synthèse": {
+    "fr": "Imprimer la synthèse",
+    "en": "Print summary",
+    "ar": "طباعة الملخص"
+  },
+  "Année en cours": {
+    "fr": "Année en cours",
+    "en": "Current school year",
+    "ar": "السنة الحالية"
+  },
+  "Toutes les situations": {
+    "fr": "Toutes les situations",
+    "en": "All payment states",
+    "ar": "جميع الحالات"
+  },
+  "Situation": {
+    "fr": "Situation",
+    "en": "Payment state",
+    "ar": "حالة الدفع"
+  },
+  "Payée": {
+    "fr": "Payée",
+    "en": "Paid",
+    "ar": "مدفوعة"
+  },
+  "Partiellement payée": {
+    "fr": "Partiellement payée",
+    "en": "Partially paid",
+    "ar": "مدفوعة جزئياً"
+  },
+  "Impayée": {
+    "fr": "Impayée",
+    "en": "Unpaid",
+    "ar": "غير مدفوعة"
+  },
+  "Non facturée": {
+    "fr": "Non facturée",
+    "en": "Not invoiced",
+    "ar": "لم تصدر فاتورة"
+  },
+  "Non soldée (partielle ou impayée)": {
+    "fr": "Non soldée (partielle ou impayée)",
+    "en": "Outstanding (partial or unpaid)",
+    "ar": "غير مسددة بالكامل"
+  },
+  "Facturé": {
+    "fr": "Facturé",
+    "en": "Invoiced",
+    "ar": "المبلغ المفوتر"
+  },
+  "Encaissé": {
+    "fr": "Encaissé",
+    "en": "Collected",
+    "ar": "المبلغ المقبوض"
+  },
+  "Reste à payer": {
+    "fr": "Reste à payer",
+    "en": "Outstanding balance",
+    "ar": "المبلغ المتبقي"
+  },
+  "Non facturé (estimation séparée)": {
+    "fr": "Non facturé (estimation séparée)",
+    "en": "Unbilled (separate estimate)",
+    "ar": "غير مفوتر (تقدير منفصل)"
+  },
+  "Tous": {
+    "fr": "Tous",
+    "en": "All",
+    "ar": "الكل"
+  },
+  "Avec": {
+    "fr": "Avec",
+    "en": "With",
+    "ar": "مع"
+  },
+  "Sans": {
+    "fr": "Sans",
+    "en": "Without",
+    "ar": "بدون"
+  },
+  "Options": {
+    "fr": "Options",
+    "en": "Options",
+    "ar": "الخيارات"
+  },
+  "Mon pointage": {
+    "fr": "Mon pointage",
+    "en": "My attendance",
+    "ar": "حضوري"
+  },
+  "Badger": {
+    "fr": "Badger",
+    "en": "Clock in/out",
+    "ar": "تسجيل الحضور"
+  },
+  "Mon arrivée": {
+    "fr": "Mon arrivée",
+    "en": "My arrival",
+    "ar": "وصولي"
+  },
+  "Mon départ": {
+    "fr": "Mon départ",
+    "en": "My departure",
+    "ar": "مغادرتي"
+  },
+  "Confirmer mon arrivée": {
+    "fr": "Confirmer mon arrivée",
+    "en": "Confirm my arrival",
+    "ar": "تأكيد وصولي"
+  },
+  "Confirmer mon départ": {
+    "fr": "Confirmer mon départ",
+    "en": "Confirm my departure",
+    "ar": "تأكيد مغادرتي"
+  },
+  "Arrivée enregistrée": {
+    "fr": "Arrivée enregistrée",
+    "en": "Arrival recorded",
+    "ar": "تم تسجيل الوصول"
+  },
+  "Départ enregistré": {
+    "fr": "Départ enregistré",
+    "en": "Departure recorded",
+    "ar": "تم تسجيل المغادرة"
+  },
+  "Arrivée déjà enregistrée": {
+    "fr": "Arrivée déjà enregistrée",
+    "en": "Arrival already recorded",
+    "ar": "تم تسجيل الوصول سابقاً"
+  },
+  "Pointage déjà terminé": {
+    "fr": "Pointage déjà terminé",
+    "en": "Attendance already completed",
+    "ar": "اكتمل التسجيل سابقاً"
+  },
+  "Mes pointages": {
+    "fr": "Mes pointages",
+    "en": "My attendance history",
+    "ar": "سجل حضوري"
+  },
+  "Scanner le QR de la porte": {
+    "fr": "Scanner le QR de la porte",
+    "en": "Scan the entrance QR code",
+    "ar": "مسح رمز المدخل"
+  },
+  "QR code de la porte prêt.": {
+    "fr": "QR code de la porte prêt.",
+    "en": "Entrance QR code ready.",
+    "ar": "رمز المدخل جاهز."
+  },
+  "Aucun QR code scanné.": {
+    "fr": "Aucun QR code scanné.",
+    "en": "No QR code scanned.",
+    "ar": "لم يتم مسح رمز."
+  },
+  "Vérification de la position…": {
+    "fr": "Vérification de la position…",
+    "en": "Checking location…",
+    "ar": "جارٍ التحقق من الموقع…"
+  },
+  "QR commun à la porte": {
+    "fr": "QR commun à la porte",
+    "en": "Shared entrance QR code",
+    "ar": "رمز المدخل المشترك"
+  },
+  "Activer le pointage personnel": {
+    "fr": "Activer le pointage personnel",
+    "en": "Enable self check-in/out",
+    "ar": "تفعيل التسجيل الذاتي"
+  },
+  "Utiliser ma position à la porte": {
+    "fr": "Utiliser ma position à la porte",
+    "en": "Use my location at the entrance",
+    "ar": "استخدام موقعي عند المدخل"
+  },
+  "Rayon autorisé (m)": {
+    "fr": "Rayon autorisé (m)",
+    "en": "Authorized radius (m)",
+    "ar": "النطاق المسموح (م)"
+  },
+  "Imprimer le QR de la porte": {
+    "fr": "Imprimer le QR de la porte",
+    "en": "Print the entrance QR code",
+    "ar": "طباعة رمز المدخل"
+  },
+  "Remplacer le QR code": {
+    "fr": "Remplacer le QR code",
+    "en": "Replace QR code",
+    "ar": "استبدال الرمز"
+  },
+  "Action du contrôleur": {
+    "fr": "Action du contrôleur",
+    "en": "Controller action",
+    "ar": "إجراء المراقب"
+  },
+  "Arrivée": {
+    "fr": "Arrivée",
+    "en": "Arrival",
+    "ar": "الوصول"
+  },
+  "Départ": {
+    "fr": "Départ",
+    "en": "Departure",
+    "ar": "المغادرة"
+  },
+  "Retards": {
+    "fr": "Retards",
+    "en": "Late minutes",
+    "ar": "التأخر"
+  },
+  "Arrivée et départ": {
+    "fr": "Arrivée et départ",
+    "en": "Arrival and departure",
+    "ar": "الوصول والمغادرة"
   }
 }

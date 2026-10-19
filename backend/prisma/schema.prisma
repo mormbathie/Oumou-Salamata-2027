@@ -446,3 +446,14 @@ model RegistrationCounter {
   year Int @id
   value Int
 }
+
+// Independent configuration; no existing school or financial rows are changed.
+model StaffDoorBadge {
+  id Int @id @default(1)
+  enabled Boolean @default(false)
+  token String
+  latitude Float?
+  longitude Float?
+  radiusMeters Int @default(100)
+  updatedAt DateTime @updatedAt
+}
