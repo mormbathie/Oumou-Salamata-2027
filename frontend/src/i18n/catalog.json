@@ -4433,5 +4433,95 @@
     "fr": "Développer le menu",
     "en": "Expand menu",
     "ar": "توسيع القائمة"
+  },
+  "Profile photo": {
+    "fr": "Photo de profil",
+    "en": "Profile photo",
+    "ar": "صورة الملف الشخصي"
+  },
+  "My personal file": {
+    "fr": "Mon dossier personnel",
+    "en": "My personal file",
+    "ar": "ملفي الشخصي"
+  },
+  "These details are optional. Your role and permissions cannot be changed here.": {
+    "fr": "Ces renseignements sont facultatifs. Votre rôle et vos droits ne peuvent pas être modifiés ici.",
+    "en": "These details are optional. Your role and permissions cannot be changed here.",
+    "ar": "هذه المعلومات اختيارية. لا يمكن تغيير الدور والصلاحيات هنا."
+  },
+  "City": {
+    "fr": "Ville",
+    "en": "City",
+    "ar": "المدينة"
+  },
+  "Alternate phone": {
+    "fr": "Autre téléphone",
+    "en": "Alternate phone",
+    "ar": "هاتف إضافي"
+  },
+  "Emergency contact name": {
+    "fr": "Nom du contact d’urgence",
+    "en": "Emergency contact name",
+    "ar": "اسم جهة اتصال الطوارئ"
+  },
+  "Emergency contact phone": {
+    "fr": "Téléphone du contact d’urgence",
+    "en": "Emergency contact phone",
+    "ar": "هاتف جهة اتصال الطوارئ"
+  },
+  "Relationship to emergency contact": {
+    "fr": "Lien avec le contact d’urgence",
+    "en": "Relationship to emergency contact",
+    "ar": "صلة القرابة بجهة اتصال الطوارئ"
+  },
+  "Qualifications and training": {
+    "fr": "Diplômes et formations",
+    "en": "Qualifications and training",
+    "ar": "الشهادات والتكوين"
+  },
+  "Subjects and specialties": {
+    "fr": "Matières et spécialités",
+    "en": "Subjects and specialties",
+    "ar": "المواد والتخصصات"
+  },
+  "Professional experience": {
+    "fr": "Expérience professionnelle",
+    "en": "Professional experience",
+    "ar": "الخبرة المهنية"
+  },
+  "My teaching background": {
+    "fr": "Mon parcours enseignant",
+    "en": "My teaching background",
+    "ar": "مساري التعليمي"
+  },
+  "Save personal file": {
+    "fr": "Enregistrer mon dossier",
+    "en": "Save personal file",
+    "ar": "حفظ ملفي"
+  },
+  "Changes saved.": {
+    "fr": "Modifications enregistrées.",
+    "en": "Changes saved.",
+    "ar": "تم حفظ التغييرات."
+  },
+  "Remove photo": {
+    "fr": "Supprimer la photo",
+    "en": "Remove photo",
+    "ar": "حذف الصورة"
+  },
+  "JPEG, PNG or WebP. Photos are resized automatically.": {
+    "fr": "JPEG, PNG ou WebP. Les photos sont redimensionnées automatiquement.",
+    "en": "JPEG, PNG or WebP. Photos are resized automatically.",
+    "ar": "JPEG أو PNG أو WebP. يتم تغيير حجم الصور تلقائيًا."
+  },
+  "Choose a JPEG, PNG or WebP photo under 10 MB.": {
+    "fr": "Choisissez une photo JPEG, PNG ou WebP de moins de 10 Mo.",
+    "en": "Choose a JPEG, PNG or WebP photo under 10 MB.",
+    "ar": "اختر صورة JPEG أو PNG أو WebP أصغر من 10 ميغابايت."
+  },
+  "Invalid photo.": {
+    "fr": "Photo invalide.",
+    "en": "Invalid photo.",
+    "ar": "صورة غير صالحة."
   }
 }

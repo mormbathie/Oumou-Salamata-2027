@@ -64,7 +64,17 @@ enum Term {
   TRIMESTRE_3
 }
 
+model AccountProfile {
+  keycloakId String @id
+  user User @relation(fields: [keycloakId], references: [keycloakId], onDelete: Cascade)
+  details Json?
+  photo Bytes?
+  photoMime String?
+  updatedAt DateTime @updatedAt
+}
+
 model User {
+  profile AccountProfile?
   id          String   @id @default(uuid())
   keycloakId  String?  @unique
   email       String   @unique

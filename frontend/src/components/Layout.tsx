@@ -1,3 +1,4 @@
+import { ProfileAvatar } from './AccountDossier';
 import { navigationVisuals, navigationCategories } from './navigation';
 import api from '../services/api';
 import { school } from '../config/school';
@@ -90,7 +91,7 @@ export const Layout: React.FC = () => {
         </nav>
         <div className={`shrink-0 border-t border-slate-800 bg-slate-950/50 ${sidebarCollapsed ? 'flex flex-col items-center gap-2 px-2 py-3' : 'p-4'}`}>
           {!sidebarCollapsed && <div className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400"><Shield className="h-3.5 w-3.5 text-emerald-400" />{t('Your session')}</div>}
-          <div className={`flex min-w-0 items-center gap-2 ${sidebarCollapsed ? 'flex-col' : 'justify-between'}`}><button onClick={()=>navigate('/profile')} title={t('My Profile')} aria-label={t('My Profile')} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 text-xs font-bold uppercase text-emerald-300">{user?.firstName?.[0] || user?.username?.[0] || 'U'}</button>{!sidebarCollapsed && <div className="min-w-0 flex-1"><p className="truncate text-xs font-semibold text-white">{user?.firstName ? `${user.firstName} ${user.lastName || ''}` : user?.username}</p><p className="truncate text-[10px] text-slate-400">{visibleRole}</p></div>}<button onClick={handleLogout} title={t('Sign out')} aria-label={t('Sign out')} className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-800 hover:text-rose-400"><LogOut className="h-4 w-4" /></button></div>
+          <div className={`flex min-w-0 items-center gap-2 ${sidebarCollapsed ? 'flex-col' : 'justify-between'}`}><button onClick={()=>navigate('/profile')} title={t('My Profile')} aria-label={t('My Profile')} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-500/25 bg-emerald-500/10 text-xs font-bold uppercase text-emerald-300"><ProfileAvatar fallback={user?.firstName?.[0] || user?.username?.[0] || 'U'} /></button>{!sidebarCollapsed && <div className="min-w-0 flex-1"><p className="truncate text-xs font-semibold text-white">{user?.firstName ? `${user.firstName} ${user.lastName || ''}` : user?.username}</p><p className="truncate text-[10px] text-slate-400">{visibleRole}</p></div>}<button onClick={handleLogout} title={t('Sign out')} aria-label={t('Sign out')} className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-800 hover:text-rose-400"><LogOut className="h-4 w-4" /></button></div>
         </div>
       </aside>
 
@@ -101,7 +102,7 @@ export const Layout: React.FC = () => {
         </header>
         <header className="mobile-topbar z-20 flex shrink-0 items-center justify-between gap-2 border-b border-slate-200 bg-white px-4 md:hidden">
           <div className="flex min-w-0 items-center gap-2.5"><img src={school.logo} alt="" className="h-10 w-10 shrink-0 rounded-xl border border-emerald-100 object-contain" /><div className="min-w-0"><p className="truncate text-sm font-bold text-slate-900">As Sakina</p><p className="truncate text-xs text-slate-500">{mobileMenuOpen ? t('Tous les modules') : currentPage?.label || school.shortName}</p></div></div>
-          <div className="flex shrink-0 items-center gap-2"><LanguageSelector /><button onClick={() => navigate('/profile')} aria-label={t('My Profile')} className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-100 font-bold uppercase text-emerald-800">{user?.firstName?.[0] || user?.username?.[0] || 'U'}</button></div>
+          <div className="flex shrink-0 items-center gap-2"><LanguageSelector /><button onClick={() => navigate('/profile')} aria-label={t('My Profile')} className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-100 font-bold uppercase text-emerald-800"><ProfileAvatar fallback={user?.firstName?.[0] || user?.username?.[0] || 'U'} /></button></div>
         </header>
         <main ref={content} className="mobile-content hide-scrollbar min-h-0 min-w-0 flex-1 overflow-y-auto bg-slate-100/60 p-4 sm:p-6"><Outlet /></main>
         {mobileMenuOpen && <section aria-label={t('Tous les modules')} className="mobile-modules absolute inset-x-0 z-40 overflow-y-auto bg-slate-50 p-4 md:hidden">

@@ -1,3 +1,4 @@
+import { AccountDossier } from '../components/AccountDossier';
 import { t, locale, statusLabel } from "../i18n/index";
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -71,6 +72,7 @@ export const ProfilePage = () => {
       {error && <p role="alert" className="mt-4 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
       {message && <p role="status" className="mt-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">{message}</p>}
     </div>
+    <AccountDossier isTeacher={isTeacher} />
     {isTeacher && <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
       <h3 className="text-lg font-bold">{t("My attendance")}</h3>
       <p className="mt-1 text-sm text-slate-600">{t("Show this QR code to the attendance officer when you arrive and leave.")}</p>
