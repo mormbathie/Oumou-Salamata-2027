@@ -4378,5 +4378,60 @@
     "fr": "Arrivée et départ",
     "en": "Arrival and departure",
     "ar": "الوصول والمغادرة"
+  },
+  "Menu principal": {
+    "fr": "Menu principal",
+    "en": "Main menu",
+    "ar": "القائمة الرئيسية"
+  },
+  "Navigation principale": {
+    "fr": "Navigation principale",
+    "en": "Main navigation",
+    "ar": "التنقل الرئيسي"
+  },
+  "Vue d’ensemble": {
+    "fr": "Vue d’ensemble",
+    "en": "Overview",
+    "ar": "نظرة عامة"
+  },
+  "Scolarité & familles": {
+    "fr": "Scolarité & familles",
+    "en": "School & families",
+    "ar": "الدراسة والأسر"
+  },
+  "Comptabilité": {
+    "fr": "Comptabilité",
+    "en": "Accounting",
+    "ar": "المحاسبة"
+  },
+  "Activités & équipements": {
+    "fr": "Activités & équipements",
+    "en": "Activities & equipment",
+    "ar": "الأنشطة والتجهيزات"
+  },
+  "Présences & personnel": {
+    "fr": "Présences & personnel",
+    "en": "Attendance & staff",
+    "ar": "الحضور والموظفون"
+  },
+  "Administration": {
+    "fr": "Administration",
+    "en": "Administration",
+    "ar": "الإدارة"
+  },
+  "Mon compte": {
+    "fr": "Mon compte",
+    "en": "My account",
+    "ar": "حسابي"
+  },
+  "Réduire le menu": {
+    "fr": "Réduire le menu",
+    "en": "Collapse menu",
+    "ar": "تصغير القائمة"
+  },
+  "Développer le menu": {
+    "fr": "Développer le menu",
+    "en": "Expand menu",
+    "ar": "توسيع القائمة"
   }
 }
