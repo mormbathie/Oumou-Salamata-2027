@@ -37,6 +37,7 @@ export const Layout: React.FC = () => {
     { to: '/parents', label: t("Parents & Guardians"), icon: navigationVisuals['/parents'].icon, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/kimono', label: t('Kimono sales'), icon: navigationVisuals['/kimono'].icon, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
     { to: '/karate', label: t('Monthly karate payments'), icon: navigationVisuals['/karate'].icon, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
+    { to: '/refunds', label: t('Départs et remboursements'), icon: navigationVisuals['/refunds'].icon, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/finance-control', label: 'Contrôle financier', icon: navigationVisuals['/finance-control'].icon, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
     { to: '/registration-report', label: t('Synthèse des inscriptions'), icon: navigationVisuals['/registration-report'].icon, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
     { to: '/teacher-badge', label: t('Mon pointage'), icon: navigationVisuals['/teacher-badge'].icon, roles: ['ENSEIGNANT'] },

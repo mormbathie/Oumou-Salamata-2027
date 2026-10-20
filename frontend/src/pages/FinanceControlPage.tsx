@@ -51,7 +51,7 @@ export function FinanceControlPage() {
     <section className="space-y-4 rounded-xl border bg-white p-5">
       <h2 className="text-lg font-semibold">Caisse du jour</h2>
       <label>Date <input type="date" value={day} onChange={e => setDay(e.target.value)} className="rounded border p-2" /></label>
-      {cash && <><p>Total encaissé : <strong>{money(cash.total)}</strong> — Espèces attendues : <strong>{money(cash.expectedCash)}</strong></p>
+      {cash && <><p>Encaissements bruts : <strong>{money(cash.gross)}</strong> — Remboursements : <strong>{money(cash.totalRefunded)}</strong> — Net : <strong>{money(cash.total)}</strong> — Espèces attendues : <strong>{money(cash.expectedCash)}</strong></p>
       <div className="grid gap-4 sm:grid-cols-2"><div><h3>Par mode de paiement</h3>{Object.entries(cash.byMethod).map(([method, amount]) => <p key={method}>{({ CASH: 'Espèces', BANK_TRANSFER: 'Virement', MOBILE_MONEY: 'Paiement mobile', CHECK: 'Chèque' } as any)[method] || method} : {money(amount as number)}</p>)}</div>
       <div><h3>Par caissier</h3>{Object.entries(cash.byCashier).map(([id, row]: [string, any]) => <p key={id}>{row.name} : {money(row.total)}</p>)}</div></div>
       {cash.closing ? <p className="font-semibold text-emerald-700">Journée clôturée par {cash.closing.actorName}. Écart : {money(cash.closing.difference)}.</p> : hasRole(['ADMIN', 'DIRECTEUR']) && <form className="flex flex-wrap gap-3" onSubmit={e => { e.preventDefault(); if (window.confirm('Clôturer cette journée ? Les paiements sur cette date seront ensuite bloqués.')) void act(() => api.post('/finance-control/cash/close', { day, countedCash: Number(counted), notes })); }}>

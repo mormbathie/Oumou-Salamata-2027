@@ -69,6 +69,7 @@ jobs:
           npx --no-install prisma db push --skip-generate
           node test/setup-ci.cjs
           node test/report-door.cjs
+          node test/refunds.cjs
           node test/finance-control.cjs
           node test/academic-transition.cjs
           node test/registration-atomicity.cjs

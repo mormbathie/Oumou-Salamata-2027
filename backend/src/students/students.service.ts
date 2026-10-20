@@ -57,6 +57,7 @@ export class StudentsService {
     return this.prisma.student.findMany({
       where,
       include: {
+        departure: true,
         parent: isTeacher
           ? { select: { id: true, firstName: true, lastName: true, phone: true, relation: true } }
           : true,
@@ -89,6 +90,7 @@ export class StudentsService {
     const student = await this.prisma.student.findUnique({
       where: { id },
       include: {
+        departure: true,
         parent: isTeacher
           ? { select: { id: true, firstName: true, lastName: true, phone: true, relation: true } }
           : { include: { ...((isManager || isParent) ? { documents: { orderBy: { createdAt: 'desc' as const } } } : {}) } },
@@ -388,6 +390,7 @@ export class StudentsService {
         await tx.$queryRaw(Prisma.sql`SELECT id FROM "Student" WHERE id = ${id} FOR UPDATE`);
         const current = await tx.student.findUnique({ where: { id }, include: { enrollments: { where: { academicYear: { isCurrent: true } }, take: 1, include: { classroom: true } } } });
         if (!current) throw new NotFoundException('Élève introuvable.');
+        if (await tx.studentDeparture.findUnique({ where: { studentId: id } })) throw new BadRequestException('Ce dossier est conservé après un départ et ne peut plus être modifié ici.');
         const enrollment = current.enrollments[0];
         const classroom = data.classroomId ? await tx.classroom.findUnique({ where: { id: data.classroomId } }) : enrollment?.classroom;
         const next = { ...current, ...studentData };
@@ -451,6 +454,7 @@ export class StudentsService {
       if (classroom.academicYearId !== data.academicYearId) throw new BadRequestException('La classe ne correspond pas à l’année scolaire.');
       validateProgramAge(classroom.program, student.dateOfBirth);
       validateOptionsForClass(student, classroom);
+      if (await tx.studentDeparture.findUnique({ where: { studentId: data.studentId } })) throw new BadRequestException('Cet élève a quitté l’établissement.');
       return tx.enrollment.upsert({
         where: { studentId_academicYearId: { studentId: data.studentId, academicYearId: data.academicYearId } },
         update: { classroomId: data.classroomId, status: 'REGISTERED', registeredById: author.id, registeredByName: author.name, registeredByRole: author.role },
@@ -460,9 +464,7 @@ export class StudentsService {
   }
 
   async remove(id: string) {
-    const documents = await this.prisma.studentDocument.findMany({ where: { studentId: id }, select: { storageKey: true } });
-    const removed = await this.prisma.student.delete({ where: { id } });
-    await this.documents.removeStoredFiles(documents.map((document) => document.storageKey));
-    return removed;
+    // No financial or school history may disappear through a dossier deletion.
+    throw new BadRequestException('La suppression des dossiers est désactivée. Utilisez Départs et remboursements pour conserver l’historique.');
   }
 }

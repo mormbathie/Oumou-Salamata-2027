@@ -1,3 +1,4 @@
+import { RefundsPage } from './pages/RefundsPage';
 import { RegistrationReportPage } from './pages/RegistrationReportPage';
 import { TeacherBadgePage } from './pages/TeacherBadgePage';
 import { ParentPortalPage } from './pages/ParentPortalPage';
@@ -59,6 +60,7 @@ export const App: React.FC = () => (
           <Route path="parents" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><ParentsPage /></RequireRoles>} />
           <Route path="kimono" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><ActivityPaymentsPage category="KIMONO" /></RequireRoles>} />
           <Route path="karate" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><ActivityPaymentsPage category="KARATE" /></RequireRoles>} />
+          <Route path="refunds" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><RefundsPage /></RequireRoles>} />
           <Route path="finance-control" element={<RequireRoles roles={['ADMIN', 'DIRECTEUR', 'COMPTABLE']}><FinanceControlPage /></RequireRoles>} />
           <Route path="registration-report" element={<RequireRoles roles={['ADMIN','DIRECTEUR','COMPTABLE']}><RegistrationReportPage /></RequireRoles>} />
           <Route path="teacher-badge" element={<RequireRoles roles={['ENSEIGNANT']}><TeacherBadgePage /></RequireRoles>} />

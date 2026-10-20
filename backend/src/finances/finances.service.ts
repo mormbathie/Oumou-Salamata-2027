@@ -275,7 +275,7 @@ export class FinancesService {
       where: { id: data.classroomId },
       include: {
         enrollments: {
-          where: { status: 'REGISTERED' },
+          where: { status: 'REGISTERED', student: { status: 'ACTIVE' } },
           include: { student: true },
         },
       },
@@ -290,39 +290,22 @@ export class FinancesService {
     let createdCount = 0;
 
     for (const enrollment of classroom.enrollments) {
-      // Check if invoice for this month already exists
-      const title = `Scolarité ${data.monthName} - ${classroom.name}`;
-      const existing = await this.prisma.invoice.findFirst({
-        where: {
-          studentId: enrollment.studentId,
-          academicYearId,
-          title,
-          cancelledAt: null,
-        },
+      const created = await this.prisma.$transaction(async tx => {
+        await tx.$queryRaw(Prisma.sql`SELECT id FROM "Student" WHERE id = ${enrollment.studentId} FOR UPDATE`);
+        const active = await tx.student.findUnique({ where: { id: enrollment.studentId } });
+        const registered = await tx.enrollment.findUnique({ where: { id: enrollment.id } });
+        if (!active || active.status !== 'ACTIVE' || registered?.status !== 'REGISTERED') return false;
+        const title = `Scolarité ${data.monthName} - ${classroom.name}`;
+        if (await tx.invoice.findFirst({ where: { studentId: enrollment.studentId, academicYearId, title, cancelledAt: null } })) return false;
+        await tx.invoice.create({ data: {
+          invoiceNumber: `FAC-${year}-${randomUUID().toUpperCase()}`, studentId: enrollment.studentId, academicYearId, title,
+          type: InvoiceType.TUITION, amount: schoolFees(active, classroom).monthlyTuition, paidAmount: 0,
+          balance: schoolFees(active, classroom).monthlyTuition, dueDate: new Date(data.dueDate), status: InvoiceStatus.UNPAID,
+          createdById: author.id, createdByName: author.name, createdByRole: author.role,
+        } });
+        return true;
       });
-
-      if (!existing) {
-            const invoiceNumber = `FAC-${year}-${randomUUID().toUpperCase()}`;
-
-        await this.prisma.invoice.create({
-          data: {
-            invoiceNumber,
-            studentId: enrollment.studentId,
-            academicYearId,
-            title,
-            type: InvoiceType.TUITION,
-            amount: schoolFees(enrollment.student, classroom).monthlyTuition,
-            paidAmount: 0,
-            balance: schoolFees(enrollment.student, classroom).monthlyTuition,
-            dueDate: new Date(data.dueDate),
-            status: InvoiceStatus.UNPAID,
-            createdById: author.id,
-            createdByName: author.name,
-            createdByRole: author.role,
-          },
-        });
-        createdCount++;
-      }
+      if (created) createdCount++;
     }
 
     return {
@@ -372,9 +355,12 @@ export class FinancesService {
     });
 
     const totalInvoiced = invoices.reduce((acc, curr) => acc + curr.amount, 0);
-    const totalCollected = invoices.reduce((acc, curr) => acc + curr.paidAmount, 0);
+    const grossCollected = invoices.reduce((acc, curr) => acc + curr.paidAmount, 0);
+    const refundSum = await this.prisma.refund.aggregate({ where: academicYearId ? { payment: { invoice: { academicYearId } } } : {}, _sum: { amount: true } });
+    const totalRefunded = refundSum._sum.amount || 0;
+    const totalCollected = grossCollected - totalRefunded;
     const totalOutstanding = invoices.reduce((acc, curr) => acc + curr.balance, 0);
-    const recoveryRate = totalInvoiced > 0 ? (totalCollected / totalInvoiced) * 100 : 0;
+    const recoveryRate = totalInvoiced > 0 ? (grossCollected / totalInvoiced) * 100 : 0;
 
     const byStatus = {
       PAID: invoices.filter((i) => i.status === InvoiceStatus.PAID).length,
@@ -398,7 +384,7 @@ export class FinancesService {
 
     return {
       totalInvoiced,
-      totalCollected,
+      totalCollected, grossCollected, totalRefunded,
       totalOutstanding,
       recoveryRate: Math.round(recoveryRate * 10) / 10,
       invoiceCount: invoices.length,

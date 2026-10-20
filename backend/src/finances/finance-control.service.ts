@@ -24,6 +24,7 @@ export class FinanceControlService {
       await openCashDay(tx, cashDay(original.paymentDate));
       await tx.$queryRaw(Prisma.sql`SELECT id FROM "Invoice" WHERE id = ${original.invoiceId} FOR UPDATE`);
       const payment = await tx.payment.findUniqueOrThrow({ where: { id } });
+      if (await tx.refund.count({ where: { paymentId: id } })) throw new BadRequestException('Ce paiement a un remboursement et ne peut pas être corrigé.');
       const invoice = await tx.invoice.findUniqueOrThrow({ where: { id: payment.invoiceId } });
       if (payment.cancelledAt || invoice.cancelledAt) throw new BadRequestException('Cette écriture est annulée. Actualisez la page.');
       if (payment.amount !== data.expectedAmount || invoice.paidAmount !== data.expectedPaidAmount) throw new BadRequestException('La situation a changé. Actualisez la page avant de corriger le paiement.');
@@ -62,6 +63,7 @@ export class FinanceControlService {
       await openCashDay(tx, cashDay(payment.paymentDate));
       await tx.$queryRaw(Prisma.sql`SELECT id FROM "Invoice" WHERE id = ${payment.invoiceId} FOR UPDATE`);
       const current = await tx.payment.findUniqueOrThrow({ where: { id } });
+      if (await tx.refund.count({ where: { paymentId: id } })) throw new BadRequestException('Ce paiement a un remboursement et ne peut pas être annulé.');
       if (current.cancelledAt) return current;
       const invoice = await tx.invoice.findUniqueOrThrow({ where: { id: current.invoiceId } });
       if (invoice.cancelledAt) throw new BadRequestException('Facture déjà annulée.');
@@ -96,7 +98,11 @@ export class FinanceControlService {
       byCashier[key] ||= { name: payment.receivedBy || 'Historique', total: 0 };
       byCashier[key].total += payment.amount;
     }
-    return { day, count: payments.length, total: payments.reduce((sum, row) => sum + row.amount, 0), expectedCash: byMethod.CASH || 0, byMethod, byCashier };
+    const refunds = await tx.refund.findMany({ where: { refundedOn: dayRange(day) }, select: { amount: true, paymentMethod: true, actorId: true, actorName: true } });
+    const refundedByMethod: Record<string, number> = {};
+    for (const r of refunds) { refundedByMethod[r.paymentMethod] = (refundedByMethod[r.paymentMethod] || 0) + r.amount; }
+    const gross = payments.reduce((sum, row) => sum + row.amount, 0), totalRefunded = refunds.reduce((sum, r) => sum + r.amount, 0);
+    return { day, count: payments.length, gross, totalRefunded, total: gross - totalRefunded, expectedCash: (byMethod.CASH || 0) - (refundedByMethod.CASH || 0), byMethod, refundedByMethod, byCashier };
   }
   async preview(day: string) {
     dayRange(day);

@@ -4523,5 +4523,245 @@
     "fr": "Photo invalide.",
     "en": "Invalid photo.",
     "ar": "صورة غير صالحة."
+  },
+  "Départs et remboursements": {
+    "fr": "Départs et remboursements",
+    "en": "Departures and refunds",
+    "ar": "المغادرة والمبالغ المستردة"
+  },
+  "Encaissements bruts": {
+    "fr": "Encaissements bruts",
+    "en": "Gross receipts",
+    "ar": "المقبوضات الإجمالية"
+  },
+  "Remboursements": {
+    "fr": "Remboursements",
+    "en": "Refunds",
+    "ar": "المبالغ المستردة"
+  },
+  "Encaissements nets": {
+    "fr": "Encaissements nets",
+    "en": "Net receipts",
+    "ar": "صافي المقبوضات"
+  },
+  "Encaissé net": {
+    "fr": "Encaissé net",
+    "en": "Net collected",
+    "ar": "صافي المحصل"
+  },
+  "Sur la période sélectionnée": {
+    "fr": "Sur la période sélectionnée",
+    "en": "For the selected period",
+    "ar": "خلال الفترة المحددة"
+  },
+  "Choisir un dossier": {
+    "fr": "Choisir un dossier",
+    "en": "Choose a student record",
+    "ar": "اختيار ملف تلميذ"
+  },
+  "A quitté l’établissement": {
+    "fr": "A quitté l’établissement",
+    "en": "Left the school",
+    "ar": "غادر المؤسسة"
+  },
+  "Dossier conservé": {
+    "fr": "Dossier conservé",
+    "en": "Record retained",
+    "ar": "الملف محفوظ"
+  },
+  "Enregistrer un remboursement": {
+    "fr": "Enregistrer un remboursement",
+    "en": "Record a refund",
+    "ar": "تسجيل مبلغ مسترد"
+  },
+  "Paiement d’origine": {
+    "fr": "Paiement d’origine",
+    "en": "Original payment",
+    "ar": "الدفعة الأصلية"
+  },
+  "Disponible": {
+    "fr": "Disponible",
+    "en": "Available",
+    "ar": "المتاح"
+  },
+  "Reçu initial": {
+    "fr": "Reçu initial",
+    "en": "Original receipt",
+    "ar": "الإيصال الأصلي"
+  },
+  "Déjà remboursé": {
+    "fr": "Déjà remboursé",
+    "en": "Already refunded",
+    "ar": "تم استرداده"
+  },
+  "Encore remboursable": {
+    "fr": "Encore remboursable",
+    "en": "Still refundable",
+    "ar": "المتبقي للاسترداد"
+  },
+  "Montant remboursé (F CFA)": {
+    "fr": "Montant remboursé (F CFA)",
+    "en": "Refund amount (CFA francs)",
+    "ar": "مبلغ الاسترداد (فرنك سيفا)"
+  },
+  "Date du remboursement": {
+    "fr": "Date du remboursement",
+    "en": "Refund date",
+    "ar": "تاريخ الاسترداد"
+  },
+  "Type d’enregistrement": {
+    "fr": "Type d’enregistrement",
+    "en": "Entry type",
+    "ar": "نوع التسجيل"
+  },
+  "Remboursement remis et enregistré": {
+    "fr": "Remboursement remis et enregistré",
+    "en": "Refund paid and recorded",
+    "ar": "استرداد مدفوع ومسجل"
+  },
+  "Déjà effectué — régularisation": {
+    "fr": "Déjà effectué — régularisation",
+    "en": "Already paid — historical entry",
+    "ar": "مدفوع سابقًا — تسوية"
+  },
+  "Bénéficiaire": {
+    "fr": "Bénéficiaire",
+    "en": "Recipient",
+    "ar": "المستفيد"
+  },
+  "Motif du remboursement": {
+    "fr": "Motif du remboursement",
+    "en": "Refund reason",
+    "ar": "سبب الاسترداد"
+  },
+  "Valider le remboursement": {
+    "fr": "Valider le remboursement",
+    "en": "Confirm refund record",
+    "ar": "تأكيد تسجيل الاسترداد"
+  },
+  "Enregistrer le départ": {
+    "fr": "Enregistrer le départ",
+    "en": "Record departure",
+    "ar": "تسجيل المغادرة"
+  },
+  "Date du départ": {
+    "fr": "Date du départ",
+    "en": "Departure date",
+    "ar": "تاريخ المغادرة"
+  },
+  "Motif du départ": {
+    "fr": "Motif du départ",
+    "en": "Departure reason",
+    "ar": "سبب المغادرة"
+  },
+  "Confirmer le départ": {
+    "fr": "Confirmer le départ",
+    "en": "Confirm departure",
+    "ar": "تأكيد المغادرة"
+  },
+  "Le départ est déjà enregistré.": {
+    "fr": "Le départ est déjà enregistré.",
+    "en": "This departure has already been recorded.",
+    "ar": "تم تسجيل المغادرة بالفعل."
+  },
+  "Historique des remboursements": {
+    "fr": "Historique des remboursements",
+    "en": "Refund history",
+    "ar": "سجل المبالغ المستردة"
+  },
+  "Imprimer le justificatif": {
+    "fr": "Imprimer le justificatif",
+    "en": "Print refund receipt",
+    "ar": "طباعة إيصال الاسترداد"
+  },
+  "Élèves ayant quitté l’établissement": {
+    "fr": "Élèves ayant quitté l’établissement",
+    "en": "Students who left the school",
+    "ar": "التلاميذ الذين غادروا المؤسسة"
+  },
+  "Reste à payer conservé": {
+    "fr": "Reste à payer conservé",
+    "en": "Outstanding amount retained",
+    "ar": "المبلغ المستحق المحفوظ"
+  },
+  "Départ / remboursement": {
+    "fr": "Départ / remboursement",
+    "en": "Departure / refund",
+    "ar": "المغادرة / الاسترداد"
+  },
+  "Justificatif de remboursement": {
+    "fr": "Justificatif de remboursement",
+    "en": "Refund receipt",
+    "ar": "إيصال استرداد"
+  },
+  "Référence du remboursement": {
+    "fr": "Référence du remboursement",
+    "en": "Refund reference",
+    "ar": "مرجع الاسترداد"
+  },
+  "Montant remboursé": {
+    "fr": "Montant remboursé",
+    "en": "Amount refunded",
+    "ar": "المبلغ المسترد"
+  },
+  "Les paiements d’origine restent conservés. Un remboursement ne crée pas une nouvelle dette et ne déclenche aucun versement.": {
+    "fr": "Les paiements d’origine restent conservés. Un remboursement ne crée pas une nouvelle dette et ne déclenche aucun versement.",
+    "en": "Original payments are retained. A refund entry does not create a new debt or trigger a money transfer.",
+    "ar": "تُحفظ الدفعات الأصلية. تسجيل الاسترداد لا ينشئ دينًا جديدًا ولا ينفذ تحويلًا ماليًا."
+  },
+  "Consultation uniquement. Seul l’administrateur peut enregistrer un départ ou un remboursement.": {
+    "fr": "Consultation uniquement. Seul l’administrateur peut enregistrer un départ ou un remboursement.",
+    "en": "Read-only access. Only an administrator can record a departure or refund.",
+    "ar": "وصول للقراءة فقط. يمكن للمسؤول وحده تسجيل المغادرة أو الاسترداد."
+  },
+  "Aucun paiement actif disponible pour ce dossier.": {
+    "fr": "Aucun paiement actif disponible pour ce dossier.",
+    "en": "No active payment is available for this student.",
+    "ar": "لا توجد دفعة سارية متاحة لهذا الملف."
+  },
+  "Je confirme que cette somme a déjà été remise au bénéficiaire et que cet enregistrement ne déclenche aucun nouveau versement.": {
+    "fr": "Je confirme que cette somme a déjà été remise au bénéficiaire et que cet enregistrement ne déclenche aucun nouveau versement.",
+    "en": "I confirm that this amount has already been given to the recipient and this entry will not trigger another transfer.",
+    "ar": "أؤكد أن هذا المبلغ قد سُلّم للمستفيد وأن التسجيل لن ينفذ أي تحويل جديد."
+  },
+  "Le dossier, les factures et les paiements restent consultables. Les nouvelles mensualités automatiques et les pointages sont arrêtés. Les dettes existantes restent dues ; aucun remboursement n’est créé automatiquement.": {
+    "fr": "Le dossier, les factures et les paiements restent consultables. Les nouvelles mensualités automatiques et les pointages sont arrêtés. Les dettes existantes restent dues ; aucun remboursement n’est créé automatiquement.",
+    "en": "The record, invoices and payments remain available. New automatic tuition invoices and check-ins stop. Existing debts remain due; no refund is created automatically.",
+    "ar": "يبقى الملف والفواتير والدفعات متاحًا. تتوقف الفواتير الشهرية التلقائية الجديدة وتسجيل الحضور. تبقى الديون القائمة مستحقة ولا يُسجل استرداد تلقائيًا."
+  },
+  "500 derniers enregistrements au maximum. Les totaux en haut concernent tous les dossiers.": {
+    "fr": "500 derniers enregistrements au maximum. Les totaux en haut concernent tous les dossiers.",
+    "en": "Up to the latest 500 entries. The totals above cover all records.",
+    "ar": "حتى آخر 500 تسجيل. المجاميع أعلاه تشمل جميع الملفات."
+  },
+  "Confirmer cet enregistrement ? Aucun versement bancaire ne sera déclenché.": {
+    "fr": "Confirmer cet enregistrement ? Aucun versement bancaire ne sera déclenché.",
+    "en": "Confirm this entry? No bank transfer will be triggered.",
+    "ar": "تأكيد التسجيل؟ لن يُنفذ أي تحويل بنكي."
+  },
+  "Confirmer le départ ? Le dossier et les transactions seront conservés. Les sommes dues ne seront pas annulées.": {
+    "fr": "Confirmer le départ ? Le dossier et les transactions seront conservés. Les sommes dues ne seront pas annulées.",
+    "en": "Confirm departure? The record and transactions will be retained. Outstanding amounts will not be cancelled.",
+    "ar": "تأكيد المغادرة؟ سيُحفظ الملف والمعاملات ولن تُلغى المبالغ المستحقة."
+  },
+  "Remboursement enregistré : {0}": {
+    "fr": "Remboursement enregistré : {0}",
+    "en": "Refund recorded: {0}",
+    "ar": "تم تسجيل الاسترداد: {0}"
+  },
+  "Départ enregistré. Le dossier et son historique sont conservés.": {
+    "fr": "Départ enregistré. Le dossier et son historique sont conservés.",
+    "en": "Departure recorded. The record and its history are retained.",
+    "ar": "تم تسجيل المغادرة. حُفظ الملف وسجله."
+  },
+  "Les montants de facture ci-dessous sont historiques. Le remboursement ne crée pas une nouvelle dette.": {
+    "fr": "Les montants de facture ci-dessous sont historiques. Le remboursement ne crée pas une nouvelle dette.",
+    "en": "The invoice amounts below are historical. This refund does not create a new debt.",
+    "ar": "مبالغ الفاتورة أدناه تاريخية. لا ينشئ الاسترداد دينًا جديدًا."
+  },
+  "Remboursement enregistré par": {
+    "fr": "Remboursement enregistré par",
+    "en": "Refund recorded by",
+    "ar": "سجّل الاسترداد"
   }
 }

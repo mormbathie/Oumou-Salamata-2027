@@ -253,6 +253,7 @@ export const FinancesPage: React.FC = () => {
         </div>
       </div>
 
+      <p className="text-sm text-slate-600">{t('Encaissements bruts')} : {(stats?.grossCollected || 0).toLocaleString(locale())} F CFA · {t('Remboursements')} : {(stats?.totalRefunded || 0).toLocaleString(locale())} F CFA · {t('Encaissements nets')} : {(stats?.totalCollected || 0).toLocaleString(locale())} F CFA</p>
       {/* Financial KPIs */}
       <div className="mobile-finance-kpis grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
@@ -266,7 +267,7 @@ export const FinancesPage: React.FC = () => {
 
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            {t("Total Collected")}</span>
+            {t("Encaissements nets")}</span>
           <div className="text-2xl font-bold text-emerald-600">
             {(stats?.totalCollected || 0).toLocaleString()} <span className="text-xs text-emerald-700/60">{t("FCFA")}</span>
           </div>

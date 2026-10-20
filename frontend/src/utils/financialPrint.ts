@@ -7,22 +7,22 @@ const date = (value?: string | Date) => value && Number.isFinite(new Date(value)
 const field = (label: string, value: unknown) => `<div class="field"><span>${escape(t(label))}</span><strong>${escape(value || '—')}</strong></div>`;
 
 // Shared A4 layout: identical financial information on both detachable copies.
-export function financialPrintHtml(invoice: any, payment?: any) {
+export function financialPrintHtml(invoice: any, payment?: any, refund?: any) {
   const student = invoice.student || {}, parent = student.parent || {};
-  const title = payment ? t('SCHOOL PAYMENT RECEIPT') : t('Invoice');
-  const number = payment?.paymentNumber || invoice.invoiceNumber;
+  const title = refund ? t('Justificatif de remboursement') : payment ? t('SCHOOL PAYMENT RECEIPT') : t('Invoice');
+  const number = refund?.refundNumber || payment?.paymentNumber || invoice.invoiceNumber;
   const methods: Record<string, string> = { CASH: t('Cash'), WAVE: 'Wave', ORANGE_MONEY: 'Orange Money', BANK_TRANSFER: t('Bank transfer'), CHECK: t('Check') };
   const classroom = student.enrollments?.find((enrollment: any) => enrollment.academicYearId === invoice.academicYearId)?.classroom?.name || student.enrollments?.[0]?.classroom?.name || '—';
   const cancelled = !!invoice.cancelledAt;
   const copy = (label: string) => `<article class="copy">
     <header><img src="${escape(new URL(school.logo, window.location.origin).href)}" alt="${escape(school.shortName)}"><div class="school"><h1>${escape(school.name)}</h1><p>${escape(school.address)}</p><p>${escape(school.phones.join(' / '))}</p><p>${escape(school.email)} · ${escape(school.website)}</p></div><span class="copy-label">${escape(t(label))}</span></header>
     <div class="heading"><h2>${escape(title)}</h2><span>${escape(t('Année scolaire'))} ${escape(invoice.academicYear?.name || school.year)}</span></div>
-    <div class="metadata">${field(payment ? 'Receipt number' : 'Invoice number', number)}${field(payment ? 'Payment date' : 'Date d’émission', date(payment?.paymentDate || invoice.createdAt))}</div>
+    <div class="metadata">${field(refund ? 'Référence du remboursement' : payment ? 'Receipt number' : 'Invoice number', number)}${field(refund ? 'Date du remboursement' : payment ? 'Payment date' : 'Date d’émission', date(refund?.refundedOn || payment?.paymentDate || invoice.createdAt))}</div>
     <section class="identity"><div>${field('Student', `${student.firstName || ''} ${student.lastName || ''}`)}${field('Student ID', student.matricule)}${field('Class', classroom)}</div><div>${field('Parent / payer', `${parent.firstName || ''} ${parent.lastName || ''}`.trim())}${field('Phone', parent.phone)}${field(payment ? 'Invoice number' : 'Due date', payment ? invoice.invoiceNumber : date(invoice.dueDate))}</div></section>
-    <section class="purpose"><span>${escape(t('Description'))}</span><strong>${escape(invoice.title || '—')}</strong></section>
-    ${payment ? `<div class="metadata">${field('Payment method', methods[payment.paymentMethod] || payment.paymentMethod)}${field('Référence', payment.reference)}</div><div class="received"><span>${escape(t('Amount received'))}</span><strong>${amount(payment.amount)}</strong></div>` : ''}
-    <section class="totals"><div><span>${escape(t('Invoice amount'))}</span><strong>${amount(invoice.amount)}</strong></div><div><span>${escape(t('Total paid'))}</span><strong>${amount(invoice.paidAmount)}</strong></div><div class="balance"><span>${escape(t('Balance due'))}</span><strong>${amount(invoice.balance)}</strong></div></section>
-    <div class="status"><span>${escape(t('Invoice status'))} : <strong>${escape(cancelled ? t('Annulée') : statusLabel(invoice.status))}</strong></span><span>${escape(t(payment ? 'Payment recorded by' : 'Created by'))} : <strong>${escape((payment ? payment.receivedBy : invoice.createdByName) || '—')}</strong>${(payment ? payment.receivedByRole : invoice.createdByRole) ? ' · ' + escape(roleLabel(payment ? payment.receivedByRole : invoice.createdByRole)) : ''}</span></div>
+    <section class="purpose"><span>${escape(t('Description'))}</span><strong>${escape(refund ? (refund.reason.length > 200 ? refund.reason.slice(0, 197) + '…' : refund.reason) : invoice.title || '—')}</strong></section>
+    ${payment ? `<div class="metadata">${field('Payment method', methods[refund?.paymentMethod || payment.paymentMethod] || payment.paymentMethod)}${field(refund ? 'Reçu initial' : 'Référence', refund ? payment.paymentNumber : payment.reference)}</div><div class="received"><span>${escape(t(refund ? 'Montant remboursé' : 'Amount received'))}</span><strong>${amount(refund?.amount || payment.amount)}</strong></div>` : ''}
+    ${refund ? `<p>${escape(t('Bénéficiaire'))} : <strong>${escape(refund.recipient)}</strong> · ${escape(t(refund.mode === 'ALREADY_PAID_REGULARIZATION' ? 'Déjà effectué — régularisation' : 'Remboursement remis et enregistré'))}</p><p>${escape(t('Les montants de facture ci-dessous sont historiques. Le remboursement ne crée pas une nouvelle dette.'))}</p>` : ''}<section class="totals"><div><span>${escape(t('Invoice amount'))}</span><strong>${amount(invoice.amount)}</strong></div><div><span>${escape(t('Total paid'))}</span><strong>${amount(invoice.paidAmount)}</strong></div><div class="balance"><span>${escape(t('Balance due'))}</span><strong>${amount(invoice.balance)}</strong></div></section>
+    <div class="status"><span>${escape(t('Invoice status'))} : <strong>${escape(cancelled ? t('Annulée') : statusLabel(invoice.status))}</strong></span><span>${escape(t(refund ? 'Remboursement enregistré par' : payment ? 'Payment recorded by' : 'Created by'))} : <strong>${escape((refund ? refund.actorName : payment ? payment.receivedBy : invoice.createdByName) || '—')}</strong>${(refund ? refund.actorRole : payment ? payment.receivedByRole : invoice.createdByRole) ? ' · ' + escape(roleLabel(refund ? refund.actorRole : payment ? payment.receivedByRole : invoice.createdByRole)) : ''}</span></div>
     <section class="signatures"><div>${escape(t('Parent / payer signature'))}</div><div>${escape(t('School office stamp and signature'))}</div></section>
     <footer>${escape(t(payment ? 'Please keep this receipt as proof of payment.' : 'Cette facture ne constitue pas un reçu de paiement.'))}</footer>
   </article>`;
@@ -36,7 +36,8 @@ export function financialPrintHtml(invoice: any, payment?: any) {
     .status{display:flex;justify-content:space-between;gap:4mm;font-size:9px;overflow-wrap:anywhere}.status>span{flex:1}.signatures{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:8mm;min-height:12mm;font-size:9px;text-align:center}.signatures>div{border-top:1px solid #94aaa0;padding-top:1.5mm}footer{font-size:8px;color:#52685d;text-align:center}.cut{display:flex;align-items:center;justify-content:center;gap:3mm;color:#64748b;font-size:8px}.cut:before,.cut:after{content:'';flex:1;border-top:1px dashed #94a3b8}
     @media screen{body{background:#e8eeeb;padding:8mm}.sheet{background:#fff;box-shadow:0 2px 14px #bbc8c0}}
     @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.sheet{margin:0}}
-  </style></head><body><main class="sheet">${copy('Exemplaire parent')}<div class="cut">✂ ${escape(t('Découper suivant les pointillés'))}</div>${copy('Exemplaire comptabilité')}</main><script>window.addEventListener('load',function(){window.focus();window.print()});</script></body></html>`;
+    .refund-print .sheet{grid-template-rows:135mm 9mm 135mm}.refund-print .copy{height:135mm;gap:.5mm;font-size:9.5px;line-height:1.2}.refund-print .copy>p{margin:0;overflow-wrap:anywhere}.refund-print .signatures{min-height:10mm}.refund-print .purpose{padding:.5mm 0 1mm}.refund-print .identity>div{gap:.5mm}.refund-print .heading h2{font-size:12px}
+  </style></head><body class="${refund ? 'refund-print' : ''}"><main class="sheet">${copy('Exemplaire parent')}<div class="cut">✂ ${escape(t('Découper suivant les pointillés'))}</div>${copy('Exemplaire comptabilité')}</main><script>window.addEventListener('load',function(){window.focus();window.print()});</script></body></html>`;
 }
 
 export function printFinancialDocument(invoice: any, payment?: any) {
@@ -44,4 +45,11 @@ export function printFinancialDocument(invoice: any, payment?: any) {
   if (!w) { window.alert(t('Allow pop-ups to print the receipt.')); return; }
   w.opener = null;
   w.document.open(); w.document.write(financialPrintHtml(invoice, payment)); w.document.close();
+}
+
+export function printRefundReceipt(refund: any) {
+  const w = window.open('', '_blank', 'width=900,height=850');
+  if (!w) { window.alert(t('Allow pop-ups to print the receipt.')); return; }
+  w.opener = null;
+  w.document.open(); w.document.write(financialPrintHtml(refund.payment.invoice, refund.payment, refund)); w.document.close();
 }

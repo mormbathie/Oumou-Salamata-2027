@@ -187,6 +187,7 @@ model Parent {
 }
 
 model Student {
+  departure StudentDeparture?
   id            String        @id @default(uuid())
   duplicateOverrideReason String?
   matricule     String        @unique // e.g. "OS-2026-0001"
@@ -333,6 +334,7 @@ model Invoice {
 }
 
 model Payment {
+  refunds Refund[]
   id            String        @id @default(uuid())
   paymentNumber String        @unique // e.g. "REC-2026-0001"
   invoiceId     String
@@ -466,4 +468,38 @@ model StaffDoorBadge {
   longitude Float?
   radiusMeters Int @default(100)
   updatedAt DateTime @updatedAt
+}
+
+// Additive ledgers: original invoices and payments remain unchanged.
+model StudentDeparture {
+  id String @id @default(uuid())
+  studentId String @unique
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  departedOn DateTime @db.Date
+  reason String
+  requestKey String @unique
+  actorId String
+  actorName String
+  actorRole String
+  createdAt DateTime @default(now())
+}
+
+model Refund {
+  id String @id @default(uuid())
+  refundNumber String @unique
+  paymentId String
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  amount Int
+  refundedOn DateTime @db.Date
+  paymentMethod PaymentMethod
+  reason String
+  recipient String
+  mode String
+  requestKey String @unique
+  actorId String
+  actorName String
+  actorRole String
+  createdAt DateTime @default(now())
+  @@index([paymentId, createdAt])
+  @@index([refundedOn])
 }

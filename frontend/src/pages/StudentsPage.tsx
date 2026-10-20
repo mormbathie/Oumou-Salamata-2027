@@ -179,17 +179,7 @@ export const StudentsPage: React.FC = () => {
     }
   };
 
-  const handleDeleteStudent = async (student: any) => {
-    if (!window.confirm(t("Permanently delete the record for {0} {1} ({2}) ?", [student.firstName, student.lastName, student.matricule]))) return;
-    try {
-      await studentsApi.delete(student.id);
-      setShowDetailsModal(false);
-      setSelectedStudent(null);
-      await loadData();
-    } catch (error) {
-      alert(`Suppression impossible : ${formatError(error)}`);
-    }
-  };
+
 
   const handleSubmitNewStudent = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -356,7 +346,7 @@ export const StudentsPage: React.FC = () => {
           const classroom = student.enrollments?.[0]?.classroom;
           const balance = student.invoices?.reduce((sum: number, inv: any) => sum + inv.balance, 0) || 0;
           return <article key={student.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-            <div className="flex items-start gap-3"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 font-bold text-emerald-800">{student.firstName?.[0]}{student.lastName?.[0]}</div><div className="min-w-0 flex-1"><h3 className="break-words text-sm font-bold text-slate-900">{student.firstName} {student.lastName}</h3><p className="mt-1 break-all font-mono text-xs text-emerald-700">{student.matricule}</p><p className="mt-1 text-xs text-slate-500">{classroom?.name || t('Unassigned')} · {t(student.gender === 'MALE' ? 'Boy' : 'Girl')}</p></div></div>
+            <div className="flex items-start gap-3"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 font-bold text-emerald-800">{student.firstName?.[0]}{student.lastName?.[0]}</div><div className="min-w-0 flex-1"><h3 className="break-words text-sm font-bold text-slate-900">{student.firstName} {student.lastName}{student.departure && <span className="ml-2 rounded bg-amber-50 px-2 py-1 text-xs text-amber-800">{t("A quitté l’établissement")}</span>}</h3><p className="mt-1 break-all font-mono text-xs text-emerald-700">{student.matricule}</p><p className="mt-1 text-xs text-slate-500">{classroom?.name || t('Unassigned')} · {t(student.gender === 'MALE' ? 'Boy' : 'Girl')}</p></div></div>
             <div className="mt-4 rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-500">{t('Parent / guardian')}</p><p className="mt-1 text-sm font-medium text-slate-800">{student.parent ? `${student.parent.firstName} ${student.parent.lastName}` : t('Not provided')}</p>{student.parent?.phone && <a href={`tel:${student.parent.phone.replace(/[^+0-9]/g, '')}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-emerald-700">{student.parent.phone}</a>}</div>
             <div className="mt-3 flex items-center justify-between gap-2">{canSeeFinances ? <span className={`rounded-full px-2.5 py-1.5 text-xs font-medium ${balance > 0 ? 'bg-amber-50 text-amber-800' : 'bg-emerald-50 text-emerald-800'}`}>{balance > 0 ? `${t('Balance:')} ${balance.toLocaleString()} ${t('F')}` : t('Paid up')}</span> : <span />}<button onClick={() => void handleOpenDetails(student.id)} className="flex min-h-11 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white"><Eye className="h-4 w-4" />{t('Dossier')}</button></div>
           </article>;
@@ -376,7 +366,7 @@ export const StudentsPage: React.FC = () => {
                     const classroom = student.enrollments?.[0]?.classroom;
                     const balance = student.invoices?.reduce((total: number, invoice: any) => total + invoice.balance, 0) || 0;
                     return <tr key={student.id} className="hover:bg-slate-50">
-                      <td className="px-5 py-3.5"><div className="flex items-center gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">{student.firstName?.[0]}{student.lastName?.[0]}</div><div className="min-w-0"><p className="truncate text-sm font-semibold text-slate-800">{student.firstName} {student.lastName}</p><span className="inline-block rounded bg-emerald-50 px-1.5 py-0.5 font-mono text-[11px] text-emerald-700">{student.matricule}</span></div></div></td>
+                      <td className="px-5 py-3.5"><div className="flex items-center gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">{student.firstName?.[0]}{student.lastName?.[0]}</div><div className="min-w-0"><p className="truncate text-sm font-semibold text-slate-800">{student.firstName} {student.lastName}{student.departure && <span className="ml-2 rounded bg-amber-50 px-2 py-1 text-xs text-amber-800">{t("A quitté l’établissement")}</span>}</p><span className="inline-block rounded bg-emerald-50 px-1.5 py-0.5 font-mono text-[11px] text-emerald-700">{student.matricule}</span></div></div></td>
                       <td className="px-4 py-3.5"><span className="rounded-md bg-slate-100 px-2.5 py-1 font-semibold text-slate-700">{classroom?.name || t("Unassigned")}</span></td>
                       <td className="px-4 py-3.5 text-slate-600">{student.gender === 'MALE' ? t("Boy") : t("Girl")}</td>
                       <td className="px-4 py-3.5">{student.parent ? <><p className="font-medium text-slate-700">{student.parent.firstName} {student.parent.lastName}</p><p className="text-[11px] text-slate-400">{student.parent.phone}</p></> : <span className="italic text-slate-400">{t("Not provided")}</span>}</td>
@@ -432,7 +422,7 @@ export const StudentsPage: React.FC = () => {
           <div className="max-h-[95dvh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
             <div className="sticky top-0 z-20 flex flex-col gap-3 border-b border-slate-100 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
               <div className="flex min-w-0 items-center gap-3"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 font-bold text-white">{selectedStudent.firstName?.[0]}{selectedStudent.lastName?.[0]}</div><div className="min-w-0"><h3 className="truncate font-bold text-slate-800">{selectedStudent.firstName} {selectedStudent.lastName}</h3><p className="font-mono text-xs text-emerald-700">{t("Matricule :")}{selectedStudent.matricule}</p></div></div>
-              <div className="flex items-center justify-end gap-2">{manager && <><button onClick={beginEdit} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"><Pencil className="h-3.5 w-3.5" />{t("Edit")}</button><button onClick={() => void handleDeleteStudent(selectedStudent)} className="inline-flex items-center gap-1 rounded-lg border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50"><Trash2 className="h-3.5 w-3.5" />{t("Delete")}</button></>}<button onClick={() => setShowDetailsModal(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100" aria-label={t("Close record")}><X className="h-5 w-5" /></button></div>
+              <div className="flex items-center justify-end gap-2">{manager && <><button disabled={Boolean(selectedStudent.departure)} onClick={beginEdit} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"><Pencil className="h-3.5 w-3.5" />{t("Edit")}</button><Link to={`/refunds?studentId=${selectedStudent.id}`} className="inline-flex items-center gap-1 rounded-lg border border-amber-200 px-3 py-2 text-xs font-semibold text-amber-800">{t("Départ / remboursement")}</Link></>}<button onClick={() => setShowDetailsModal(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100" aria-label={t("Close record")}><X className="h-5 w-5" /></button></div>
             </div>
             <div className="border-b border-slate-100 px-4 sm:px-6"><div className="flex gap-5"><button onClick={() => { setDetailsTab('overview'); setEditingDetails(false); }} className={`border-b-2 py-3 text-xs font-semibold ${detailsTab === 'overview' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500'}`}>{t("Informations")}</button>{manager && <button onClick={() => { setDetailsTab('documents'); setEditingDetails(false); }} className={`border-b-2 py-3 text-xs font-semibold ${detailsTab === 'documents' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500'}`}>{t("Documents")}</button>}</div></div>
 

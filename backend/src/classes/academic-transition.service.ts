@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { actorStamp, ActingUser } from '../audit/actor';
@@ -41,7 +42,8 @@ export class AcademicTransitionService {
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(20261010)`;
       const year = await tx.academicYear.findUnique({ where: { id: yearId } });
       if (!year || year.isCurrent) throw new BadRequestException('Sélectionnez une année préparée, non active.');
-      for (const row of rows) {
+      for (const row of [...rows].sort((a,b)=>a.studentId.localeCompare(b.studentId))) {
+        await tx.$queryRaw(Prisma.sql`SELECT id FROM "Student" WHERE id = ${row.studentId} FOR UPDATE`);
         const [student,room] = await Promise.all([tx.student.findUnique({ where: { id: row.studentId } }), tx.classroom.findUnique({ where: { id: row.classroomId } })]);
         if (!student || student.status !== 'ACTIVE' || room?.academicYearId !== yearId) throw new BadRequestException('Élève actif ou classe de l’année cible introuvable.');
         validateOptionsForClass(student,room);

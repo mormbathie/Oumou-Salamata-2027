@@ -1,3 +1,5 @@
+import { RefundsController } from './refunds.controller';
+import { RefundsService } from './refunds.service';
 import { RegistrationReportService } from './registration-report.service';
 import { SchoolMailService } from './school-mail.service';
 import { AuthModule } from '../auth/auth.module';
@@ -9,8 +11,8 @@ import { FinancesController } from './finances.controller';
 
 @Module({
   imports: [AuthModule],
-  controllers: [FinancesController, FinanceControlController],
-  providers: [RegistrationReportService, FinancesService, FinanceControlService, SchoolMailService],
+  controllers: [RefundsController, FinancesController, FinanceControlController],
+  providers: [RefundsService, RegistrationReportService, FinancesService, FinanceControlService, SchoolMailService],
   exports: [FinancesService],
 })
 export class FinancesModule {}

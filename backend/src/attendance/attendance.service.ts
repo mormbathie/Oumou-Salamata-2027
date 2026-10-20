@@ -40,7 +40,7 @@ export class AttendanceService {
       where: { id: classroomId },
       include: {
         enrollments: {
-          where: { status: 'REGISTERED' },
+          where: { status: 'REGISTERED', student: { status: 'ACTIVE' } },
           include: { student: true },
           orderBy: { student: { lastName: 'asc' } },
         },
@@ -87,7 +87,7 @@ export class AttendanceService {
     }
     await this.assertTeacherClassroom(data.classroomId, requester);
     const enrolledIds = new Set((await this.prisma.enrollment.findMany({
-      where: { classroomId: data.classroomId, status: 'REGISTERED' },
+      where: { classroomId: data.classroomId, status: 'REGISTERED', student: { status: 'ACTIVE' } },
       select: { studentId: true },
     })).map((item) => item.studentId));
     if (data.records.some((record) => !enrolledIds.has(record.studentId))) {
@@ -134,7 +134,7 @@ export class AttendanceService {
         name: true,
         level: true,
         enrollments: {
-          where: { status: 'REGISTERED' },
+          where: { status: 'REGISTERED', student: { status: 'ACTIVE' } },
           select: {
             student: {
               select: { id: true, firstName: true, lastName: true, matricule: true },
@@ -197,7 +197,7 @@ export class AttendanceService {
           select: {
             id: true, matricule: true, firstName: true, lastName: true, status: true,
             enrollments: {
-              where: { status: 'REGISTERED' },
+              where: { status: 'REGISTERED', student: { status: 'ACTIVE' } },
               include: { academicYear: true, classroom: { select: { id: true, name: true } } },
               orderBy: { enrollmentDate: 'desc' },
               take: 10,
@@ -209,7 +209,7 @@ export class AttendanceService {
           select: {
             id: true, matricule: true, firstName: true, lastName: true, status: true,
             enrollments: {
-              where: { status: 'REGISTERED' },
+              where: { status: 'REGISTERED', student: { status: 'ACTIVE' } },
               include: { academicYear: true, classroom: { select: { id: true, name: true } } },
               orderBy: { enrollmentDate: 'desc' },
               take: 10,
@@ -301,7 +301,7 @@ export class AttendanceService {
       select: {
         id: true,
         enrollments: {
-          where: { status: 'REGISTERED' },
+          where: { status: 'REGISTERED', student: { status: 'ACTIVE' } },
           select: { studentId: true },
         },
       },

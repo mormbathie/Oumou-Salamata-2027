@@ -23,19 +23,20 @@ export class RegistrationReportService {
         },
         select: { id: true, firstName: true, lastName: true, matricule: true, karate: true, fullDay: true, supplies: true, transportZone: true,
           enrollments: { where: { academicYearId: year.id }, take: 1, select: { classroom: { select: { name: true, level: true, program: true, registrationFee: true, monthlyTuition: true } } } },
-          invoices: { where: { academicYearId: year.id, type: 'REGISTRATION', cancelledAt: null }, select: { id: true, invoiceNumber: true, amount: true, paidAmount: true, balance: true } },
+          invoices: { where: { academicYearId: year.id, type: 'REGISTRATION', cancelledAt: null }, select: { id: true, invoiceNumber: true, amount: true, paidAmount: true, balance: true, payments: { select: { refunds: { select: { amount: true } } } } } },
         }, orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }, { id: 'asc' }],
       });
       const rows = students.map(s => {
         const invoiced = s.invoices.reduce((sum, i) => sum + i.amount, 0), paid = s.invoices.reduce((sum,i) => sum + i.paidAmount, 0), balance = s.invoices.reduce((sum,i) => sum + i.balance, 0);
+        const refunded = s.invoices.reduce((sum, i) => sum + i.payments.reduce((a,p) => a + p.refunds.reduce((b,r) => b + r.amount,0),0),0);
         const state = !s.invoices.length ? 'NOT_INVOICED' : balance <= 0 ? 'PAID' : paid > 0 ? 'PARTIAL' : 'UNPAID';
         const classroom = s.enrollments[0]?.classroom;
         return { id: s.id, name: `${s.firstName} ${s.lastName}`, matricule: s.matricule, classroom: classroom?.name || '—', karate: s.karate, fullDay: s.fullDay,
-          invoiced, paid, balance, status: state, invoiceCount: s.invoices.length,
+          invoiced, paid: paid - refunded, grossPaid: paid, refunded, balance, status: state, invoiceCount: s.invoices.length,
           unbilledEstimate: !s.invoices.length && classroom ? schoolFees(s, classroom).registrationFee : 0, invoices: s.invoices };
       }).filter(row => status === 'ALL' || (status === 'OUTSTANDING' ? ['PARTIAL','UNPAID'].includes(row.status) : row.status === status));
-      const totals = { students: rows.length, invoiced: 0, paid: 0, balance: 0, unbilledEstimate: 0, counts: { PAID: 0, PARTIAL: 0, UNPAID: 0, NOT_INVOICED: 0 } };
-      for (const row of rows) { totals.invoiced += row.invoiced; totals.paid += row.paid; totals.balance += row.balance; totals.unbilledEstimate += row.unbilledEstimate; totals.counts[row.status]++; }
+      const totals = { students: rows.length, invoiced: 0, paid: 0, refunded: 0, grossPaid: 0, balance: 0, unbilledEstimate: 0, counts: { PAID: 0, PARTIAL: 0, UNPAID: 0, NOT_INVOICED: 0 } };
+      for (const row of rows) { totals.invoiced += row.invoiced; totals.paid += row.paid; totals.refunded += row.refunded; totals.grossPaid += row.grossPaid; totals.balance += row.balance; totals.unbilledEstimate += row.unbilledEstimate; totals.counts[row.status]++; }
       return { academicYear: { id: year.id, name: year.name }, classes, totals, rows };
     }, { isolationLevel: 'RepeatableRead' });
   }

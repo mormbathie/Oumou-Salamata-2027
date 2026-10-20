@@ -44,6 +44,10 @@ describe('Individual full-day tuition', () => {
       classroom: { findUnique: jest.fn().mockResolvedValue({id:'class',level:'MS',program:'PRESCHOOL',monthlyTuition:15000,registrationFee:50000,academicYearId:'year',enrollments:[{studentId:'full',student:{fullDay:true}},{studentId:'ordinary',student:{fullDay:false}},{studentId:'existing',student:{fullDay:true}}]}) },
       invoice: { findFirst: jest.fn().mockImplementation(({where}:any)=>Promise.resolve(where.studentId==='existing'?{id:'old',amount:15000}:null)),count:jest.fn().mockResolvedValue(0),create:jest.fn().mockResolvedValue({}) },
     };
+    prisma.$queryRaw = jest.fn();
+    prisma.student = { findUnique: jest.fn(async ({where}: any) => ({ id: where.id, status: 'ACTIVE', fullDay: where.id !== 'ordinary' })) };
+    prisma.enrollment = { findUnique: jest.fn(async () => ({ status: 'REGISTERED' })) };
+    prisma.$transaction = jest.fn(async (fn: any) => fn(prisma));
     const service = new FinancesService(prisma);
     const result = await service.generateTuitionInvoicesForClass({classroomId:'class',monthName:'Novembre',dueDate:'2026-11-01'}, {userId:'agent',username:'agent',roles:['ADMIN']});
     expect(prisma.invoice.create.mock.calls.map(([args]:any[])=>[args.data.studentId,args.data.amount,args.data.balance])).toEqual([['full',35000,35000],['ordinary',15000,15000]]);

@@ -184,3 +184,11 @@ export const attendanceApi = {
 };
 
 export default api;
+
+export const refundsApi = {
+  list: () => api.get('/refunds').then(r => r.data),
+  payments: (id: string) => api.get(`/refunds/payments/${id}`).then(r => r.data),
+  create: (data: any) => api.post('/refunds', data).then(r => r.data),
+  departures: () => api.get('/refunds/departures').then(r => r.data),
+  depart: (id: string, data: any) => api.post(`/refunds/departures/${id}`, data).then(r => r.data),
+};

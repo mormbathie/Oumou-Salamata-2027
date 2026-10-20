@@ -17,8 +17,12 @@ export class DashboardService {
       const category = payment.invoice.category || payment.invoice.type;
       byCategory[category] = (byCategory[category] || 0) + payment.amount;
     }
-    const collection = { mode: period.mode, start: period.start, end: period.end,
-      total: collectedPayments.reduce((sum, p) => sum + p.amount, 0), count: collectedPayments.length, byCategory };
+    const periodRefunds = await this.prisma.refund.findMany({ where: period.start ? { refundedOn: { gte: new Date(period.start + 'T00:00:00Z'), lt: new Date(new Date(period.end! + 'T00:00:00Z').getTime() + 86400000) } } : {}, select: { amount: true, payment: { select: { invoice: { select: { type: true, category: true } } } } } });
+    const gross = collectedPayments.reduce((sum, p) => sum + p.amount, 0);
+    const refunds = periodRefunds.reduce((sum, r) => sum + r.amount, 0);
+    for (const r of periodRefunds) { const key = r.payment.invoice.category || r.payment.invoice.type; byCategory[key] = (byCategory[key] || 0) - r.amount; }
+    const collection = { gross, refunds, mode: period.mode, start: period.start, end: period.end,
+      total: gross - refunds, count: collectedPayments.length, byCategory };
     const currentYear = await this.prisma.academicYear.findFirst({
       where: { isCurrent: true },
     });
@@ -68,7 +72,7 @@ export class DashboardService {
           name: true,
           level: true,
           capacity: true,
-          _count: { select: { enrollments: true } },
+          _count: { select: { enrollments: { where: { status: 'REGISTERED', student: { status: 'ACTIVE' } } } } },
         },
         orderBy: { level: 'asc' },
       }),
@@ -87,9 +91,12 @@ export class DashboardService {
 
     // Financial sums
     const totalInvoiced = invoices.reduce((acc, curr) => acc + curr.amount, 0);
-    const totalCollected = invoices.reduce((acc, curr) => acc + curr.paidAmount, 0);
+    const grossCollected = invoices.reduce((acc, curr) => acc + curr.paidAmount, 0);
+    const refundSum = await this.prisma.refund.aggregate({ where: currentYear ? { payment: { invoice: { academicYearId: currentYear.id } } } : {}, _sum: { amount: true } });
+    const totalRefunded = refundSum._sum.amount || 0;
+    const totalCollected = grossCollected - totalRefunded;
     const totalBalance = invoices.reduce((acc, curr) => acc + curr.balance, 0);
-    const recoveryRate = totalInvoiced > 0 ? Math.round((totalCollected / totalInvoiced) * 1000) / 10 : 0;
+    const recoveryRate = totalInvoiced > 0 ? Math.round((grossCollected / totalInvoiced) * 1000) / 10 : 0;
 
     // Today attendance rate
     const totalToday = todayAttendances.length;
@@ -108,7 +115,7 @@ export class DashboardService {
       },
       finances: {
         totalInvoiced,
-        totalCollected,
+        totalCollected, grossCollected, totalRefunded,
         totalBalance,
         recoveryRate,
         unpaidInvoicesCount: invoices.filter((i) => i.status === InvoiceStatus.UNPAID).length,

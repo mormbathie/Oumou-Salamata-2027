@@ -18,6 +18,7 @@ export const navigationVisuals = {
   '/kimono': { icon: KimonoIcon, color: 'text-orange-300 bg-orange-400/10 border-orange-400/15', light: 'text-orange-700 bg-orange-50 border-orange-100' },
   '/karate': { icon: KarateIcon, color: 'text-orange-300 bg-orange-400/10 border-orange-400/15', light: 'text-orange-700 bg-orange-50 border-orange-100' },
   '/finances': { icon: ReceiptText, color: 'text-amber-300 bg-amber-400/10 border-amber-400/15', light: 'text-amber-700 bg-amber-50 border-amber-100' },
+  '/refunds': { icon: ReceiptText, color: 'text-rose-300 bg-rose-400/10 border-rose-400/15', light: 'text-rose-700 bg-rose-50 border-rose-100' },
   '/finance-control': { icon: ShieldCheck, color: 'text-amber-300 bg-amber-400/10 border-amber-400/15', light: 'text-amber-700 bg-amber-50 border-amber-100' },
   '/registration-report': { icon: ChartColumnIncreasing, color: 'text-amber-300 bg-amber-400/10 border-amber-400/15', light: 'text-amber-700 bg-amber-50 border-amber-100' },
   '/teacher-badge': { icon: Fingerprint, color: 'text-cyan-300 bg-cyan-400/10 border-cyan-400/15', light: 'text-cyan-700 bg-cyan-50 border-cyan-100' },
@@ -35,7 +36,7 @@ export const navigationVisuals = {
 export const navigationCategories = [
   { id: 'overview', label: 'Vue d’ensemble', routes: ['/'] },
   { id: 'school', label: 'Scolarité & familles', routes: ['/students', '/parents', '/parent-portal', '/classes', '/grades', '/academic-transition'] },
-  { id: 'finance', label: 'Comptabilité', routes: ['/finances', '/registration-report', '/finance-control'] },
+  { id: 'finance', label: 'Comptabilité', routes: ['/finances', '/refunds', '/registration-report', '/finance-control'] },
   { id: 'activities', label: 'Activités & équipements', routes: ['/karate', '/kimono'] },
   { id: 'attendance', label: 'Présences & personnel', routes: ['/attendance', '/attendance/scan', '/staff-attendance', '/teacher-badge'] },
   { id: 'administration', label: 'Administration', routes: ['/users', '/data-transfer', '/school-information'] },

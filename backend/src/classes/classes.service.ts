@@ -18,7 +18,7 @@ export class ClassesService {
           name: true,
           level: true,
           academicYear: { select: { id: true, name: true } },
-          _count: { select: { enrollments: true } },
+          _count: { select: { enrollments: { where: { status: 'REGISTERED', student: { status: 'ACTIVE' } } } } },
         },
         orderBy: { level: 'asc' },
       });
@@ -30,7 +30,7 @@ export class ClassesService {
         include: {
           academicYear: true,
           teacher: { select: { id: true, firstName: true, lastName: true, email: true } },
-          _count: { select: { enrollments: true } },
+          _count: { select: { enrollments: { where: { status: 'REGISTERED', student: { status: 'ACTIVE' } } } } },
         },
         orderBy: { level: 'asc' },
       });
@@ -44,7 +44,7 @@ export class ClassesService {
           select: { id: true, firstName: true, lastName: true, email: true },
         },
         _count: {
-          select: { enrollments: true },
+          select: { enrollments: { where: { status: 'REGISTERED', student: { status: 'ACTIVE' } } } },
         },
       },
       orderBy: { level: 'asc' },
