@@ -18,10 +18,15 @@ export class DataTransferController {
   @Get('models')
   models() { return BUSINESS_MODELS; }
 
+  @Get('export-models')
+  exportModels() { return this.service.exportModels(); }
+
   @Get('export')
   async export(@Query('format') format: string, @Query('model') model: string, @Res() response: Response) {
     const result = await this.service.export(format, model);
     response.setHeader('Content-Type', result.mime);
+    response.setHeader('Cache-Control', 'private, no-store');
+    response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
     response.send(result.data);
   }

@@ -74,6 +74,7 @@ export const staffAttendanceApi = {
 };
 
 export const dataTransferApi = {
+  exportModels: () => api.get<Array<{name:string;label:string;importable:boolean}>>('/data-transfer/export-models').then(r=>r.data),
   models: () => api.get<string[]>('/data-transfer/models').then((r) => r.data),
   export: (format: 'xlsx' | 'csv', model?: string) => api.get('/data-transfer/export', { params: { format, model }, responseType: 'blob' }).then((r) => r.data as Blob),
   preview: (file: File, model?: string) => {

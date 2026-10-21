@@ -1,0 +1,19 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const{PrismaClient,Prisma}=require('@prisma/client');
+const{DataTransferService}=require('../dist/src/data-transfer/data-transfer.service');
+const{RefundsService}=require('../dist/src/finances/refunds.service');
+(async()=>{const u=new URL(process.env.DATABASE_URL);assert.ok(['localhost','127.0.0.1'].includes(u.hostname)&&['/as_sakina_test2','/ci_test'].includes(u.pathname),'Dedicated local/CI test database required');const db=new PrismaClient(),tag='export-test-'+crypto.randomUUID();let year,parent,student,invoice,payment;const service=new DataTransferService(db);
+async function snapshot(){const result={};for(const m of Prisma.dmmf.datamodel.models){const key=m.fields.find(f=>f.isId).name;result[m.name]=await db.$queryRawUnsafe(`SELECT "${key}"::text AS id,md5(to_jsonb(t)::text) AS hash FROM "${m.name}" t ORDER BY "${key}"`);}return result;}
+try{
+ year=await db.academicYear.create({data:{name:tag,startDate:new Date('2026-09-01'),endDate:new Date('2027-07-31'),isCurrent:false}});
+ parent=await db.parent.create({data:{firstName:'Parent exemple',lastName:tag,phone:'0771234567',address:'Dakar, Sénégal'}});
+ student=await db.student.create({data:{matricule:tag,firstName:'Élève exemple',lastName:tag,gender:'FEMALE',dateOfBirth:new Date('2022-02-03'),parentId:parent.id,fullDay:true,healthNotes:'Texte "cité", ligne 1\nLigne 2'}});
+ invoice=await db.invoice.create({data:{invoiceNumber:tag,studentId:student.id,academicYearId:year.id,title:'Inscription — exemple',type:'REGISTRATION',amount:60000,paidAmount:60000,balance:0,status:'PAID',dueDate:new Date('2026-10-01')}});
+ payment=await db.payment.create({data:{paymentNumber:tag,invoiceId:invoice.id,amount:60000,paymentDate:new Date(Date.now()-86400000),paymentMethod:'CASH'}});
+ await new RefundsService(db).create({paymentId:payment.id,amount:10000,expectedRefundedAmount:0,refundedOn:new Date().toISOString().slice(0,10),paymentMethod:'CASH',recipient:'Parent exemple',reason:'Remboursement de test pour export',mode:'ALREADY_PAID_REGULARIZATION',requestKey:tag}, {userId:tag,username:'QA export',roles:['ADMIN']});
+ const before=await snapshot(),book=await service.export('xlsx'),preview=await service.preview({originalname:'all.xlsx',buffer:book.data});assert.ok(preview.ignoredTables.includes('Refund'));assert.ok(preview.ignoredTables.includes('BusinessAudit'));
+ const imported=await service.import({originalname:'all.xlsx',buffer:book.data});assert.ok(imported.created.every(t=>t.created===0));assert.deepEqual(await snapshot(),before);
+ const csv=await service.export('csv','Parent');await service.import({originalname:'parents.csv',buffer:csv.data},'Parent');assert.deepEqual(await snapshot(),before);
+ const directory=process.env.EXPORT_EXAMPLES_DIR;if(directory){fs.mkdirSync(directory,{recursive:true,mode:0o700});for(const [name,format,model] of [['exemple-export-eleves.xlsx','xlsx','Student'],['exemple-export-factures.xlsx','xlsx','Invoice'],['exemple-export-toutes-les-tables.xlsx','xlsx',undefined],['exemple-export-csv.zip','csv',undefined]]){const result=await service.export(format,model);fs.writeFileSync(path.join(directory,name),result.data,{mode:0o600});}}
+ console.log('PASS real database: styled XLSX export/reimport, references, financial read-only sheets, CSV phone/accents, unchanged source rows and import duplicates');
+}finally{if(payment)await db.refund.deleteMany({where:{paymentId:payment.id}});await db.businessAudit.deleteMany({where:{actorId:tag}});if(student)await db.student.delete({where:{id:student.id}});if(parent)await db.parent.delete({where:{id:parent.id}});if(year)await db.academicYear.delete({where:{id:year.id}});await db.$disconnect();}})().catch(e=>{console.error(e);process.exitCode=1});

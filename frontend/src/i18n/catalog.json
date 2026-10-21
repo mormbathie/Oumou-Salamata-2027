@@ -4763,5 +4763,220 @@
     "fr": "Remboursement enregistré par",
     "en": "Refund recorded by",
     "ar": "سجّل الاسترداد"
+  },
+  "Des exports lisibles, aux couleurs de l’école. Réservé aux administrateurs.": {
+    "fr": "Des exports lisibles, aux couleurs de l’école. Réservé aux administrateurs.",
+    "en": "Readable exports in the school colours. Administrators only.",
+    "ar": "تصدير واضح بألوان المدرسة. للمسؤولين فقط."
+  },
+  "Préparer mon export": {
+    "fr": "Préparer mon export",
+    "en": "Prepare my export",
+    "ar": "إعداد التصدير"
+  },
+  "Logo, titres et couleurs dans Excel ; données simples et compatibles dans le CSV.": {
+    "fr": "Logo, titres et couleurs dans Excel ; données simples et compatibles dans le CSV.",
+    "en": "Logo, titles and colours in Excel; simple, compatible data in CSV.",
+    "ar": "الشعار والعناوين والألوان في Excel؛ بيانات بسيطة ومتوافقة في CSV."
+  },
+  "1. Choisir les données": {
+    "fr": "1. Choisir les données",
+    "en": "1. Choose the data",
+    "ar": "١. اختيار البيانات"
+  },
+  "Toutes les tables métier": {
+    "fr": "Toutes les tables métier",
+    "en": "All school data tables",
+    "ar": "جميع جداول بيانات المدرسة"
+  },
+  "Une seule table": {
+    "fr": "Une seule table",
+    "en": "One table",
+    "ar": "جدول واحد"
+  },
+  "Table à exporter": {
+    "fr": "Table à exporter",
+    "en": "Table to export",
+    "ar": "الجدول المطلوب تصديره"
+  },
+  "Consultation uniquement": {
+    "fr": "Consultation uniquement",
+    "en": "Read-only",
+    "ar": "للقراءة فقط"
+  },
+  "2. Choisir le format": {
+    "fr": "2. Choisir le format",
+    "en": "2. Choose the format",
+    "ar": "٢. اختيار التنسيق"
+  },
+  "Excel mis en page": {
+    "fr": "Excel mis en page",
+    "en": "Formatted Excel",
+    "ar": "ملف Excel منسق"
+  },
+  "Logo et en-têtes, sommaire, filtres, dates et montants formatés.": {
+    "fr": "Logo et en-têtes, sommaire, filtres, dates et montants formatés.",
+    "en": "Logo and headings, contents, filters, formatted dates and amounts.",
+    "ar": "الشعار والعناوين والفهرس والفلاتر والتواريخ والمبالغ المنسقة."
+  },
+  "CSV simple": {
+    "fr": "CSV simple",
+    "en": "Plain CSV",
+    "ar": "CSV بسيط"
+  },
+  "Une archive ZIP contenant un fichier CSV par table.": {
+    "fr": "Une archive ZIP contenant un fichier CSV par table.",
+    "en": "A ZIP archive containing one CSV file per table.",
+    "ar": "أرشيف ZIP يحتوي على ملف CSV لكل جدول."
+  },
+  "Un fichier CSV UTF-8 pour la table choisie.": {
+    "fr": "Un fichier CSV UTF-8 pour la table choisie.",
+    "en": "A UTF-8 CSV file for the selected table.",
+    "ar": "ملف CSV بترميز UTF-8 للجدول المحدد."
+  },
+  "Présentation aux couleurs de l’école": {
+    "fr": "Présentation aux couleurs de l’école",
+    "en": "School-branded design",
+    "ar": "تصميم بألوان المدرسة"
+  },
+  "En-têtes figés et filtres": {
+    "fr": "En-têtes figés et filtres",
+    "en": "Frozen headings and filters",
+    "ar": "عناوين ثابتة وفلاتر"
+  },
+  "Identifiants conservés pour le réimport": {
+    "fr": "Identifiants conservés pour le réimport",
+    "en": "Identifiers preserved for reimport",
+    "ar": "حفظ المعرّفات لإعادة الاستيراد"
+  },
+  "Le CSV ne contient ni logo, ni couleurs, ni mise en page. Choisissez Excel pour un fichier prêt à présenter.": {
+    "fr": "Le CSV ne contient ni logo, ni couleurs, ni mise en page. Choisissez Excel pour un fichier prêt à présenter.",
+    "en": "CSV does not contain a logo, colours or formatting. Choose Excel for a presentation-ready file.",
+    "ar": "لا يتضمن CSV شعارًا أو ألوانًا أو تنسيقًا. اختر Excel للحصول على ملف جاهز للعرض."
+  },
+  "Les comptes, secrets, photos de profil et fichiers joints sont exclus. Les registres financiers et les départs sont exportables en consultation uniquement.": {
+    "fr": "Les comptes, secrets, photos de profil et fichiers joints sont exclus. Les registres financiers et les départs sont exportables en consultation uniquement.",
+    "en": "Accounts, secrets, profile photos and attachments are excluded. Financial registers and departures can be exported for viewing only.",
+    "ar": "تُستثنى الحسابات والأسرار وصور الملفات والمرفقات. تُصدّر السجلات المالية والمغادرة للقراءة فقط."
+  },
+  "Préparation du fichier…": {
+    "fr": "Préparation du fichier…",
+    "en": "Preparing file…",
+    "ar": "جارٍ إعداد الملف…"
+  },
+  "Télécharger les CSV (ZIP)": {
+    "fr": "Télécharger les CSV (ZIP)",
+    "en": "Download CSV files (ZIP)",
+    "ar": "تنزيل ملفات CSV (ZIP)"
+  },
+  "Télécharger le fichier Excel": {
+    "fr": "Télécharger le fichier Excel",
+    "en": "Download Excel file",
+    "ar": "تنزيل ملف Excel"
+  },
+  "Télécharger le fichier CSV": {
+    "fr": "Télécharger le fichier CSV",
+    "en": "Download CSV file",
+    "ar": "تنزيل ملف CSV"
+  },
+  "Table du fichier CSV": {
+    "fr": "Table du fichier CSV",
+    "en": "CSV table",
+    "ar": "جدول ملف CSV"
+  },
+  "Pour un ZIP CSV, décompressez les fichiers et importez chaque table séparément. Les registres de consultation ne sont pas importables.": {
+    "fr": "Pour un ZIP CSV, décompressez les fichiers et importez chaque table séparément. Les registres de consultation ne sont pas importables.",
+    "en": "For a CSV ZIP, extract the files and import each table separately. Read-only registers cannot be imported.",
+    "ar": "لأرشيف CSV ZIP، فك الملفات واستورد كل جدول منفصلًا. لا يمكن استيراد سجلات القراءة فقط."
+  },
+  "Feuilles de consultation ignorées :": {
+    "fr": "Feuilles de consultation ignorées :",
+    "en": "Read-only sheets skipped:",
+    "ar": "أوراق القراءة فقط التي تم تجاوزها:"
+  },
+  "Années scolaires": {
+    "fr": "Années scolaires",
+    "en": "School years",
+    "ar": "السنوات الدراسية"
+  },
+  "Parents et tuteurs": {
+    "fr": "Parents et tuteurs",
+    "en": "Parents and guardians",
+    "ar": "الأولياء والأوصياء"
+  },
+  "Matières": {
+    "fr": "Matières",
+    "en": "Subjects",
+    "ar": "المواد"
+  },
+  "Inscriptions": {
+    "fr": "Inscriptions",
+    "en": "Enrollments",
+    "ar": "التسجيلات"
+  },
+  "Bulletins": {
+    "fr": "Bulletins",
+    "en": "Report cards",
+    "ar": "كشوف النتائج"
+  },
+  "Factures": {
+    "fr": "Factures",
+    "en": "Invoices",
+    "ar": "الفواتير"
+  },
+  "Présences élèves": {
+    "fr": "Présences élèves",
+    "en": "Student attendance",
+    "ar": "حضور التلاميذ"
+  },
+  "Pointage professeurs": {
+    "fr": "Pointage professeurs",
+    "en": "Teacher attendance",
+    "ar": "حضور المعلمين"
+  },
+  "Jours fériés": {
+    "fr": "Jours fériés",
+    "en": "Holidays",
+    "ar": "العطل"
+  },
+  "Calendrier scolaire": {
+    "fr": "Calendrier scolaire",
+    "en": "School calendar",
+    "ar": "التقويم المدرسي"
+  },
+  "Documents élèves": {
+    "fr": "Documents élèves",
+    "en": "Student document references",
+    "ar": "مراجع وثائق التلاميذ"
+  },
+  "Documents parents": {
+    "fr": "Documents parents",
+    "en": "Parent document references",
+    "ar": "مراجع وثائق الأولياء"
+  },
+  "Départs élèves": {
+    "fr": "Départs élèves",
+    "en": "Student departures",
+    "ar": "مغادرة التلاميذ"
+  },
+  "Clôtures de caisse": {
+    "fr": "Clôtures de caisse",
+    "en": "Cash closings",
+    "ar": "إقفالات الصندوق"
+  },
+  "Échéanciers": {
+    "fr": "Échéanciers",
+    "en": "Payment schedules",
+    "ar": "جداول السداد"
+  },
+  "Relances": {
+    "fr": "Relances",
+    "en": "Reminders",
+    "ar": "التذكيرات"
+  },
+  "Journal des actions": {
+    "fr": "Journal des actions",
+    "en": "Action log",
+    "ar": "سجل العمليات"
   }
 }
