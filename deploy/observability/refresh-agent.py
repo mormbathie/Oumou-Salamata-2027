@@ -2,6 +2,9 @@
 """Refresh only application log paths after container replacement; never read log contents."""
 import json, pathlib, subprocess
 root = pathlib.Path('/opt/assakina-observability')
+if (root / '.disabled').exists():
+    print('SigNoz is disabled; collector refresh skipped.')
+    raise SystemExit(0)
 receivers = {'hostmetrics': {'root_path': '/hostfs', 'collection_interval': '30s', 'scrapers': {'cpu': {}, 'memory': {}, 'disk': {}, 'filesystem': {}, 'network': {}, 'load': {}}}}
 for name in ['backend', 'frontend', 'keycloak', 'caddy', 'postgres', 'keycloak_postgres']:
     path = subprocess.check_output(['docker', 'inspect', 'oumou_salamat_' + name, '--format', '{{.LogPath}}'], text=True).strip()

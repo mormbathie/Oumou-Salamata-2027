@@ -27,9 +27,8 @@ services:
       - ./deploy/smtp.private.json:/run/secrets/school-smtp.json:ro
     environment:
       SCHOOL_SMTP_CONFIG_FILE: /run/secrets/school-smtp.json
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://assakina-telemetry:4318
-      OTEL_TRACES_SAMPLER: parentbased_traceidratio
-      OTEL_TRACES_SAMPLER_ARG: "0.25"
+      # SigNoz removed: an empty endpoint disables tracing initialization.
+      OTEL_EXPORTER_OTLP_ENDPOINT: ""
 
   frontend:
     build: !reset null

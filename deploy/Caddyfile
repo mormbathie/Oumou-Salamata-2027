@@ -30,10 +30,7 @@ http://57.131.160.254 {
     redir https://{$APP_HOST}{uri} permanent
 }
 
-# Native SigNoz login protects the monitoring interface. Initial registration is private.
+# Monitoring was retired; keep an explicit response for old bookmarks.
 monitoring.assakina-school.com, monitoring.57.131.160.254.sslip.io {
-    encode zstd gzip
-    @registration path /api/v1/register /api/v1/register/
-    respond @registration 403
-    reverse_proxy assakina-monitoring-signoz-0:8080
+    respond "Service de supervision retire." 410
 }

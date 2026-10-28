@@ -199,3 +199,18 @@ Il ne supprime aucun conteneur ni volume. Le nettoyage du 7 octobre 2026 a libé
 environ 20 Go, passant le disque de 46 % à 18 % d’occupation. Le profilage réduit
 ne garantit pas une baisse immédiate du CPU : les fusions de tables internes
 ont encore été observées après le premier redémarrage.
+
+## Retrait le 28 octobre 2026
+
+SigNoz, ClickHouse, ses services associés et l’agent de collecte ont été retirés
+sur demande du propriétaire. Les alertes `assakina-monitor.timer` sont désactivées.
+Les sauvegardes locales et Google Drive restent actives.
+
+L’API ne configure plus de destination OpenTelemetry. Les logs Docker et le
+journal métier de l’application restent disponibles. Les anciennes adresses
+web de supervision répondent HTTP 410.
+
+Les volumes historiques de supervision sont conservés sans service actif.
+Le marqueur `/opt/assakina-observability/.disabled` bloque la recréation de
+l’agent lors d’un déploiement ou d’un retour arrière. Sa configuration Compose
+est conservée sous `agent.compose.yaml.disabled`.
