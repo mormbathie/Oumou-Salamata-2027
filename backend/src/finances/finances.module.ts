@@ -1,3 +1,5 @@
+import { SuppliesController } from './supplies.controller';
+import { SuppliesService } from './supplies.service';
 import { RefundsController } from './refunds.controller';
 import { RefundsService } from './refunds.service';
 import { RegistrationReportService } from './registration-report.service';
@@ -11,8 +13,8 @@ import { FinancesController } from './finances.controller';
 
 @Module({
   imports: [AuthModule],
-  controllers: [RefundsController, FinancesController, FinanceControlController],
-  providers: [RefundsService, RegistrationReportService, FinancesService, FinanceControlService, SchoolMailService],
+  controllers: [SuppliesController, RefundsController, FinancesController, FinanceControlController],
+  providers: [SuppliesService, RefundsService, RegistrationReportService, FinancesService, FinanceControlService, SchoolMailService],
   exports: [FinancesService],
 })
 export class FinancesModule {}

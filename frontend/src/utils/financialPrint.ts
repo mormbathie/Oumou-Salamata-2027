@@ -13,13 +13,17 @@ export function financialPrintHtml(invoice: any, payment?: any, refund?: any) {
   const number = refund?.refundNumber || payment?.paymentNumber || invoice.invoiceNumber;
   const methods: Record<string, string> = { CASH: t('Cash'), WAVE: 'Wave', ORANGE_MONEY: 'Orange Money', BANK_TRANSFER: t('Bank transfer'), CHECK: t('Check') };
   const classroom = student.enrollments?.find((enrollment: any) => enrollment.academicYearId === invoice.academicYearId)?.classroom?.name || student.enrollments?.[0]?.classroom?.name || '—';
+  let supplyLines:any[]=[];
+  try { const parsed=JSON.parse(invoice.supplyLines||'[]');if(Array.isArray(parsed))supplyLines=parsed.slice(0,10); } catch { /* Legacy invoices have no item snapshot. */ }
+  const itemTable=supplyLines.length?`<table class="items"><thead><tr><th>${escape(t('Article'))}</th><th>${escape(t('Quantité'))}</th><th>${escape(t('Prix unitaire'))}</th><th>${escape(t('Total'))}</th></tr></thead><tbody>${supplyLines.map(l=>`<tr><td>${escape(l.name)}</td><td>${escape(l.quantity)}</td><td>${amount(l.unitPrice)}</td><td>${amount(l.total)}</td></tr>`).join('')}</tbody></table>`:'';
   const cancelled = !!invoice.cancelledAt;
-  const copy = (label: string) => `<article class="copy">
+  const copy = (label: string) => `<article class="copy${supplyLines.length?' supplies':''}">
     <header><img src="${escape(new URL(school.logo, window.location.origin).href)}" alt="${escape(school.shortName)}"><div class="school"><h1>${escape(school.name)}</h1><p>${escape(school.address)}</p><p>${escape(school.phones.join(' / '))}</p><p>${escape(school.email)} · ${escape(school.website)}</p></div><span class="copy-label">${escape(t(label))}</span></header>
     <div class="heading"><h2>${escape(title)}</h2><span>${escape(t('Année scolaire'))} ${escape(invoice.academicYear?.name || school.year)}</span></div>
     <div class="metadata">${field(refund ? 'Référence du remboursement' : payment ? 'Receipt number' : 'Invoice number', number)}${field(refund ? 'Date du remboursement' : payment ? 'Payment date' : 'Date d’émission', date(refund?.refundedOn || payment?.paymentDate || invoice.createdAt))}</div>
     <section class="identity"><div>${field('Student', `${student.firstName || ''} ${student.lastName || ''}`)}${field('Student ID', student.matricule)}${field('Class', classroom)}</div><div>${field('Parent / payer', `${parent.firstName || ''} ${parent.lastName || ''}`.trim())}${field('Phone', parent.phone)}${field(payment ? 'Invoice number' : 'Due date', payment ? invoice.invoiceNumber : date(invoice.dueDate))}</div></section>
     <section class="purpose"><span>${escape(t('Description'))}</span><strong>${escape(refund ? (refund.reason.length > 200 ? refund.reason.slice(0, 197) + '…' : refund.reason) : invoice.title || '—')}</strong></section>
+    ${itemTable}
     ${payment ? `<div class="metadata">${field('Payment method', methods[refund?.paymentMethod || payment.paymentMethod] || payment.paymentMethod)}${field(refund ? 'Reçu initial' : 'Référence', refund ? payment.paymentNumber : payment.reference)}</div><div class="received"><span>${escape(t(refund ? 'Montant remboursé' : 'Amount received'))}</span><strong>${amount(refund?.amount || payment.amount)}</strong></div>` : ''}
     ${refund ? `<p>${escape(t('Bénéficiaire'))} : <strong>${escape(refund.recipient)}</strong> · ${escape(t(refund.mode === 'ALREADY_PAID_REGULARIZATION' ? 'Déjà effectué — régularisation' : 'Remboursement remis et enregistré'))}</p><p>${escape(t('Les montants de facture ci-dessous sont historiques. Le remboursement ne crée pas une nouvelle dette.'))}</p>` : ''}<section class="totals"><div><span>${escape(t('Invoice amount'))}</span><strong>${amount(invoice.amount)}</strong></div><div><span>${escape(t('Total paid'))}</span><strong>${amount(invoice.paidAmount)}</strong></div><div class="balance"><span>${escape(t('Balance due'))}</span><strong>${amount(invoice.balance)}</strong></div></section>
     <div class="status"><span>${escape(t('Invoice status'))} : <strong>${escape(cancelled ? t('Annulée') : statusLabel(invoice.status))}</strong></span><span>${escape(t(refund ? 'Remboursement enregistré par' : payment ? 'Payment recorded by' : 'Created by'))} : <strong>${escape((refund ? refund.actorName : payment ? payment.receivedBy : invoice.createdByName) || '—')}</strong>${(refund ? refund.actorRole : payment ? payment.receivedByRole : invoice.createdByRole) ? ' · ' + escape(roleLabel(refund ? refund.actorRole : payment ? payment.receivedByRole : invoice.createdByRole)) : ''}</span></div>
@@ -32,6 +36,7 @@ export function financialPrintHtml(invoice: any, payment?: any, refund?: any) {
     header{display:flex;align-items:center;gap:3mm;border-bottom:1.5px solid #166534;padding-bottom:2mm}header img{width:18mm;height:18mm;object-fit:contain;flex-shrink:0}.school{flex:1}h1{font-size:12px;text-transform:uppercase;margin:0 0 1mm;color:#14532d}header p{margin:0;font-size:9px}.copy-label{max-width:28mm;padding:2mm;border:1px solid #166534;border-radius:1mm;font-size:9px;font-weight:bold;text-align:center;color:#14532d}
     .heading,.metadata{display:flex;justify-content:space-between;gap:4mm;align-items:start}.heading{align-items:center;padding:1mm 0}h2{font-size:13px;margin:0;color:#14532d}.heading>span{font-size:9px}.metadata>.field{flex:1}.metadata>.field:last-child{text-align:end}.field{display:flex;flex-direction:column;gap:.4mm;min-width:0}.field>span,.purpose>span,.totals span{font-size:9px;color:#52685d}.field strong{overflow-wrap:anywhere}
     .identity{display:grid;grid-template-columns:1fr 1fr;gap:5mm;padding:1.5mm 3mm;border:1px solid #d7e2dc;border-radius:1.5mm}.identity>div{display:grid;gap:1mm}.purpose{display:flex;flex-direction:column;border-bottom:1px solid #d7e2dc;padding:1mm 0 2mm;overflow-wrap:anywhere}
+    .items{width:100%;border-collapse:collapse;font-size:8px;line-height:1.1}.items th,.items td{border-bottom:1px solid #d7e2dc;padding:.4mm 1mm;text-align:start}.items td:first-child{width:54%;overflow-wrap:anywhere}.items th{background:#ecfdf5}.supplies{font-size:9px;gap:.4mm;padding:2mm 4mm}.supplies .identity{padding:1mm 2mm}.supplies .identity>div{gap:.4mm}.supplies .signatures{padding-top:1mm;min-height:8mm}.supplies .received{padding:1mm 3mm}.supplies .received strong{font-size:13px}.supplies header img{width:14mm;height:14mm}.supplies header h1{font-size:10px}.supplies header p{font-size:8px}.supplies .identity .field{flex-direction:row;justify-content:space-between;gap:2mm}.supplies .identity .field strong{text-align:end;max-width:70%}.supplies .purpose{padding:.5mm 0 1mm}.supplies .totals>div{padding:1mm;gap:.3mm}.supplies .totals strong{font-size:10px}.supplies .items th,.supplies .items td{padding:.25mm 1mm}
     .received{display:flex;justify-content:space-between;align-items:center;border:1.5px solid #166534;border-radius:1.5mm;padding:2mm 3mm;color:#14532d}.received strong{font-size:15px}.totals{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #b8c9c1;border-radius:1.5mm}.totals>div{padding:1.5mm;display:flex;flex-direction:column;gap:1mm}.totals>div+div{border-inline-start:1px solid #b8c9c1}.totals strong{font-size:12px}.balance strong{color:#14532d}
     .status{display:flex;justify-content:space-between;gap:4mm;font-size:9px;overflow-wrap:anywhere}.status>span{flex:1}.signatures{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:8mm;min-height:12mm;font-size:9px;text-align:center}.signatures>div{border-top:1px solid #94aaa0;padding-top:1.5mm}footer{font-size:8px;color:#52685d;text-align:center}.cut{display:flex;align-items:center;justify-content:center;gap:3mm;color:#64748b;font-size:8px}.cut:before,.cut:after{content:'';flex:1;border-top:1px dashed #94a3b8}
     @media screen{body{background:#e8eeeb;padding:8mm}.sheet{background:#fff;box-shadow:0 2px 14px #bbc8c0}}
@@ -40,11 +45,28 @@ export function financialPrintHtml(invoice: any, payment?: any, refund?: any) {
   </style></head><body class="${refund ? 'refund-print' : ''}"><main class="sheet">${copy('Exemplaire parent')}<div class="cut">✂ ${escape(t('Découper suivant les pointillés'))}</div>${copy('Exemplaire comptabilité')}</main><script>window.addEventListener('load',function(){window.focus();window.print()});</script></body></html>`;
 }
 
-export function printFinancialDocument(invoice: any, payment?: any) {
+export async function printFinancialDocument(invoice: any, payment?: any) {
   const w = window.open('', '_blank', 'width=900,height=850');
   if (!w) { window.alert(t('Allow pop-ups to print the receipt.')); return; }
   w.opener = null;
-  w.document.open(); w.document.write(financialPrintHtml(invoice, payment)); w.document.close();
+  let html = financialPrintHtml(invoice, payment);
+  if (invoice.category === 'SUPPLIES') {
+    // Embed the public logo before writing the popup: printing does not race a second image request.
+    try {
+      const response = await fetch(school.logo);
+      if (!response.ok) throw new Error('Logo unavailable');
+      const blob = await response.blob();
+      const logo = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      html = html.replaceAll(escape(new URL(school.logo, window.location.origin).href), logo);
+    } catch { /* Keep the public image URL if embedding is unavailable. */ }
+  }
+  if (w.closed) return;
+  w.document.open(); w.document.write(html); w.document.close();
 }
 
 export function printRefundReceipt(refund: any) {

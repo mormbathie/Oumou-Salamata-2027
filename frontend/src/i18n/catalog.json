@@ -4978,5 +4978,255 @@
     "fr": "Journal des actions",
     "en": "Action log",
     "ar": "سجل العمليات"
+  },
+  "Achats à la carte, séparés de l’inscription. Cocher l’option ne crée aucun montant à payer.": {
+    "fr": "Achats à la carte, séparés de l’inscription. Cocher l’option ne crée aucun montant à payer.",
+    "en": "Individual purchases, separate from registration. Selecting the option creates no charge.",
+    "ar": "مشتريات حسب الحاجة، منفصلة عن التسجيل. اختيار اللوازم لا ينشئ أي مبلغ للدفع."
+  },
+  "Encaissements nets — toutes les années": {
+    "fr": "Encaissements nets — toutes les années",
+    "en": "Net receipts — all school years",
+    "ar": "صافي المقبوضات — جميع السنوات"
+  },
+  "Inscriptions (dont anciens forfaits regroupés)": {
+    "fr": "Inscriptions (dont anciens forfaits regroupés)",
+    "en": "Registration (including old combined packages)",
+    "ar": "التسجيل (بما فيه الرسوم القديمة المجمعة)"
+  },
+  "Fournitures séparées": {
+    "fr": "Fournitures séparées",
+    "en": "Separate supplies",
+    "ar": "اللوازم المنفصلة"
+  },
+  "Autres encaissements": {
+    "fr": "Autres encaissements",
+    "en": "Other receipts",
+    "ar": "المقبوضات الأخرى"
+  },
+  "Total encaissé net": {
+    "fr": "Total encaissé net",
+    "en": "Total net receipts",
+    "ar": "إجمالي صافي المقبوضات"
+  },
+  "Les anciens forfaits peuvent inclure des fournitures non ventilées. Leur montant reste dans la catégorie inscription jusqu’à vérification.": {
+    "fr": "Les anciens forfaits peuvent inclure des fournitures non ventilées. Leur montant reste dans la catégorie inscription jusqu’à vérification.",
+    "en": "Old packages may include unallocated supplies. These amounts remain under registration until reviewed.",
+    "ar": "قد تشمل الرسوم القديمة لوازم غير مفصلة. تبقى مبالغها ضمن التسجيل حتى التحقق."
+  },
+  "Nouvelle vente de fournitures": {
+    "fr": "Nouvelle vente de fournitures",
+    "en": "New supplies sale",
+    "ar": "بيع لوازم جديد"
+  },
+  "Nom ou matricule": {
+    "fr": "Nom ou matricule",
+    "en": "Name or student ID",
+    "ar": "الاسم أو رقم التلميذ"
+  },
+  "Ancienne inscription à vérifier : contrôlez les reçus avant de facturer des fournitures pour éviter un double paiement.": {
+    "fr": "Ancienne inscription à vérifier : contrôlez les reçus avant de facturer des fournitures pour éviter un double paiement.",
+    "en": "Old registration requires review: check receipts before billing supplies to avoid duplicate payment.",
+    "ar": "تسجيل قديم يحتاج إلى تحقق: راجع الإيصالات قبل فوترة اللوازم لتجنب الدفع المكرر."
+  },
+  "Cet élève a une ancienne facture à vérifier. Confirmez que ces articles ne sont pas déjà facturés ou payés dans son inscription.": {
+    "fr": "Cet élève a une ancienne facture à vérifier. Confirmez que ces articles ne sont pas déjà facturés ou payés dans son inscription.",
+    "en": "This pupil has an old invoice requiring review. Confirm these items were not already billed or paid within registration.",
+    "ar": "لهذا التلميذ فاتورة قديمة تحتاج إلى تحقق. أكد أن هذه المواد لم تتم فوترتها أو دفعها ضمن التسجيل."
+  },
+  "Facture de fournitures créée. Enregistrez le paiement séparément.": {
+    "fr": "Facture de fournitures créée. Enregistrez le paiement séparément.",
+    "en": "Supplies invoice created. Record payment separately.",
+    "ar": "تم إنشاء فاتورة اللوازم. سجّل الدفع بشكل منفصل."
+  },
+  "Article": {
+    "fr": "Article",
+    "en": "Item",
+    "ar": "المادة"
+  },
+  "Choisir un article": {
+    "fr": "Choisir un article",
+    "en": "Choose an item",
+    "ar": "اختر مادة"
+  },
+  "Quantité": {
+    "fr": "Quantité",
+    "en": "Quantity",
+    "ar": "الكمية"
+  },
+  "Retirer": {
+    "fr": "Retirer",
+    "en": "Remove",
+    "ar": "إزالة"
+  },
+  "Le catalogue est vide. L’admin ou le directeur doit renseigner les articles et leurs vrais prix.": {
+    "fr": "Le catalogue est vide. L’admin ou le directeur doit renseigner les articles et leurs vrais prix.",
+    "en": "The catalogue is empty. An administrator or director must enter the items and actual prices.",
+    "ar": "الكتالوج فارغ. يجب على المسؤول أو المدير إدخال المواد وأسعارها الفعلية."
+  },
+  "Ajouter un article": {
+    "fr": "Ajouter un article",
+    "en": "Add an item",
+    "ar": "إضافة مادة"
+  },
+  "Créer la facture de fournitures": {
+    "fr": "Créer la facture de fournitures",
+    "en": "Create supplies invoice",
+    "ar": "إنشاء فاتورة اللوازم"
+  },
+  "Factures de fournitures": {
+    "fr": "Factures de fournitures",
+    "en": "Supplies invoices",
+    "ar": "فواتير اللوازم"
+  },
+  "Aucune facture de fournitures.": {
+    "fr": "Aucune facture de fournitures.",
+    "en": "No supplies invoices.",
+    "ar": "لا توجد فواتير لوازم."
+  },
+  "Paiement des fournitures": {
+    "fr": "Paiement des fournitures",
+    "en": "Supplies payment",
+    "ar": "دفع اللوازم"
+  },
+  "Confirmer le paiement": {
+    "fr": "Confirmer le paiement",
+    "en": "Confirm payment",
+    "ar": "تأكيد الدفع"
+  },
+  "Anciens dossiers à vérifier": {
+    "fr": "Anciens dossiers à vérifier",
+    "en": "Old records requiring review",
+    "ar": "الملفات القديمة التي تحتاج إلى تحقق"
+  },
+  "Aucune ancienne facture ni aucun paiement n’est modifié automatiquement. Vérifiez les achats et les reçus avec la direction avant toute régularisation.": {
+    "fr": "Aucune ancienne facture ni aucun paiement n’est modifié automatiquement. Vérifiez les achats et les reçus avec la direction avant toute régularisation.",
+    "en": "No old invoice or payment is changed automatically. Review purchases and receipts with management before any adjustment.",
+    "ar": "لا يتم تغيير أي فاتورة قديمة أو دفعة تلقائياً. راجع المشتريات والإيصالات مع الإدارة قبل أي تسوية."
+  },
+  "Catalogue des fournitures": {
+    "fr": "Catalogue des fournitures",
+    "en": "Supplies catalogue",
+    "ar": "كتالوج اللوازم"
+  },
+  "Nom de l’article": {
+    "fr": "Nom de l’article",
+    "en": "Item name",
+    "ar": "اسم المادة"
+  },
+  "Prix unitaire (F CFA)": {
+    "fr": "Prix unitaire (F CFA)",
+    "en": "Unit price (CFA francs)",
+    "ar": "سعر الوحدة (فرنك إفريقي)"
+  },
+  "Prix unitaire": {
+    "fr": "Prix unitaire",
+    "en": "Unit price",
+    "ar": "سعر الوحدة"
+  },
+  "Enregistrer les modifications": {
+    "fr": "Enregistrer les modifications",
+    "en": "Save changes",
+    "ar": "حفظ التغييرات"
+  },
+  "Ajouter au catalogue": {
+    "fr": "Ajouter au catalogue",
+    "en": "Add to catalogue",
+    "ar": "إضافة إلى الكتالوج"
+  },
+  "Article enregistré": {
+    "fr": "Article enregistré",
+    "en": "Item saved",
+    "ar": "تم حفظ المادة"
+  },
+  "Désactivé": {
+    "fr": "Désactivé",
+    "en": "Disabled",
+    "ar": "معطّل"
+  },
+  "Désactiver": {
+    "fr": "Désactiver",
+    "en": "Disable",
+    "ar": "تعطيل"
+  },
+  "Activer": {
+    "fr": "Activer",
+    "en": "Enable",
+    "ar": "تفعيل"
+  },
+  "Le kimono et les fournitures sont facturés séparément. Les paiements existants sont conservés.": {
+    "fr": "Le kimono et les fournitures sont facturés séparément. Les paiements existants sont conservés.",
+    "en": "Kimono and supplies are billed separately. Existing payments are preserved.",
+    "ar": "تتم فوترة الكيمونو واللوازم بشكل منفصل. تُحفظ المدفوعات السابقة."
+  },
+  "Fournitures : achat séparé, sans ajout à l’inscription": {
+    "fr": "Fournitures : achat séparé, sans ajout à l’inscription",
+    "en": "Supplies: separate purchase, not added to registration",
+    "ar": "اللوازم: شراء منفصل، لا يضاف إلى التسجيل"
+  },
+  "Fournitures vendues séparément à la carte, aux prix du catalogue. Non incluses dans l’inscription.": {
+    "fr": "Fournitures vendues séparément à la carte, aux prix du catalogue. Non incluses dans l’inscription.",
+    "en": "Supplies are sold individually at catalogue prices, separately from registration.",
+    "ar": "تباع اللوازم منفردة بأسعار الكتالوج، ولا تشملها رسوم التسجيل."
+  },
+  "Ancien forfait inscription": {
+    "fr": "Ancien forfait inscription",
+    "en": "Old registration package",
+    "ar": "رسوم التسجيل القديمة المجمعة"
+  },
+  "à régler": {
+    "fr": "à régler",
+    "en": "outstanding",
+    "ar": "مستحق"
+  },
+  "Fournitures incluses éventuelles : à vérifier": {
+    "fr": "Fournitures incluses éventuelles : à vérifier",
+    "en": "Possibly included supplies: review required",
+    "ar": "لوازم محتمل إدراجها: يلزم التحقق"
+  },
+  "Payées": {
+    "fr": "Payées",
+    "en": "Paid",
+    "ar": "مدفوعة"
+  },
+  "Solde global :": {
+    "fr": "Solde global :",
+    "en": "Overall balance:",
+    "ar": "الرصيد الإجمالي:"
+  },
+  "Catalogue fournitures": {
+    "fr": "Catalogue fournitures",
+    "en": "Supplies catalogue",
+    "ar": "كتالوج اللوازم"
+  },
+  "SupplyArticle": {
+    "fr": "SupplyArticle",
+    "en": "Supplies catalogue",
+    "ar": "كتالوج اللوازم"
+  },
+  "Articles de fournitures (détail enregistré)": {
+    "fr": "Articles de fournitures (détail enregistré)",
+    "en": "Supplies items (saved details)",
+    "ar": "مواد اللوازم (تفاصيل محفوظة)"
+  },
+  "Search": {
+    "fr": "Rechercher",
+    "en": "Search",
+    "ar": "بحث"
+  },
+  "Choose a pupil": {
+    "fr": "Choisir un élève",
+    "en": "Choose a pupil",
+    "ar": "اختر تلميذاً"
+  },
+  "Record payment": {
+    "fr": "Enregistrer le paiement",
+    "en": "Record payment",
+    "ar": "تسجيل الدفع"
+  },
+  "Amount": {
+    "fr": "Montant",
+    "en": "Amount",
+    "ar": "المبلغ"
   }
 }

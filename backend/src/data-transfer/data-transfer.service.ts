@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 // Parent tables precede dependent tables so an entire workbook can be inserted atomically.
 export const BUSINESS_MODELS = [
-  'AcademicYear', 'Parent', 'Subject', 'Student', 'Classroom', 'Enrollment',
+  'SupplyArticle', 'AcademicYear', 'Parent', 'Subject', 'Student', 'Classroom', 'Enrollment',
   'Grade', 'ReportCard', 'Invoice', 'Payment', 'Attendance', 'StaffAttendance',
   'SchoolHoliday', 'SchoolCalendarSettings', 'StudentDocument', 'ParentDocument',
 ] as const;

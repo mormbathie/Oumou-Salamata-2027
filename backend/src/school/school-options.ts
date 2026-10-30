@@ -25,7 +25,7 @@ export function validateProgramAge(_program: string | null | undefined, birth: s
   const date = new Date(birth);
   if (!Number.isFinite(date.getTime()) || date > new Date()) throw new BadRequestException('Date de naissance invalide.');
 }
-export const optionTariffs = { elementaryRegistration: 40000, supplies: 37500, karateRegistration: 2000, karateMonthly: 2000, kimono: 6000, fullDayRegistration: 65000, elementaryFullDaySupplement: 25000, fullDayMonthly: 35000, transport: { 1: 10000, 2: 15000, 3: 20000 } };
+export const optionTariffs = { elementaryRegistration: 40000, karateRegistration: 2000, karateMonthly: 2000, kimono: 6000, fullDayRegistration: 65000, elementaryFullDaySupplement: 25000, fullDayMonthly: 35000, transport: { 1: 10000, 2: 15000, 3: 20000 } };
 export type FeeOptions = { fullDay?: boolean; supplies?: boolean; karate?: boolean; transportZone?: number | null };
 export type FeeClass = { level?: string; program?: string | null; registrationFee: number; monthlyTuition: number };
 export const elementaryClass = (classroom: FeeClass) => classroom.program === 'ELEMENTARY' || ['CI','CP','CE1','CE2','CM1','CM2'].includes(classroom.level || '');
@@ -46,8 +46,7 @@ export function schoolFees(student: FeeOptions, classroom: FeeClass) {
   const registrationBase = fullDay ? (preschool ? optionTariffs.fullDayRegistration : base + optionTariffs.elementaryFullDaySupplement) : base;
   const transport = optionTariffs.transport[student.transportZone || 0] || 0;
   const karate = student.karate ? optionTariffs.karateRegistration : 0;
-  const supplies = student.supplies && elementaryClass(classroom) ? optionTariffs.supplies : 0;
-  return { registrationFee: registrationBase + transport + karate + supplies,
+  return { registrationFee: registrationBase + transport + karate,
     monthlyTuition: fullDay ? optionTariffs.fullDayMonthly : classroom.monthlyTuition };
 }
 
@@ -55,21 +54,25 @@ export function schoolFees(student: FeeOptions, classroom: FeeClass) {
 export function registrationAdjustment(current: FeeOptions, next: FeeOptions, previousClass: FeeClass, nextClass: FeeClass,
   invoice: { amount: number; registrationOptions?: string | null }) {
   let billed: FeeOptions;
+  let suppliesSeparate = false;
+  let suppliesLegacyReview = !invoice.registrationOptions;
   if (invoice.registrationOptions) {
     try { billed = JSON.parse(invoice.registrationOptions); }
     catch { throw new BadRequestException('Référence tarifaire illisible : faites vérifier la facture.'); }
     if (!billed || typeof billed !== 'object' || Array.isArray(billed)) throw new BadRequestException('Référence tarifaire invalide.');
+    suppliesSeparate = (billed as any).suppliesSeparate === true;
+    suppliesLegacyReview = (billed as any).suppliesLegacyReview === true;
     billed = schoolOptions(billed);
   } else {
     billed = { fullDay: Boolean(current.fullDay && invoice.amount === optionTariffs.fullDayRegistration), supplies: false, karate: false, transportZone: null };
   }
   const after = { ...billed };
-  for (const key of ['fullDay','supplies','karate','transportZone'] as const) {
+  for (const key of ['fullDay','karate','transportZone'] as const) {
     if ((current[key] || false) !== (next[key] || false)) (after as any)[key] = next[key] ?? (key === 'transportZone' ? null : false);
   }
   return { delta: schoolFees(after, nextClass).registrationFee - schoolFees(billed, previousClass).registrationFee,
-    registrationOptions: JSON.stringify(after) };
+    registrationOptions: JSON.stringify({ ...after, ...(suppliesSeparate ? {suppliesSeparate:true} : {}), ...(suppliesLegacyReview ? {suppliesLegacyReview:true} : {}) }) };
 }
 export function registrationSnapshot(student: FeeOptions) {
-  return JSON.stringify({ fullDay: !!student.fullDay, supplies: !!student.supplies, karate: !!student.karate, transportZone: student.transportZone ?? null });
+  return JSON.stringify({ suppliesSeparate: true, fullDay: !!student.fullDay, supplies: !!student.supplies, karate: !!student.karate, transportZone: student.transportZone ?? null });
 }

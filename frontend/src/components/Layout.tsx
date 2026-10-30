@@ -35,6 +35,7 @@ export const Layout: React.FC = () => {
     { to: '/parent-portal', label: 'Espace parents', icon: navigationVisuals['/parent-portal'].icon, roles: ['PARENT'] },
     { to: '/academic-transition', label: 'Passage d’année', icon: navigationVisuals['/academic-transition'].icon, roles: ['ADMIN', 'DIRECTEUR'] },
     { to: '/parents', label: t("Parents & Guardians"), icon: navigationVisuals['/parents'].icon, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },
+    { to: '/supplies', label: t('Fournitures scolaires'), icon: navigationVisuals['/supplies'].icon, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
     { to: '/kimono', label: t('Kimono sales'), icon: navigationVisuals['/kimono'].icon, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
     { to: '/karate', label: t('Monthly karate payments'), icon: navigationVisuals['/karate'].icon, roles: ['ADMIN','DIRECTEUR','COMPTABLE'] },
     { to: '/refunds', label: t('Départs et remboursements'), icon: navigationVisuals['/refunds'].icon, roles: ['ADMIN', 'DIRECTEUR', 'COMPTABLE'] },

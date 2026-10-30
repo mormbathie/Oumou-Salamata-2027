@@ -193,3 +193,10 @@ export const refundsApi = {
   departures: () => api.get('/refunds/departures').then(r => r.data),
   depart: (id: string, data: any) => api.post(`/refunds/departures/${id}`, data).then(r => r.data),
 };
+
+export const suppliesApi = {
+ articles: () => api.get('/finances/supplies/articles').then(r=>r.data),
+ saveArticle: (data:any,id?:string) => (id?api.patch('/finances/supplies/articles/'+id,data):api.post('/finances/supplies/articles',data)).then(r=>r.data),
+ sell: (data:any) => api.post('/finances/supplies/invoices',data).then(r=>r.data),
+ overview: () => api.get('/finances/supplies/overview').then(r=>r.data),
+};

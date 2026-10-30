@@ -73,7 +73,7 @@ export class StudentsService {
         ...(!isTeacher ? {
           invoices: {
             where: { cancelledAt: null },
-            select: { amount: true, paidAmount: true, balance: true, status: true },
+            select: { amount: true, paidAmount: true, balance: true, status: true, type: true, category: true, registrationOptions: true },
           },
         } : {}),
       },
@@ -363,7 +363,7 @@ export class StudentsService {
     const invoices = enrollment ? await this.prisma.invoice.findMany({ where: { studentId: current.id, academicYearId: enrollment.academicYearId, type: InvoiceType.REGISTRATION, cancelledAt: null } }) : [];
     if (invoices.length > 1) throw new BadRequestException('Plusieurs factures d’inscription existent : faites vérifier le dossier.');
     const invoice = invoices[0];
-    const changed = ['fullDay', 'supplies', 'karate', 'transportZone'].some(key => data[key] !== undefined && (current[key] || false) !== (options[key] || false));
+    const changed = ['fullDay', 'karate', 'transportZone'].some(key => data[key] !== undefined && (current[key] || false) !== (options[key] || false));
     const delta = changed && enrollment && invoice ? registrationAdjustment(current, { ...current, ...options }, enrollment.classroom, classroom, invoice).delta : 0;
     return { ...fees, projectedAmount: invoice ? invoice.amount + delta : null, paidAmount: invoice?.paidAmount ?? null,
       projectedBalance: invoice ? invoice.amount + delta - invoice.paidAmount : null };
@@ -394,8 +394,9 @@ export class StudentsService {
         const enrollment = current.enrollments[0];
         const classroom = data.classroomId ? await tx.classroom.findUnique({ where: { id: data.classroomId } }) : enrollment?.classroom;
         const next = { ...current, ...studentData };
-        const billingChanged = ['fullDay', 'supplies', 'karate', 'transportZone'].some(key => data[key] !== undefined && (current[key] || false) !== (next[key] || false));
-        if (billingChanged || (data.classroomId && data.classroomId !== enrollment?.classroomId)) validateOptionsForClass(next, classroom);
+        const billingChanged = ['fullDay', 'karate', 'transportZone'].some(key => data[key] !== undefined && (current[key] || false) !== (next[key] || false));
+        const optionsChanged = billingChanged || (data.supplies !== undefined && current.supplies !== next.supplies);
+        if (optionsChanged || (data.classroomId && data.classroomId !== enrollment?.classroomId)) validateOptionsForClass(next, classroom);
         if (billingChanged && enrollment && classroom) {
           // Lock invoices before reading their paid amounts: simultaneous cash receipts remain safe.
           await tx.$queryRaw(Prisma.sql`SELECT id FROM "Invoice" WHERE "studentId" = ${id} AND "academicYearId" = ${enrollment.academicYearId} AND type = 'REGISTRATION' FOR UPDATE`);

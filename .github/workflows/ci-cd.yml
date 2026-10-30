@@ -71,6 +71,7 @@ jobs:
           node test/report-door.cjs
           node test/refunds.cjs
           node test/data-transfer.cjs
+          node test/supplies.cjs
           node test/finance-control.cjs
           node test/academic-transition.cjs
           node test/registration-atomicity.cjs

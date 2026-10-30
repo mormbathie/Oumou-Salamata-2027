@@ -37,8 +37,8 @@ describe('Dynamic registration tariffs', () => {
     [{transportZone:1},preschool,60000],
     [{transportZone:2,fullDay:true},preschool,80000],
     [{karate:true},preschool,52000],
-    [{supplies:true},elementary,77500],
-    [{transportZone:3,karate:true,supplies:true},elementary,99500],
+    [{supplies:true},elementary,40000],
+    [{transportZone:3,karate:true,supplies:true},elementary,62000],
     [{transportZone:1,karate:true,fullDay:true},preschool,77000],
     [{karate:true,kimono:true},preschool,52000],
   ])('prices %j without charging kimono in registration',(options,classroom,expected)=>{
@@ -55,7 +55,7 @@ describe('Legacy option billing snapshots',()=>{
   it('does not start billing unchanged legacy transport when supplies are added',()=>{
     const {registrationAdjustment}=require('./school-options');
     const result=registrationAdjustment({transportZone:3},{transportZone:3,supplies:true},c,c,{amount:100000});
-    expect(result.delta).toBe(37500);expect(JSON.parse(result.registrationOptions).transportZone).toBeNull();
+    expect(result.delta).toBe(0);expect(JSON.parse(result.registrationOptions).transportZone).toBeNull();
   });
 });
 
@@ -69,6 +69,6 @@ describe('Legacy option billing snapshots',()=>{
  });
 it('preserves other options with elementary full-day and rejects CE2', () => {
   const classroom = {level:'CP',program:'ELEMENTARY',registrationFee:40000,monthlyTuition:15000};
-  expect(schoolFees({fullDay:true,supplies:true,karate:true,transportZone:1},classroom)).toEqual({registrationFee:114500,monthlyTuition:35000});
+  expect(schoolFees({fullDay:true,supplies:true,karate:true,transportZone:1},classroom)).toEqual({registrationFee:77000,monthlyTuition:35000});
   expect(()=>validateOptionsForClass({fullDay:true},{...classroom,level:'CE2'})).toThrow();
 });
