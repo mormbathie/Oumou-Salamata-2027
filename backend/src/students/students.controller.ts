@@ -73,10 +73,16 @@ export class StudentsController {
     return this.studentsService.enroll(body, actor);
   }
 
+  @Get(':id/deletion-preview')
+  @Roles('ADMIN')
+  async deletionPreview(@Param('id') id: string, @CurrentUser() actor: any) {
+    return this.studentsService.deletionPreview(id, actor);
+  }
+
   @Delete(':id')
-  @Roles('ADMIN', 'DIRECTEUR')
-  @ApiOperation({ summary: 'Supprimer un dossier élève (administrateur ou directeur)' })
-  async remove(@Param('id') id: string) {
-    return this.studentsService.remove(id);
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Supprimer définitivement un doublon élève (administrateur uniquement)' })
+  async remove(@Param('id') id: string, @Body() body: { matricule?: string; reason?: string; confirmationToken?: string }, @CurrentUser() actor: any) {
+    return this.studentsService.remove(id, body, actor);
   }
 }

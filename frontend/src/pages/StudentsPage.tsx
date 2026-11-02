@@ -35,11 +35,18 @@ const inputClass = 'mt-1 w-full min-w-0 rounded-lg border border-slate-200 bg-wh
 export const StudentsPage: React.FC = () => {
   const { user } = useAuth();
   const roles = (user?.roles || []).map((role) => role.toUpperCase());
+  const admin = roles.includes('ADMIN');
   const manager = roles.includes('ADMIN') || roles.includes('DIRECTEUR');
   const canRegister = manager || roles.includes('COMPTABLE');
   const canSeeFinances = manager || (!roles.includes('ENSEIGNANT') && (roles.includes('COMPTABLE') || roles.includes('PARENT')));
   const parentPortal = roles.includes('PARENT') && !roles.some((role) => ['ADMIN', 'DIRECTEUR', 'COMPTABLE', 'ENSEIGNANT'].includes(role));
 
+  const [deletion, setDeletion] = useState<any>(null);
+  const [deleteMatricule, setDeleteMatricule] = useState('');
+  const [deleteReason, setDeleteReason] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const [students, setStudents] = useState<any[]>([]);
   const [classes, setClasses] = useState<any[]>([]);
   const [parents, setParents] = useState<any[]>([]);
@@ -68,6 +75,27 @@ export const StudentsPage: React.FC = () => {
     parentRelation: 'Father', generateInvoice: true,
     supplies: false, fullDay: false, transportZone: null as number|null, karate:false, eveningClasses:false, emergencyContactName:'', emergencyContactPhone:'', healthNotes:'', schoolItemsProvided:'',
   });
+
+  const beginDeletion = async () => {
+    if (!admin || !selectedStudent) return;
+    setPreviewLoading(true); setDeleteError('');
+    try {
+      const preview = await studentsApi.deletionPreview(selectedStudent.id);
+      setDeleteMatricule(''); setDeleteReason(''); setDeletion(preview);
+    } catch (error) { setDeleteError(formatError(error)); }
+    finally { setPreviewLoading(false); }
+  };
+  const confirmDeletion = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!admin || !deletion || deleting) return;
+    setDeleting(true); setDeleteError('');
+    try {
+      await studentsApi.delete(deletion.id, { matricule: deleteMatricule, reason: deleteReason, confirmationToken: deletion.confirmationToken });
+      setDeletion(null); setShowDetailsModal(false); setSelectedStudent(null);
+      await loadData();
+    } catch (error) { setDeleteError(formatError(error)); }
+    finally { setDeleting(false); }
+  };
 
   const loadData = async () => {
     try {
@@ -418,13 +446,34 @@ export const StudentsPage: React.FC = () => {
         </div>
       )}
 
+      {admin && deletion && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/70 p-3">
+        <form onSubmit={confirmDeletion} role="dialog" aria-modal="true" aria-labelledby="delete-student-title" className="max-h-[95dvh] w-full max-w-xl space-y-4 overflow-y-auto rounded-2xl bg-white p-5 shadow-xl">
+          <h2 id="delete-student-title" className="text-lg font-bold text-red-800">Supprimer définitivement ce dossier ?</h2>
+          <p className="text-sm"><b>{deletion.name}</b><br/><span className="font-mono">{deletion.matricule}</span></p>
+          <p className="rounded-lg bg-red-50 p-3 text-sm text-red-900">Cette action retire le dossier et ses informations scolaires, documents, factures, paiements et remboursements. Les montants correspondants disparaîtront des statistiques. Aucun remboursement réel ne sera effectué. Pour un départ réel, utilisez « Départ / remboursement ».</p>
+          <div className="grid grid-cols-2 gap-2 rounded-lg bg-slate-50 p-3 text-sm">
+            <span>Factures : <b>{deletion.counts.invoices}</b></span><span>Paiements : <b>{deletion.counts.payments}</b></span>
+            <span>Remboursements : <b>{deletion.counts.refunds}</b></span><span>Documents : <b>{deletion.counts.documents}</b></span>
+            <span>Inscriptions : <b>{deletion.counts.enrollments}</b></span><span>Présences : <b>{deletion.counts.attendances}</b></span>
+            <span>Notes : <b>{deletion.counts.grades}</b></span><span>Bulletins : <b>{deletion.counts.reportCards}</b></span>
+            <span className="col-span-2">Facturé : <b>{money(deletion.invoiced)}</b> · Encaissé brut : <b>{money(deletion.received)}</b> · Remboursé : <b>{money(deletion.refunded)}</b></span>
+          </div>
+          <p className="text-xs text-slate-600">Le dossier parent et les autres élèves sont conservés. Une trace de suppression avec votre identité, le motif et une copie des données du dossier est conservée pour contrôle. Il n’existe pas de bouton d’annulation après suppression.</p>
+          <label className="block text-sm font-medium">Motif de suppression<textarea required minLength={10} maxLength={1000} disabled={deleting} value={deleteReason} onChange={e=>setDeleteReason(e.target.value)} placeholder="Exemple : doublon du dossier OS-2026-…" className={inputClass}/></label>
+          <label className="block text-sm font-medium">Recopiez le matricule {deletion.matricule}<input required autoComplete="off" disabled={deleting} value={deleteMatricule} onChange={e=>setDeleteMatricule(e.target.value)} className={inputClass}/></label>
+          {deleteError && <p role="alert" className="text-sm text-red-700">{deleteError}</p>}
+          <div className="flex flex-wrap justify-end gap-2"><button type="button" disabled={deleting} onClick={()=>{setDeletion(null);setDeleteError('');}} className="rounded-lg border px-4 py-2 text-sm">Annuler</button><button type="submit" disabled={deleting || deleteMatricule !== deletion.matricule || deleteReason.trim().length < 10} className="rounded-lg bg-red-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40">{deleting ? 'Suppression…' : 'Supprimer définitivement'}</button></div>
+        </form>
+      </div>}
+
       {showDetailsModal && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-2 backdrop-blur-sm sm:p-4">
           <div className="max-h-[95dvh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
             <div className="sticky top-0 z-20 flex flex-col gap-3 border-b border-slate-100 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
               <div className="flex min-w-0 items-center gap-3"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 font-bold text-white">{selectedStudent.firstName?.[0]}{selectedStudent.lastName?.[0]}</div><div className="min-w-0"><h3 className="truncate font-bold text-slate-800">{selectedStudent.firstName} {selectedStudent.lastName}</h3><p className="font-mono text-xs text-emerald-700">{t("Matricule :")}{selectedStudent.matricule}</p></div></div>
-              <div className="flex items-center justify-end gap-2">{manager && <><button disabled={Boolean(selectedStudent.departure)} onClick={beginEdit} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"><Pencil className="h-3.5 w-3.5" />{t("Edit")}</button><Link to={`/refunds?studentId=${selectedStudent.id}`} className="inline-flex items-center gap-1 rounded-lg border border-amber-200 px-3 py-2 text-xs font-semibold text-amber-800">{t("Départ / remboursement")}</Link></>}<button onClick={() => setShowDetailsModal(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100" aria-label={t("Close record")}><X className="h-5 w-5" /></button></div>
+              <div className="flex items-center justify-end gap-2">{manager && <><button disabled={Boolean(selectedStudent.departure)} onClick={beginEdit} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"><Pencil className="h-3.5 w-3.5" />{t("Edit")}</button><Link to={`/refunds?studentId=${selectedStudent.id}`} className="inline-flex items-center gap-1 rounded-lg border border-amber-200 px-3 py-2 text-xs font-semibold text-amber-800">{t("Départ / remboursement")}</Link></>}{admin && <button disabled={previewLoading} onClick={beginDeletion} className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-50"><Trash2 className="h-3.5 w-3.5" />{previewLoading ? 'Chargement…' : 'Supprimer'}</button>}<button onClick={() => setShowDetailsModal(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100" aria-label={t("Close record")}><X className="h-5 w-5" /></button></div>
             </div>
+            {deleteError && !deletion && <p role="alert" className="m-4 rounded-lg bg-red-50 p-3 text-sm text-red-800">{deleteError}</p>}
             <div className="border-b border-slate-100 px-4 sm:px-6"><div className="flex gap-5"><button onClick={() => { setDetailsTab('overview'); setEditingDetails(false); }} className={`border-b-2 py-3 text-xs font-semibold ${detailsTab === 'overview' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500'}`}>{t("Informations")}</button>{manager && <button onClick={() => { setDetailsTab('documents'); setEditingDetails(false); }} className={`border-b-2 py-3 text-xs font-semibold ${detailsTab === 'documents' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500'}`}>{t("Documents")}</button>}</div></div>
 
             {detailsTab === 'overview' && <div className="space-y-5 p-4 sm:p-6">{ageWarning(editingDetails ? editData?.dateOfBirth : selectedStudent.dateOfBirth,editingDetails ? classes.find(c=>c.id===editData?.classroomId) || selectedStudent.enrollments?.[0]?.classroom : selectedStudent.enrollments?.[0]?.classroom) && <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{t('Below the recommended minimum age; enrolment is permitted.')}</p>}

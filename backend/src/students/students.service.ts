@@ -5,7 +5,7 @@ import { DocumentsService } from '../documents/documents.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, Gender, StudentStatus, InvoiceType, InvoiceStatus } from '@prisma/client';
 import { ActingUser, actorStamp } from '../audit/actor';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { normalizeEmail } from '../common/email';
 
 @Injectable()
@@ -464,8 +464,92 @@ export class StudentsService {
     });
   }
 
-  async remove(id: string) {
-    // No financial or school history may disappear through a dossier deletion.
-    throw new BadRequestException('La suppression des dossiers est désactivée. Utilisez Départs et remboursements pour conserver l’historique.');
+  private assertDeletionAdmin(actor: ActingUser) {
+    if (!actor?.roles?.some(role => role.toUpperCase() === 'ADMIN')) {
+      throw new ForbiddenException('Seul un administrateur peut supprimer un dossier élève.');
+    }
+    return actorStamp(actor);
+  }
+
+  private async deletionSnapshot(tx: Prisma.TransactionClient, id: string) {
+    const student = await tx.student.findUnique({ where: { id }, include: {
+      enrollments: { orderBy: { id: 'asc' } }, grades: { orderBy: { id: 'asc' } },
+      reportCards: { orderBy: { id: 'asc' } }, attendances: { orderBy: { id: 'asc' } },
+      documents: { orderBy: { id: 'asc' } }, departure: true,
+      invoices: { orderBy: { id: 'asc' }, include: {
+        payments: { orderBy: { id: 'asc' }, include: { refunds: { orderBy: { id: 'asc' } } } },
+      } },
+    } });
+    if (!student) throw new NotFoundException('Élève introuvable.');
+    const invoiceIds = student.invoices.map(invoice => invoice.id);
+    const reminders = await tx.paymentReminder.findMany({ where: { invoiceId: { in: invoiceIds } }, orderBy: { id: 'asc' } });
+    const installments = await tx.paymentInstallment.findMany({ where: { invoiceId: { in: invoiceIds } }, orderBy: { id: 'asc' } });
+    return { student, reminders, installments };
+  }
+
+  private deletionToken(snapshot: unknown) {
+    return createHash('sha256').update(JSON.stringify(snapshot)).digest('hex');
+  }
+
+  async deletionPreview(id: string, actor: ActingUser) {
+    this.assertDeletionAdmin(actor);
+    return this.prisma.$transaction(async tx => {
+      const snapshot = await this.deletionSnapshot(tx, id);
+      const student = snapshot.student;
+      const payments = student.invoices.flatMap(invoice => invoice.payments);
+      const refunds = payments.flatMap(payment => payment.refunds);
+      return {
+        id, matricule: student.matricule, name: `${student.firstName} ${student.lastName}`,
+        confirmationToken: this.deletionToken(snapshot),
+        counts: { invoices: student.invoices.length, payments: payments.length, refunds: refunds.length,
+          enrollments: student.enrollments.length, grades: student.grades.length,
+          reportCards: student.reportCards.length, attendances: student.attendances.length,
+          documents: student.documents.length, departures: student.departure ? 1 : 0 },
+        invoiced: student.invoices.filter(invoice => !invoice.cancelledAt).reduce((sum, invoice) => sum + invoice.amount, 0),
+        received: payments.filter(payment => !payment.cancelledAt).reduce((sum, payment) => sum + payment.amount, 0),
+        refunded: refunds.reduce((sum, refund) => sum + refund.amount, 0),
+      };
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead });
+  }
+
+  async remove(id: string, data: { matricule?: string; reason?: string; confirmationToken?: string }, actor: ActingUser) {
+    const author = this.assertDeletionAdmin(actor);
+    if (typeof data?.reason !== 'string' || data.reason.trim().length < 10 || data.reason.length > 1000) {
+      throw new BadRequestException('Indiquez un motif de suppression de 10 à 1 000 caractères.');
+    }
+    const reason = data.reason.trim();
+    let deleted: { id: string; deleted: boolean; storageKeys: string[] };
+    try {
+      deleted = await this.prisma.$transaction(async tx => {
+        await tx.$queryRaw(Prisma.sql`SELECT id FROM "Student" WHERE id = ${id} FOR UPDATE`);
+        await tx.$queryRaw(Prisma.sql`SELECT id FROM "Invoice" WHERE "studentId" = ${id} ORDER BY id FOR UPDATE`);
+        const snapshot = await this.deletionSnapshot(tx, id);
+        if (data.matricule !== snapshot.student.matricule) throw new BadRequestException('Le matricule de confirmation ne correspond pas au dossier.');
+        if (!data.confirmationToken || data.confirmationToken !== this.deletionToken(snapshot)) {
+          throw new ConflictException('Le dossier a changé. Fermez la confirmation et vérifiez à nouveau les informations avant de supprimer.');
+        }
+        await tx.businessAudit.create({ data: {
+          action: 'STUDENT_DELETED', entityId: id, actorId: author.id,
+          actorName: author.name, actorRole: author.role, reason,
+          details: JSON.stringify(snapshot),
+        } });
+        const invoiceIds = snapshot.student.invoices.map(invoice => invoice.id);
+        await tx.refund.deleteMany({ where: { payment: { invoiceId: { in: invoiceIds } } } });
+        await tx.paymentReminder.deleteMany({ where: { invoiceId: { in: invoiceIds } } });
+        await tx.paymentInstallment.deleteMany({ where: { invoiceId: { in: invoiceIds } } });
+        await tx.studentDeparture.deleteMany({ where: { studentId: id } });
+        // The schema cascades the student's invoices, payments, enrolments and school records.
+        // Parent records and audit history are independent and deliberately retained.
+        await tx.student.delete({ where: { id } });
+        return { id, deleted: true, storageKeys: snapshot.student.documents.map(document => document.storageKey) };
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034') {
+        throw new ConflictException('Une autre opération a modifié le dossier. Rechargez la confirmation.');
+      }
+      throw error;
+    }
+    await this.documents.removeStoredFiles(deleted.storageKeys);
+    return { id: deleted.id, deleted: deleted.deleted };
   }
 }

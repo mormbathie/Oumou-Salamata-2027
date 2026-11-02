@@ -21,9 +21,9 @@ describe('Refund and departure permissions', () => {
   it('rejects invalid and future dates', () => {
     for (const value of ['2026-02-30','not-a-date','2999-01-01']) expect(() => operationDate(value)).toThrow();
   });
-  it('never hard deletes a student, even without an invoice', async () => {
+  it('rejects student deletion without an authorized admin confirmation', async () => {
     const db: any = { student: { delete: jest.fn() } };
-    await expect(new StudentsService(db,{} as any).remove('student')).rejects.toThrow('suppression');
+    await expect(new StudentsService(db,{} as any).remove('student', {}, { userId: 'director', username: 'director', roles: ['DIRECTEUR'] })).rejects.toThrow('administrateur');
     expect(db.student.delete).not.toHaveBeenCalled();
   });
 });

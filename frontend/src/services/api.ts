@@ -99,7 +99,8 @@ export const studentsApi = {
   getPhoto: (id: string) => api.get(`/students/${id}/photo`, { responseType: 'blob' }).then((r) => r.data),
   create: (data: any) => api.post('/students', data).then((r) => r.data),
   update: (id: string, data: any) => api.put(`/students/${id}`, data).then((r) => r.data),
-  delete: (id: string) => api.delete(`/students/${id}`).then((r) => r.data),
+  deletionPreview: (id: string) => api.get(`/students/${id}/deletion-preview`).then(r => r.data),
+  delete: (id: string, data: { matricule: string; reason: string; confirmationToken: string }) => api.delete(`/students/${id}`, { data }).then((r) => r.data),
   uploadDocument: (id: string, category: string, file: File) => {
     const data = new FormData();
     data.append('file', file);
