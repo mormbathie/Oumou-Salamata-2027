@@ -8,7 +8,7 @@ export const school = {
 };
 export type SchoolProgram = { id: string; label: string; hours: string; levels: string[]; registrationFee: number; monthlyTuition: number; minimumAge?: number; requiredItems: string[]; fees: [string, number][]; extraSupplies?: boolean };
 const preschoolFees: [string, number][] = [['Inscription', 7000], ['Mensualité', 15000], ['Fournitures', 10000], ['Blouse et blouson', 14000], ['Infirmerie', 1000], ['APE', 1000], ['Badge', 500], ['Social', 500], ['Mouchoirs', 1000]];
-const elementaryFees: [string, number][] = [['Inscription', 7000], ['Mensualité', 15000], ['Livre', 2500], ['Tenue', 10000], ['Infirmerie', 1000], ['APE', 1000], ['Badge', 1000], ['Social', 500], ['Rame de papier', 2500], ['Ajustement du forfait', -500]];
+const elementaryFees: [string, number][] = [['Inscription', 7000], ['Mensualité', 15000], ['Livre', 2500], ['Tenue', 10000], ['Infirmerie', 1000], ['APE', 1000], ['Badge', 1000], ['Social', 500], ['Rame de papier', 2000]];
 export const programs: SchoolProgram[] = [
   { id: 'PRESCHOOL', label: 'Maternelle', hours: '8h–13h', levels: ['TPS','PS','MS','GS'], registrationFee: 50000, monthlyTuition: 15000, requiredItems: ['BIRTH_CERTIFICATE'], fees: preschoolFees },
   { id: 'ELEMENTARY', label: 'Élémentaire', hours: '8h–13h', levels: ['CI','CP','CE1','CE2','CM1','CM2'], registrationFee: 40000, monthlyTuition: 15000, requiredItems: ['BIRTH_CERTIFICATE'], fees: elementaryFees, extraSupplies: true },

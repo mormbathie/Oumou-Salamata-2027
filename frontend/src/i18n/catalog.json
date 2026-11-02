@@ -5228,5 +5228,255 @@
     "fr": "Montant",
     "en": "Amount",
     "ar": "المبلغ"
+  },
+  "Répartition par rubrique": {
+    "fr": "Répartition par rubrique",
+    "en": "Breakdown by fee item",
+    "ar": "التوزيع حسب بنود الرسوم"
+  },
+  "Ventilation estimée au prorata": {
+    "fr": "Ventilation estimée au prorata",
+    "en": "Estimated proportional allocation",
+    "ar": "توزيع تقديري بالتناسب"
+  },
+  "Rubrique affichée": {
+    "fr": "Rubrique affichée",
+    "en": "Displayed fee item",
+    "ar": "البند المعروض"
+  },
+  "Toutes les rubriques": {
+    "fr": "Toutes les rubriques",
+    "en": "All fee items",
+    "ar": "جميع البنود"
+  },
+  "Rubrique": {
+    "fr": "Rubrique",
+    "en": "Fee item",
+    "ar": "البند"
+  },
+  "Élèves concernés": {
+    "fr": "Élèves concernés",
+    "en": "Pupils concerned",
+    "ar": "التلاميذ المعنيون"
+  },
+  "Montant attendu": {
+    "fr": "Montant attendu",
+    "en": "Expected amount",
+    "ar": "المبلغ المستحق"
+  },
+  "Encaissé net ventilé": {
+    "fr": "Encaissé net ventilé",
+    "en": "Allocated net receipts",
+    "ar": "صافي المقبوضات الموزع"
+  },
+  "Remboursé ventilé": {
+    "fr": "Remboursé ventilé",
+    "en": "Allocated refunds",
+    "ar": "المبالغ المستردة الموزعة"
+  },
+  "Montants conservés hors ventilation estimée": {
+    "fr": "Montants conservés hors ventilation estimée",
+    "en": "Amounts kept outside estimated allocation",
+    "ar": "مبالغ محفوظة خارج التوزيع التقديري"
+  },
+  "Sous-total des rubriques affichées": {
+    "fr": "Sous-total des rubriques affichées",
+    "en": "Subtotal of displayed items",
+    "ar": "المجموع الفرعي للبنود المعروضة"
+  },
+  "Aucun montant pour cette rubrique et ces filtres.": {
+    "fr": "Aucun montant pour cette rubrique et ces filtres.",
+    "en": "No amounts for this item and these filters.",
+    "ar": "لا توجد مبالغ لهذا البند وهذه المرشحات."
+  },
+  "Encaissé net ventilé au prorata": {
+    "fr": "Encaissé net ventilé au prorata",
+    "en": "Net receipts allocated proportionally",
+    "ar": "صافي المقبوضات الموزع بالتناسب"
+  },
+  "Encaissé net non ventilé": {
+    "fr": "Encaissé net non ventilé",
+    "en": "Unallocated net receipts",
+    "ar": "صافي المقبوضات غير الموزع"
+  },
+  "Trop-perçu net hors forfait": {
+    "fr": "Trop-perçu net hors forfait",
+    "en": "Net overpayment outside the package",
+    "ar": "صافي المبلغ الزائد خارج الرسوم"
+  },
+  "Dossiers non ventilés à vérifier": {
+    "fr": "Dossiers non ventilés à vérifier",
+    "en": "Unallocated records requiring review",
+    "ar": "ملفات غير موزعة تحتاج إلى تحقق"
+  },
+  "Barèmes de référence utilisés": {
+    "fr": "Barèmes de référence utilisés",
+    "en": "Reference fee schedules used",
+    "ar": "جداول الرسوم المرجعية المستخدمة"
+  },
+  "Cycle": {
+    "fr": "Cycle",
+    "en": "School cycle",
+    "ar": "المرحلة الدراسية"
+  },
+  "Tous les cycles": {
+    "fr": "Tous les cycles",
+    "en": "All school cycles",
+    "ar": "جميع المراحل"
+  },
+  "Autres programmes": {
+    "fr": "Autres programmes",
+    "en": "Other programmes",
+    "ar": "البرامج الأخرى"
+  },
+  "Mensualité incluse dans le forfait": {
+    "fr": "Mensualité incluse dans le forfait",
+    "en": "Monthly tuition included in the package",
+    "ar": "القسط الشهري المدرج في الرسوم"
+  },
+  "Fournitures incluses au forfait maternelle": {
+    "fr": "Fournitures incluses au forfait maternelle",
+    "en": "Supplies included in the preschool package",
+    "ar": "اللوازم المدرجة في رسوم الروضة"
+  },
+  "Karaté inclus dans la facture d’inscription": {
+    "fr": "Karaté inclus dans la facture d’inscription",
+    "en": "Karate included in the registration invoice",
+    "ar": "الكاراتيه المدرج في فاتورة التسجيل"
+  },
+  "Transport inclus dans la facture d’inscription": {
+    "fr": "Transport inclus dans la facture d’inscription",
+    "en": "Transport included in the registration invoice",
+    "ar": "النقل المدرج في فاتورة التسجيل"
+  },
+  "Fournitures élémentaires incluses dans un ancien forfait": {
+    "fr": "Fournitures élémentaires incluses dans un ancien forfait",
+    "en": "Elementary supplies included in a legacy package",
+    "ar": "لوازم الابتدائي المدرجة في رسوم قديمة"
+  },
+  "À vérifier — montant non ventilé": {
+    "fr": "À vérifier — montant non ventilé",
+    "en": "Review required — unallocated amount",
+    "ar": "يلزم التحقق — مبلغ غير موزع"
+  },
+  "Détail non ventilé : voir les dossiers à vérifier.": {
+    "fr": "Détail non ventilé : voir les dossiers à vérifier.",
+    "en": "Unallocated details: see records requiring review.",
+    "ar": "تفاصيل غير موزعة: راجع الملفات التي تحتاج إلى تحقق."
+  },
+  "Les paiements sont globaux. La ventilation est une estimation, pas une affectation comptable connue. Seuls les forfaits dont le détail peut être reconstitué sont répartis.": {
+    "fr": "Les paiements sont globaux. La ventilation est une estimation, pas une affectation comptable connue. Seuls les forfaits dont le détail peut être reconstitué sont répartis.",
+    "en": "Payments are recorded globally. This is an estimated breakdown, not a known accounting assignment. Only packages with a reconstructible composition are allocated.",
+    "ar": "المدفوعات مسجلة بشكل إجمالي. هذا توزيع تقديري وليس تخصيصاً محاسبياً مؤكداً. توزع فقط الرسوم التي يمكن إعادة تحديد تفاصيلها."
+  },
+  "Les mêmes filtres s’appliquent aux élèves, aux totaux et à la répartition, sur toute la liste. Le choix de rubrique limite uniquement les lignes du tableau ci-dessous.": {
+    "fr": "Les mêmes filtres s’appliquent aux élèves, aux totaux et à la répartition, sur toute la liste. Le choix de rubrique limite uniquement les lignes du tableau ci-dessous.",
+    "en": "The same filters apply to pupils, totals and allocation across the entire list. Selecting a fee item only limits the rows of the table below.",
+    "ar": "تطبق المرشحات نفسها على التلاميذ والمجاميع والتوزيع في القائمة كاملة. يحدد اختيار البند فقط الصفوف المعروضة في الجدول أدناه."
+  },
+  "Contrôle : ventilé + non ventilé + trop-perçu = encaissements nets des inscriptions.": {
+    "fr": "Contrôle : ventilé + non ventilé + trop-perçu = encaissements nets des inscriptions.",
+    "en": "Check: allocated + unallocated + overpayment = net registration receipts.",
+    "ar": "التحقق: الموزع + غير الموزع + الزائد = صافي مقبوضات التسجيل."
+  },
+  "Écart de rapprochement : vérifier les données avant utilisation.": {
+    "fr": "Écart de rapprochement : vérifier les données avant utilisation.",
+    "en": "Reconciliation difference: check the data before use.",
+    "ar": "فرق في المطابقة: تحقق من البيانات قبل الاستخدام."
+  },
+  "Arrondis en FCFA entiers, selon une règle déterministe. Un remboursement réduit l’encaissé net mais ne crée pas une nouvelle dette. Le reste à payer correspond aux soldes des factures.": {
+    "fr": "Arrondis en FCFA entiers, selon une règle déterministe. Un remboursement réduit l’encaissé net mais ne crée pas une nouvelle dette. Le reste à payer correspond aux soldes des factures.",
+    "en": "Amounts are rounded to whole CFA francs using a deterministic rule. A refund reduces net receipts without creating a new debt. Outstanding amounts reflect invoice balances.",
+    "ar": "تقرب المبالغ إلى فرنك إفريقي صحيح وفق قاعدة ثابتة. يقلل الاسترداد صافي المقبوضات ولا ينشئ ديناً جديداً. تعكس المبالغ المتبقية أرصدة الفواتير."
+  },
+  "Fournitures séparées, kimono et mensualités facturées à part : exclus de cette synthèse. Encaissements nets de ces autres factures pour les mêmes élèves et la même année": {
+    "fr": "Fournitures séparées, kimono et mensualités facturées à part : exclus de cette synthèse. Encaissements nets de ces autres factures pour les mêmes élèves et la même année",
+    "en": "Separately billed supplies, kimono and monthly tuition are excluded. Net receipts from these other invoices for the same pupils and school year",
+    "ar": "تستبعد اللوازم والكيمونو والأقساط المفوترة بشكل منفصل. صافي مقبوضات هذه الفواتير الأخرى لنفس التلاميذ والسنة"
+  },
+  "Remboursements imputés au trop-perçu, hors rubriques du forfait": {
+    "fr": "Remboursements imputés au trop-perçu, hors rubriques du forfait",
+    "en": "Refunds applied to overpayments, outside package items",
+    "ar": "استردادات تخص المبالغ الزائدة، خارج بنود الرسوم"
+  },
+  "Maternelle : TPS, PS, MS, GS. Élémentaire : CI, CP, CE1 uniquement. Aucun montant historique n’est recalculé. Les autres niveaux, les forfaits journée continue et les tarifs particuliers sans détail sont signalés.": {
+    "fr": "Maternelle : TPS, PS, MS, GS. Élémentaire : CI, CP, CE1 uniquement. Aucun montant historique n’est recalculé. Les autres niveaux, les forfaits journée continue et les tarifs particuliers sans détail sont signalés.",
+    "en": "Preschool: TPS, PS, MS, GS. Elementary: CI, CP, CE1 only. No historical amount is recalculated. Other levels, full-day packages and undocumented special prices are flagged.",
+    "ar": "الروضة: TPS وPS وMS وGS. الابتدائي: CI وCP وCE1 فقط. لا يعاد حساب أي مبلغ قديم. توضع إشارات للمستويات الأخرى ورسوم اليوم الكامل والأسعار الخاصة غير المفصلة."
+  },
+  "Année scolaire = année des factures. Tous leurs paiements actifs sont pris en compte, quelle que soit la date d’encaissement. Aucun filtre de période n’est appliqué.": {
+    "fr": "Année scolaire = année des factures. Tous leurs paiements actifs sont pris en compte, quelle que soit la date d’encaissement. Aucun filtre de période n’est appliqué.",
+    "en": "School year means the invoice year. All active payments on these invoices are included regardless of receipt date. No date-period filter is applied.",
+    "ar": "السنة الدراسية هي سنة الفواتير. تدرج جميع مدفوعاتها الفعالة بغض النظر عن تاريخ القبض. لا يطبق مرشح للفترة الزمنية."
+  },
+  "Un remboursement réduit l’encaissé net sans créer de nouvelle dette. Les fournitures et mensualités facturées séparément sont exclues.": {
+    "fr": "Un remboursement réduit l’encaissé net sans créer de nouvelle dette. Les fournitures et mensualités facturées séparément sont exclues.",
+    "en": "Refunds reduce net receipts without creating a new debt. Separately billed supplies and monthly tuition are excluded.",
+    "ar": "يقلل الاسترداد صافي المقبوضات دون إنشاء دين جديد. تستبعد اللوازم والأقساط المفوترة بشكل منفصل."
+  },
+  "Classe ou cycle non renseigné pour cette année.": {
+    "fr": "Classe ou cycle non renseigné pour cette année.",
+    "en": "Class or school cycle is missing for this year.",
+    "ar": "الصف أو المرحلة الدراسية غير محدد لهذه السنة."
+  },
+  "Le détail de ce programme n’est pas défini par les barèmes validés.": {
+    "fr": "Le détail de ce programme n’est pas défini par les barèmes validés.",
+    "en": "The approved schedules do not define this programme’s breakdown.",
+    "ar": "لا تحدد الجداول المعتمدة تفاصيل رسوم هذا البرنامج."
+  },
+  "Barème non validé pour ce niveau : aucune application automatique du barème CI/CP/CE1.": {
+    "fr": "Barème non validé pour ce niveau : aucune application automatique du barème CI/CP/CE1.",
+    "en": "No approved schedule for this level: the CI/CP/CE1 schedule is not applied automatically.",
+    "ar": "لا يوجد جدول معتمد لهذا المستوى: لا يطبق جدول CI وCP وCE1 تلقائياً."
+  },
+  "Tarif particulier de classe : composition non documentée.": {
+    "fr": "Tarif particulier de classe : composition non documentée.",
+    "en": "Special class price: composition is undocumented.",
+    "ar": "سعر خاص بالصف: التفاصيل غير موثقة."
+  },
+  "Le détail du forfait journée continue n’est pas documenté ; la mensualité ordinaire n’est pas supposée incluse.": {
+    "fr": "Le détail du forfait journée continue n’est pas documenté ; la mensualité ordinaire n’est pas supposée incluse.",
+    "en": "The full-day package breakdown is undocumented; ordinary monthly tuition is not assumed to be included.",
+    "ar": "تفاصيل رسوم اليوم الكامل غير موثقة؛ لا يفترض إدراج القسط الشهري العادي."
+  },
+  "Options facturées absentes ou illisibles : répartition non fiable.": {
+    "fr": "Options facturées absentes ou illisibles : répartition non fiable.",
+    "en": "Billed options are missing or unreadable: reliable allocation is unavailable.",
+    "ar": "الخيارات المفوترة مفقودة أو غير قابلة للقراءة: لا يتاح توزيع موثوق."
+  },
+  "Ancien forfait signalé pour vérification des fournitures.": {
+    "fr": "Ancien forfait signalé pour vérification des fournitures.",
+    "en": "Legacy package flagged for supplies review.",
+    "ar": "رسوم قديمة تتطلب التحقق من اللوازم."
+  },
+  "Montant différent du forfait reconstitué : remise, exclusion ou tarif particulier non détaillé.": {
+    "fr": "Montant différent du forfait reconstitué : remise, exclusion ou tarif particulier non détaillé.",
+    "en": "Amount differs from the reconstructed package: an undocumented discount, exclusion or special price may apply.",
+    "ar": "المبلغ يختلف عن الرسوم المعاد تحديدها: قد يوجد خصم أو استثناء أو سعر خاص غير مفصل."
+  },
+  "Plusieurs factures d’inscription pour cet élève et cette année : composition à vérifier.": {
+    "fr": "Plusieurs factures d’inscription pour cet élève et cette année : composition à vérifier.",
+    "en": "Multiple registration invoices for this pupil and year: review the composition.",
+    "ar": "عدة فواتير تسجيل لهذا التلميذ وهذه السنة: يلزم التحقق من التفاصيل."
+  },
+  "Le total des paiements actifs ne correspond pas au montant encaissé enregistré sur la facture.": {
+    "fr": "Le total des paiements actifs ne correspond pas au montant encaissé enregistré sur la facture.",
+    "en": "Active payment totals do not match receipts recorded on the invoice.",
+    "ar": "مجموع المدفوعات الفعالة لا يطابق المقبوضات المسجلة في الفاتورة."
+  },
+  "Montants non entiers ou incohérents : vérification nécessaire.": {
+    "fr": "Montants non entiers ou incohérents : vérification nécessaire.",
+    "en": "Non-integer or inconsistent amounts: review required.",
+    "ar": "مبالغ غير صحيحة أو غير متناسقة: يلزم التحقق."
+  },
+  "Le solde de la facture ne correspond pas aux paiements actifs.": {
+    "fr": "Le solde de la facture ne correspond pas aux paiements actifs.",
+    "en": "The invoice balance does not match active payments.",
+    "ar": "رصيد الفاتورة لا يطابق المدفوعات الفعالة."
+  },
+  "Aucune facture d’inscription active : aucun encaissement n’est ventilé.": {
+    "fr": "Aucune facture d’inscription active : aucun encaissement n’est ventilé.",
+    "en": "No active registration invoice: no receipts are allocated.",
+    "ar": "لا توجد فاتورة تسجيل فعالة: لا توزع أي مقبوضات."
   }
 }

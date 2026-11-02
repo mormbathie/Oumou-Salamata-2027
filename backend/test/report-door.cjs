@@ -13,7 +13,8 @@ try{
  for(const [i,x] of defs.entries()){
   const s=await db.student.create({data:{matricule:'QA-'+tag+'-'+i,firstName:'Report',lastName:tag+'-'+i,gender:'FEMALE',dateOfBirth:new Date('2020-01-01'),karate:x.karate,fullDay:x.fullDay}});ids.push(s.id);
   await db.enrollment.create({data:{studentId:s.id,classroomId:classroom.id,academicYearId:year.id}});
-  await db.invoice.create({data:{studentId:s.id,academicYearId:year.id,invoiceNumber:'QA-'+tag+'-'+i,title:'QA registration',type:'REGISTRATION',amount:x.amount||90000,paidAmount:x.paid,balance:x.amount-x.paid,dueDate:new Date(),status:x.paid===x.amount?'PAID':x.paid?'PARTIAL':'UNPAID',cancelledAt:x.amount?null:new Date()}});
+  const invoice=await db.invoice.create({data:{studentId:s.id,academicYearId:year.id,invoiceNumber:'QA-'+tag+'-'+i,title:'QA registration',type:'REGISTRATION',amount:x.amount||90000,paidAmount:x.paid,balance:x.amount-x.paid,dueDate:new Date(),status:x.paid===x.amount?'PAID':x.paid?'PARTIAL':'UNPAID',cancelledAt:x.amount?null:new Date()}});
+  if(x.paid)await db.payment.create({data:{invoiceId:invoice.id,paymentNumber:'QA-'+tag+'-'+i,amount:x.paid,paymentMethod:'CASH'}});
  }
  const report=new RegistrationReportService(db);
  let r=await report.report({academicYearId:year.id});assert.equal(r.rows.length,4);assert.equal(r.totals.invoiced,167000);assert.equal(r.totals.paid,92000);assert.equal(r.totals.balance,75000);assert.equal(r.totals.unbilledEstimate,40000);assert.deepEqual(r.totals.counts,{PAID:1,PARTIAL:1,UNPAID:1,NOT_INVOICED:1});

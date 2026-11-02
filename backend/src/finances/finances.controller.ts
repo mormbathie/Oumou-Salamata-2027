@@ -1,3 +1,4 @@
+import type { RegistrationReportQuery } from './registration-report.service';
 import { RegistrationReportService } from './registration-report.service';
 import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
@@ -17,7 +18,7 @@ export class FinancesController {
 
   @Get('registration-report')
   @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
-  registrationReport(@Query() query: { academicYearId?: string; classroomId?: string; karate?: string; fullDay?: string; status?: string }) { return this.reportService.report(query); }
+  registrationReport(@Query() query: RegistrationReportQuery) { return this.reportService.report(query); }
 
   @Get('stats')
   @Roles('ADMIN', 'DIRECTEUR', 'COMPTABLE')
